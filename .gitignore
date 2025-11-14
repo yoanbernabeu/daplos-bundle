@@ -1,0 +1,63 @@
+###> Composer ###
+/vendor/
+/composer.lock
+
+###> Symfony ###
+/var/
+/var/cache/*
+/var/log/*
+
+###> PHPUnit ###
+/.phpunit.cache
+/.phpunit.result.cache
+/phpunit.xml
+/build/
+/coverage/
+/.phpunit.tmp/
+
+###> IDEs ###
+/.idea/
+/.vscode/
+*.sublime-project
+*.sublime-workspace
+
+###> macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+###> Linux ###
+*~
+.directory
+
+###> Windows ###
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+
+###> Vim ###
+*.swp
+*.swo
+*.swn
+
+###> Emacs ###
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+###> Temporary files ###
+*.tmp
+*.bak
+*.log
+
+###> Bundle specific ###
+# Ne pas commiter les traits générés si on veut les regénérer
+# /src/Entity/Trait/*Trait.php
+
+# Fichiers de test temporaires
+/tests/tmp/
+/tests/fixtures/tmp/

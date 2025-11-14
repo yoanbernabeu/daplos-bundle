@@ -1,0 +1,289 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Script de maintenance pour générer les traits DAPLOS.
+ * 
+ * Ce script interroge l'API DAPLOS pour récupérer tous les référentiels disponibles
+ * et génère automatiquement les traits PHP correspondants dans src/Entity/Trait/.
+ * 
+ * ⚠️ USAGE INTERNE UNIQUEMENT
+ * Ce script est destiné aux mainteneurs du bundle uniquement.
+ * Les utilisateurs finaux du bundle ne doivent PAS l'utiliser.
+ * 
+ * Usage:
+ *   php bin/generate-traits
+ *   php bin/generate-traits --dry-run
+ *   php bin/generate-traits --output-dir=/custom/path
+ * 
+ * @author Yoan Bernabeu
+ * @internal
+ */
+
+declare(strict_types=1);
+
+// Bootstrap
+require __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Helper\ProgressBar;
+
+// Configuration
+$config = [
+    'api_url' => getenv('DAPLOS_API_URL') ?: 'https://agroedieurope.fr/wp-json/hwc/v1',
+    'api_login' => getenv('DAPLOS_API_LOGIN') ?: '',
+    'api_key' => getenv('DAPLOS_API_KEY') ?: '',
+];
+
+$outputDir = null;
+$dryRun = false;
+
+// Parse arguments
+foreach ($argv as $arg) {
+    if ($arg === '--dry-run') {
+        $dryRun = true;
+    } elseif (str_starts_with($arg, '--output-dir=')) {
+        $outputDir = substr($arg, strlen('--output-dir='));
+    }
+}
+
+$outputDir = $outputDir ?: __DIR__ . '/../src/Entity/Trait';
+
+// Output
+$output = new ConsoleOutput();
+$output->writeln('<info>═══════════════════════════════════════════════════════════</info>');
+$output->writeln('<info>  🔧 DAPLOS Bundle - Générateur de Traits (Maintenance)</info>');
+$output->writeln('<info>═══════════════════════════════════════════════════════════</info>');
+$output->writeln('');
+
+if ($dryRun) {
+    $output->writeln('<comment>⚠️  Mode DRY-RUN : Aucun fichier ne sera créé</comment>');
+    $output->writeln('');
+}
+
+// Vérifier les credentials
+if (empty($config['api_login']) || empty($config['api_key'])) {
+    $output->writeln('<error>❌ Erreur : Credentials API manquants</error>');
+    $output->writeln('');
+    $output->writeln('Définissez les variables d\'environnement :');
+    $output->writeln('  export DAPLOS_API_LOGIN="votre_login"');
+    $output->writeln('  export DAPLOS_API_KEY="votre_cle"');
+    $output->writeln('');
+    exit(1);
+}
+
+// Récupérer les référentiels
+$output->writeln('📡 Récupération des référentiels depuis l\'API DAPLOS...');
+$url = sprintf(
+    '%s/referencials/?login=%s&apikey=%s',
+    rtrim($config['api_url'], '/'),
+    urlencode($config['api_login']),
+    urlencode($config['api_key'])
+);
+
+$response = @file_get_contents($url);
+
+if ($response === false) {
+    $output->writeln('<error>❌ Erreur : Impossible de contacter l\'API DAPLOS</error>');
+    exit(1);
+}
+
+$referentials = json_decode($response, true);
+
+if (!is_array($referentials) || empty($referentials)) {
+    $output->writeln('<error>❌ Erreur : Aucun référentiel trouvé</error>');
+    exit(1);
+}
+
+$output->writeln(sprintf('<info>✅ %d référentiels trouvés</info>', count($referentials)));
+$output->writeln('');
+
+// Créer le répertoire si nécessaire
+if (!$dryRun && !is_dir($outputDir)) {
+    mkdir($outputDir, 0755, true);
+    $output->writeln(sprintf('<info>📁 Répertoire créé : %s</info>', $outputDir));
+}
+
+// Fonctions helper
+function normalizeTraitName(string $name): string
+{
+    $qualifier = '';
+    if (preg_match('/\(([^)]+)\)/', $name, $matches)) {
+        $qualifier = $matches[1];
+    }
+
+    $mainName = preg_replace('/\s*\([^)]*\)/', '', $name);
+
+    $unwantedArray = [
+        'Š' => 'S', 'š' => 's', 'Ž' => 'Z', 'ž' => 'z',
+        'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'A',
+        'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+        'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ñ' => 'N',
+        'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O',
+        'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'B', 'ß' => 'Ss',
+        'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'a',
+        'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+        'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ð' => 'o', 'ñ' => 'n',
+        'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o',
+        'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y', 'þ' => 'b', 'ÿ' => 'y'
+    ];
+
+    $mainName = strtr($mainName, $unwantedArray);
+    $qualifier = strtr($qualifier, $unwantedArray);
+    $mainName = preg_replace('/[^a-zA-Z0-9]/', '', $mainName);
+    $qualifier = preg_replace('/[^a-zA-Z0-9]/', '', $qualifier);
+
+    return ucfirst($mainName) . ucfirst($qualifier);
+}
+
+function generateTraitContent(array $ref): string
+{
+    $traitName = normalizeTraitName($ref['name']) . 'Trait';
+    $propertyPrefix = lcfirst(normalizeTraitName($ref['name']));
+    $capitalPrefix = ucfirst($propertyPrefix);
+
+    return <<<PHPCODE
+<?php
+
+namespace YoanBernabeu\DaplosBundle\Entity\Trait;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Trait pour le référentiel "{$ref['name']}"
+ *
+ * Repository Code: {$ref['repository_code']}
+ * Référentiel ID: {$ref['id']}
+ * Nombre d'items: {$ref['count']}
+ *
+ * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété {$propertyPrefix}Id :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int \${$propertyPrefix}Id = null;
+ */
+trait {$traitName}
+{
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int \${$propertyPrefix}Id = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string \${$propertyPrefix}Title = null;
+
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string \${$propertyPrefix}ReferenceCode = null;
+
+    public function get{$capitalPrefix}Id(): ?int
+    {
+        return \$this->{$propertyPrefix}Id;
+    }
+
+    public function set{$capitalPrefix}Id(?int \${$propertyPrefix}Id): self
+    {
+        \$this->{$propertyPrefix}Id = \${$propertyPrefix}Id;
+        return \$this;
+    }
+
+    public function get{$capitalPrefix}Title(): ?string
+    {
+        return \$this->{$propertyPrefix}Title;
+    }
+
+    public function set{$capitalPrefix}Title(?string \${$propertyPrefix}Title): self
+    {
+        \$this->{$propertyPrefix}Title = \${$propertyPrefix}Title;
+        return \$this;
+    }
+
+    public function get{$capitalPrefix}ReferenceCode(): ?string
+    {
+        return \$this->{$propertyPrefix}ReferenceCode;
+    }
+
+    public function set{$capitalPrefix}ReferenceCode(?string \${$propertyPrefix}ReferenceCode): self
+    {
+        \$this->{$propertyPrefix}ReferenceCode = \${$propertyPrefix}ReferenceCode;
+        return \$this;
+    }
+}
+
+PHPCODE;
+}
+
+// Générer les traits
+$output->writeln('🔨 Génération des traits...');
+$progressBar = new ProgressBar($output, count($referentials));
+$progressBar->start();
+
+$generated = [];
+
+foreach ($referentials as $ref) {
+    $traitName = normalizeTraitName($ref['name']) . 'Trait';
+    $fileName = $traitName . '.php';
+    $filePath = $outputDir . '/' . $fileName;
+
+    if (!$dryRun) {
+        file_put_contents($filePath, generateTraitContent($ref));
+    }
+
+    $generated[] = [
+        'trait' => $traitName,
+        'file' => $fileName,
+        'referential' => $ref['name'],
+        'id' => $ref['id'],
+        'repository_code' => $ref['repository_code']
+    ];
+
+    $progressBar->advance();
+}
+
+$progressBar->finish();
+$output->writeln('');
+$output->writeln('');
+
+// Générer l'index
+if (!$dryRun) {
+    $indexPath = dirname($outputDir) . '/TRAITS_INDEX.md';
+    $indexContent = "# Index des Traits DAPLOS\n\n";
+    $indexContent .= "| Trait | Référentiel | ID | Repository Code |\n";
+    $indexContent .= "|-------|-------------|----|-----------------|\n";
+
+    foreach ($generated as $item) {
+        $indexContent .= sprintf(
+            "| %s | %s | %d | %s |\n",
+            $item['trait'],
+            $item['referential'],
+            $item['id'],
+            $item['repository_code']
+        );
+    }
+
+    file_put_contents($indexPath, $indexContent);
+    $output->writeln(sprintf('<info>📄 Index généré : %s</info>', $indexPath));
+}
+
+// Résumé
+$output->writeln('');
+$output->writeln('<info>═══════════════════════════════════════════════════════════</info>');
+$output->writeln(sprintf(
+    '<info>  ✅ %d traits %s avec succès</info>',
+    count($generated),
+    $dryRun ? 'seraient générés' : 'générés'
+));
+$output->writeln('<info>═══════════════════════════════════════════════════════════</info>');
+$output->writeln('');
+
+if (!$dryRun) {
+    $output->writeln('📝 Prochaines étapes :');
+    $output->writeln('  1. Vérifier les traits générés');
+    $output->writeln('  2. Commit les changements : git add src/Entity/Trait/');
+    $output->writeln('  3. git commit -m "Régénération des traits DAPLOS"');
+}
+
+$output->writeln('');
+exit(0);
+

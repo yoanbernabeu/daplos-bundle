@@ -1,0 +1,394 @@
+<?php
+
+declare(strict_types=1);
+
+namespace YoanBernabeu\DaplosBundle\Service;
+
+use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
+use YoanBernabeu\DaplosBundle\Service\EntityGeneratorServiceInterface;
+
+/**
+ * Service de génération d'entités et de repositories dans le projet utilisateur.
+ * 
+ * Ce service permet de générer automatiquement des entités Doctrine et leurs repositories
+ * à partir des référentiels DAPLOS disponibles. Les entités générées utilisent les traits
+ * du bundle et l'attribut #[DaplosId] pour faciliter la synchronisation.
+ * 
+ * Principes d'idempotence :
+ * - Ne crée pas de doublons (vérifie l'existence avant création)
+ * - Rejouable sans effets de bord (force=false par défaut)
+ * - Utilise des identifiants uniques (nom de l'entité basé sur le référentiel)
+ * 
+ * @author Yoan Bernabeu
+ */
+class EntityGeneratorService implements EntityGeneratorServiceInterface
+{
+    public function __construct(
+        private readonly ReferentialSyncServiceInterface $syncService,
+        private readonly string $projectDir
+    ) {
+    }
+
+    /**
+     * Vérifie le statut de toutes les entités DAPLOS potentielles.
+     * 
+     * @return array<int, array{referential_id: int, referential_name: string, entity_name: string, entity_exists: bool, repository_exists: bool, entity_path: string|null, repository_path: string|null, trait_name: string}>
+     */
+    public function checkStatus(string $namespace = 'App\\Entity\\Daplos'): array
+    {
+        $referentials = $this->syncService->getAvailableReferentials();
+        $status = [];
+
+        foreach ($referentials as $ref) {
+            $entityName = $this->generateEntityName($ref['name']);
+            $traitName = $this->generateTraitName($ref['name']);
+            
+            $entityPath = $this->getEntityPath($entityName, $namespace);
+            $repositoryPath = $this->getRepositoryPath($entityName, $namespace);
+
+            $status[] = [
+                'referential_id' => $ref['id'],
+                'referential_name' => $ref['name'],
+                'entity_name' => $entityName,
+                'entity_exists' => file_exists($entityPath),
+                'repository_exists' => file_exists($repositoryPath),
+                'entity_path' => file_exists($entityPath) ? $entityPath : null,
+                'repository_path' => file_exists($repositoryPath) ? $repositoryPath : null,
+                'trait_name' => $traitName,
+            ];
+        }
+
+        return $status;
+    }
+
+    /**
+     * Génère une entité et optionnellement son repository.
+     * 
+     * Cette méthode est idempotente : elle ne recrée pas une entité existante
+     * sans l'option force=true.
+     * 
+     * @param array $referential Les données du référentiel DAPLOS
+     * @param string $namespace Le namespace de l'entité (default: App\Entity\Daplos)
+     * @param bool $withRepository Générer aussi le repository
+     * @param bool $dryRun Mode simulation (ne crée pas les fichiers)
+     * @param bool $force Forcer la recréation si l'entité existe
+     * 
+     * @return array{success: bool, message: string, entity_path: string|null, repository_path: string|null, dry_run: bool}
+     */
+    public function generateEntity(
+        array $referential,
+        string $namespace = 'App\\Entity\\Daplos',
+        bool $withRepository = true,
+        bool $dryRun = false,
+        bool $force = false
+    ): array {
+        $entityName = $this->generateEntityName($referential['name']);
+        $entityPath = $this->getEntityPath($entityName, $namespace);
+        $repositoryPath = $withRepository ? $this->getRepositoryPath($entityName, $namespace) : null;
+
+        // Idempotence : vérifier si l'entité existe déjà
+        if (file_exists($entityPath) && !$force) {
+            return [
+                'success' => false,
+                'message' => sprintf('L\'entité %s existe déjà (utilisez --force pour écraser)', $entityName),
+                'entity_path' => $entityPath,
+                'repository_path' => null,
+                'dry_run' => false,
+            ];
+        }
+
+        $traitName = $this->generateTraitName($referential['name']);
+        $propertyPrefix = lcfirst($this->normalizeTraitName($referential['name']));
+
+        // Générer le contenu de l'entité
+        $entityContent = $this->generateEntityContent(
+            entityName: $entityName,
+            namespace: $namespace,
+            traitName: $traitName,
+            propertyPrefix: $propertyPrefix,
+            referential: $referential
+        );
+
+        // Mode dry-run : ne pas créer les fichiers
+        if ($dryRun) {
+            return [
+                'success' => true,
+                'message' => sprintf('[DRY-RUN] Entité %s serait créée', $entityName),
+                'entity_path' => $entityPath,
+                'repository_path' => $repositoryPath,
+                'dry_run' => true,
+            ];
+        }
+
+        // Créer le répertoire si nécessaire
+        $entityDir = dirname($entityPath);
+        if (!is_dir($entityDir)) {
+            mkdir($entityDir, 0755, true);
+        }
+
+        // Écrire l'entité
+        file_put_contents($entityPath, $entityContent);
+
+        // Générer le repository si demandé
+        if ($withRepository) {
+            $repositoryContent = $this->generateRepositoryContent(
+                entityName: $entityName,
+                namespace: $namespace
+            );
+
+            $repositoryDir = dirname($repositoryPath);
+            if (!is_dir($repositoryDir)) {
+                mkdir($repositoryDir, 0755, true);
+            }
+
+            file_put_contents($repositoryPath, $repositoryContent);
+        }
+
+        return [
+            'success' => true,
+            'message' => sprintf('Entité %s créée avec succès', $entityName),
+            'entity_path' => $entityPath,
+            'repository_path' => $repositoryPath,
+            'dry_run' => false,
+        ];
+    }
+
+    /**
+     * Génère toutes les entités pour tous les référentiels disponibles.
+     * 
+     * Cette méthode est idempotente : elle ne recrée pas les entités existantes.
+     * 
+     * @return array<int, array{success: bool, message: string, entity_name: string, entity_path: string|null}>
+     */
+    public function generateAllEntities(
+        string $namespace = 'App\\Entity\\Daplos',
+        bool $withRepositories = true,
+        bool $dryRun = false,
+        bool $force = false
+    ): array {
+        $referentials = $this->syncService->getAvailableReferentials();
+        $results = [];
+
+        foreach ($referentials as $ref) {
+            $result = $this->generateEntity(
+                referential: $ref,
+                namespace: $namespace,
+                withRepository: $withRepositories,
+                dryRun: $dryRun,
+                force: $force
+            );
+
+            $results[] = array_merge($result, [
+                'entity_name' => $this->generateEntityName($ref['name']),
+            ]);
+        }
+
+        return $results;
+    }
+
+    /**
+     * Génère le nom de l'entité à partir du nom du référentiel.
+     * Exemple: "Cultures" → "Culture"
+     */
+    private function generateEntityName(string $referentialName): string
+    {
+        // Retirer les parenthèses et leur contenu
+        $name = preg_replace('/\s*\([^)]*\)/', '', $referentialName);
+        
+        // Normaliser
+        $normalized = $this->normalizeTraitName($name);
+        
+        // Mettre au singulier si possible (simple heuristique)
+        if (str_ends_with($normalized, 's') && strlen($normalized) > 1) {
+            $normalized = substr($normalized, 0, -1);
+        }
+
+        return ucfirst($normalized);
+    }
+
+    /**
+     * Génère le nom du trait à partir du nom du référentiel.
+     */
+    private function generateTraitName(string $referentialName): string
+    {
+        return $this->normalizeTraitName($referentialName) . 'Trait';
+    }
+
+    /**
+     * Normalise un nom de référentiel en nom de classe/trait.
+     */
+    private function normalizeTraitName(string $name): string
+    {
+        $qualifier = '';
+        if (preg_match('/\(([^)]+)\)/', $name, $matches)) {
+            $qualifier = $matches[1];
+        }
+
+        $mainName = preg_replace('/\s*\([^)]*\)/', '', $name);
+
+        $unwantedArray = [
+            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
+            'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+            'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
+            'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O',
+            'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U',
+            'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a',
+            'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+            'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
+            'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
+        ];
+
+        $mainName = strtr($mainName, $unwantedArray);
+        $qualifier = strtr($qualifier, $unwantedArray);
+        $mainName = preg_replace('/[^a-zA-Z0-9]/', '', $mainName);
+        $qualifier = preg_replace('/[^a-zA-Z0-9]/', '', $qualifier);
+
+        return ucfirst($mainName) . ucfirst($qualifier);
+    }
+
+    /**
+     * Calcule le chemin du fichier d'entité.
+     */
+    private function getEntityPath(string $entityName, string $namespace): string
+    {
+        $relativePath = str_replace('\\', '/', str_replace('App\\', 'src/', $namespace));
+        return $this->projectDir . '/' . $relativePath . '/' . $entityName . '.php';
+    }
+
+    /**
+     * Calcule le chemin du fichier de repository.
+     */
+    private function getRepositoryPath(string $entityName, string $namespace): string
+    {
+        $relativePath = str_replace('\\Entity', '\\Repository', $namespace);
+        $relativePath = str_replace('\\', '/', str_replace('App\\', 'src/', $relativePath));
+        return $this->projectDir . '/' . $relativePath . '/' . $entityName . 'Repository.php';
+    }
+
+    /**
+     * Génère le contenu PHP de l'entité.
+     */
+    private function generateEntityContent(
+        string $entityName,
+        string $namespace,
+        string $traitName,
+        string $propertyPrefix,
+        array $referential
+    ): string {
+        $repositoryNamespace = str_replace('\\Entity', '\\Repository', $namespace);
+        
+        return <<<PHP
+<?php
+
+declare(strict_types=1);
+
+namespace {$namespace};
+
+use {$repositoryNamespace}\\{$entityName}Repository;
+use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+use YoanBernabeu\DaplosBundle\Entity\Trait\\{$traitName};
+
+/**
+ * Entité {$entityName}
+ * 
+ * Correspond au référentiel DAPLOS "{$referential['name']}" (ID: {$referential['id']})
+ * Repository Code: {$referential['repository_code']}
+ * 
+ * Générée automatiquement par DaplosBundle.
+ */
+#[ORM\Entity(repositoryClass: {$entityName}Repository::class)]
+#[ORM\Table(name: '{$this->generateTableName($entityName)}')]
+class {$entityName}
+{
+    use {$traitName};
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int \$id = null;
+
+    /**
+     * Propriété marquée avec #[DaplosId] pour le mapping automatique.
+     * Le service de synchronisation utilisera cette propriété pour identifier
+     * les entités existantes et éviter les doublons.
+     */
+    #[DaplosId]
+    private ?int \${$propertyPrefix}Id = null;
+
+    public function getId(): ?int
+    {
+        return \$this->id;
+    }
+
+    // Les getters/setters pour {$propertyPrefix}Id, {$propertyPrefix}Title, {$propertyPrefix}ReferenceCode
+    // sont fournis par le trait {$traitName}
+}
+
+PHP;
+    }
+
+    /**
+     * Génère le contenu PHP du repository.
+     */
+    private function generateRepositoryContent(string $entityName, string $namespace): string
+    {
+        $repositoryNamespace = str_replace('\\Entity', '\\Repository', $namespace);
+        
+        return <<<PHP
+<?php
+
+declare(strict_types=1);
+
+namespace {$repositoryNamespace};
+
+use {$namespace}\\{$entityName};
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * Repository pour l'entité {$entityName}
+ * 
+ * Générée automatiquement par DaplosBundle.
+ * 
+ * @extends ServiceEntityRepository<{$entityName}>
+ */
+class {$entityName}Repository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry \$registry)
+    {
+        parent::__construct(\$registry, {$entityName}::class);
+    }
+
+    /**
+     * Trouve une entité par son ID DAPLOS.
+     * Utile pour éviter les doublons lors de la synchronisation.
+     */
+    public function findOneByDaplosId(int \$daplosId): ?{$entityName}
+    {
+        return \$this->findOneBy(['{$this->lcfirst($this->normalizeTraitName($entityName))}Id' => \$daplosId]);
+    }
+}
+
+PHP;
+    }
+
+    /**
+     * Génère le nom de table à partir du nom de l'entité.
+     */
+    private function generateTableName(string $entityName): string
+    {
+        // Convertir CamelCase en snake_case
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $entityName));
+    }
+
+    /**
+     * Première lettre en minuscule.
+     */
+    private function lcfirst(string $string): string
+    {
+        return lcfirst($string);
+    }
+}
+

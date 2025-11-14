@@ -1,0 +1,38 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# PHP files
+*.php text eol=lf
+*.phar binary
+
+# JSON files
+*.json text eol=lf
+*.lock text eol=lf -diff
+
+# XML files
+*.xml text eol=lf
+
+# Markdown files
+*.md text eol=lf
+
+# YAML files
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+bin/* text eol=lf
+
+# GitHub files
+.gitattributes text eol=lf
+.gitignore text eol=lf
+
+# Exclude files from archive exports (composer)
+/.github export-ignore
+/.phpunit.cache export-ignore
+/tests export-ignore
+/phpunit.xml.dist export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/bin/generate-traits export-ignore
+
