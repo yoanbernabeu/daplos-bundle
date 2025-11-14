@@ -371,7 +371,8 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
     {
         // Convertir CamelCase en snake_case et ajouter le préfixe daplos_
         $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $entityName));
-        return 'daplos_' . $tableName;
+
+        return 'daplos_'.$tableName;
     }
 
     /**

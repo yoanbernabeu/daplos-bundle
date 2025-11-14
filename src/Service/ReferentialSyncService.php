@@ -38,21 +38,6 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         ?callable $mapper = null
     ): array {
         $data = $this->apiClient->getReferential($referentialId);
-        
-        // Vérifier si le référentiel contient des données valides
-        if (!isset($data['references']) || !is_array($data['references'])) {
-            $receivedKeys = array_keys($data);
-            $sample = json_encode(array_slice($data, 0, 3));
-            throw new DaplosApiException(
-                sprintf(
-                    'Structure de données invalide pour le référentiel %d. Clés attendues : [referential, references]. Clés reçues : [%s]. Échantillon des données : %s',
-                    $referentialId,
-                    implode(', ', $receivedKeys),
-                    $sample
-                )
-            );
-        }
-        
         $references = $data['references'];
 
         $stats = ['created' => 0, 'updated' => 0, 'total' => count($references)];
@@ -181,16 +166,18 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
             if ($expectedType && !$this->isTypeCompatible($value, $expectedType)) {
                 continue;
             }
-            
+
             // Tronquer les chaînes trop longues pour éviter les erreurs SQL
             $truncatedValue = $this->truncateValueIfNeeded($reflection, $prefix, $suffix, $value);
 
             $entity->$setterName($truncatedValue);
         }
     }
-    
+
     /**
      * Tronque une valeur si elle dépasse la longueur maximale de la propriété.
+     *
+     * @param \ReflectionClass<object> $reflection
      */
     private function truncateValueIfNeeded(\ReflectionClass $reflection, string $prefix, string $suffix, mixed $value): mixed
     {
@@ -198,20 +185,20 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         if (!is_string($value)) {
             return $value;
         }
-        
-        $propertyName = lcfirst($prefix) . $suffix;
-        
+
+        $propertyName = lcfirst($prefix).$suffix;
+
         try {
             $property = $reflection->getProperty($propertyName);
             $attributes = $property->getAttributes(\Doctrine\ORM\Mapping\Column::class);
-            
+
             if (empty($attributes)) {
                 return $value;
             }
-            
+
             $columnAttribute = $attributes[0]->newInstance();
             $maxLength = $columnAttribute->length ?? null;
-            
+
             if ($maxLength && mb_strlen($value) > $maxLength) {
                 return mb_substr($value, 0, $maxLength);
             }
@@ -219,7 +206,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
             // Si la propriété n'existe pas, retourner la valeur telle quelle
             return $value;
         }
-        
+
         return $value;
     }
 
