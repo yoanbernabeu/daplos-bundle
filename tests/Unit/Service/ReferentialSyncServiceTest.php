@@ -218,7 +218,7 @@ class ReferentialSyncServiceTest extends TestCase
 
     public function testGetReferentialDetails(): void
     {
-        $expectedData = [
+        $apiData = [
             'referential' => ['id' => 611, 'name' => 'Cultures'],
             'references' => [
                 ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
@@ -228,11 +228,12 @@ class ReferentialSyncServiceTest extends TestCase
         $this->apiClient->expects($this->once())
             ->method('getReferential')
             ->with(611)
-            ->willReturn($expectedData);
+            ->willReturn($apiData);
 
         $result = $this->service->getReferentialDetails(611);
 
-        $this->assertEquals($expectedData, $result);
+        // getReferentialDetails retourne uniquement le contenu de 'referential'
+        $this->assertEquals($apiData['referential'], $result);
     }
 
     public function testSyncReferentialSkipsInvalidReferences(): void
