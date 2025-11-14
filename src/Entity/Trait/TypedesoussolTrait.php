@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de sous-sol"
+ * Trait pour le référentiel "Type de sous-sol".
  *
  * Repository Code: List_SubSoilType_CodeType
  * Référentiel ID: 645
@@ -32,6 +32,7 @@ trait TypedesoussolTrait
     public function setTypedesoussolId(?int $typedesoussolId): self
     {
         $this->typedesoussolId = $typedesoussolId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedesoussolTrait
     public function setTypedesoussolTitle(?string $typedesoussolTitle): self
     {
         $this->typedesoussolTitle = $typedesoussolTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedesoussolTrait
     public function setTypedesoussolReferenceCode(?string $typedesoussolReferenceCode): self
     {
         $this->typedesoussolReferenceCode = $typedesoussolReferenceCode;
+
         return $this;
     }
 }

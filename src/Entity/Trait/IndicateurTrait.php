@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Indicateur"
+ * Trait pour le référentiel "Indicateur".
  *
  * Repository Code: List_IndicatorType
  * Référentiel ID: 619
@@ -32,6 +32,7 @@ trait IndicateurTrait
     public function setIndicateurId(?int $indicateurId): self
     {
         $this->indicateurId = $indicateurId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait IndicateurTrait
     public function setIndicateurTitle(?string $indicateurTitle): self
     {
         $this->indicateurTitle = $indicateurTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait IndicateurTrait
     public function setIndicateurReferenceCode(?string $indicateurReferenceCode): self
     {
         $this->indicateurReferenceCode = $indicateurReferenceCode;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Catégories d'observations"
+ * Trait pour le référentiel "Catégories d'observations".
  *
  * Repository Code: List_PestType_CodeType
  * Référentiel ID: 675
@@ -32,6 +32,7 @@ trait CategoriesdobservationsTrait
     public function setCategoriesdobservationsId(?int $categoriesdobservationsId): self
     {
         $this->categoriesdobservationsId = $categoriesdobservationsId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CategoriesdobservationsTrait
     public function setCategoriesdobservationsTitle(?string $categoriesdobservationsTitle): self
     {
         $this->categoriesdobservationsTitle = $categoriesdobservationsTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CategoriesdobservationsTrait
     public function setCategoriesdobservationsReferenceCode(?string $categoriesdobservationsReferenceCode): self
     {
         $this->categoriesdobservationsReferenceCode = $categoriesdobservationsReferenceCode;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de message(document) échangé"
+ * Trait pour le référentiel "Type de message(document) échangé".
  *
  * Repository Code: List_Message_CodeType
  * Référentiel ID: 689
@@ -32,6 +32,7 @@ trait TypedemessageechangeDocumentTrait
     public function setTypedemessageechangeDocumentId(?int $typedemessageechangeDocumentId): self
     {
         $this->typedemessageechangeDocumentId = $typedemessageechangeDocumentId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedemessageechangeDocumentTrait
     public function setTypedemessageechangeDocumentTitle(?string $typedemessageechangeDocumentTitle): self
     {
         $this->typedemessageechangeDocumentTitle = $typedemessageechangeDocumentTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedemessageechangeDocumentTrait
     public function setTypedemessageechangeDocumentReferenceCode(?string $typedemessageechangeDocumentReferenceCode): self
     {
         $this->typedemessageechangeDocumentReferenceCode = $typedemessageechangeDocumentReferenceCode;
+
         return $this;
     }
 }

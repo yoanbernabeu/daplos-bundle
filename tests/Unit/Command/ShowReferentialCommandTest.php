@@ -3,11 +3,11 @@
 namespace YoanBernabeu\DaplosBundle\Tests\Unit\Command;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Tester\CommandTester;
 use YoanBernabeu\DaplosBundle\Command\ShowReferentialCommand;
 use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Tester\CommandTester;
 
 class ShowReferentialCommandTest extends TestCase
 {
@@ -28,13 +28,13 @@ class ShowReferentialCommandTest extends TestCase
             'referential' => [
                 'id' => 611,
                 'name' => 'Cultures',
-                'repository_code' => 'List_BotanicalSpecies_CodeType'
+                'repository_code' => 'List_BotanicalSpecies_CodeType',
             ],
             'references' => [
                 ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
                 ['id' => 2, 'title' => 'Maïs', 'reference_code' => 'MAI'],
                 ['id' => 3, 'title' => 'Orge', 'reference_code' => 'ORG'],
-            ]
+            ],
         ];
 
         $this->syncService->expects($this->once())
@@ -45,7 +45,7 @@ class ShowReferentialCommandTest extends TestCase
         $exitCode = $this->commandTester->execute(['id' => '611']);
 
         $this->assertEquals(Command::SUCCESS, $exitCode);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Référentiel: Cultures', $output);
         $this->assertStringContainsString('611', $output);
@@ -57,7 +57,7 @@ class ShowReferentialCommandTest extends TestCase
     public function testExecuteWithLimitOption(): void
     {
         $references = [];
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 50; ++$i) {
             $references[] = ['id' => $i, 'title' => "Item $i", 'reference_code' => "CODE$i"];
         }
 
@@ -65,9 +65,9 @@ class ShowReferentialCommandTest extends TestCase
             'referential' => [
                 'id' => 611,
                 'name' => 'Cultures',
-                'repository_code' => 'List_BotanicalSpecies_CodeType'
+                'repository_code' => 'List_BotanicalSpecies_CodeType',
             ],
-            'references' => $references
+            'references' => $references,
         ];
 
         $this->syncService->expects($this->once())
@@ -77,11 +77,11 @@ class ShowReferentialCommandTest extends TestCase
 
         $exitCode = $this->commandTester->execute([
             'id' => '611',
-            '--limit' => '10'
+            '--limit' => '10',
         ]);
 
         $this->assertEquals(Command::SUCCESS, $exitCode);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('affichage des 10 premiers', $output);
         $this->assertStringContainsString('40 items supplémentaires', $output);
@@ -93,9 +93,9 @@ class ShowReferentialCommandTest extends TestCase
             'referential' => [
                 'id' => 611,
                 'name' => 'Cultures',
-                'repository_code' => 'List_BotanicalSpecies_CodeType'
+                'repository_code' => 'List_BotanicalSpecies_CodeType',
             ],
-            'references' => []
+            'references' => [],
         ];
 
         $this->syncService->expects($this->once())
@@ -106,7 +106,7 @@ class ShowReferentialCommandTest extends TestCase
         $exitCode = $this->commandTester->execute(['id' => '611']);
 
         $this->assertEquals(Command::SUCCESS, $exitCode);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Ce référentiel ne contient aucun item', $output);
     }
@@ -121,7 +121,7 @@ class ShowReferentialCommandTest extends TestCase
         $exitCode = $this->commandTester->execute(['id' => '611']);
 
         $this->assertEquals(Command::FAILURE, $exitCode);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Erreur lors de la récupération du référentiel', $output);
         $this->assertStringContainsString('Référentiel non trouvé', $output);
@@ -131,7 +131,7 @@ class ShowReferentialCommandTest extends TestCase
     {
         $this->assertEquals('daplos:referentials:show', $this->command->getName());
         $this->assertStringContainsString('référentiel DAPLOS', $this->command->getDescription());
-        
+
         $definition = $this->command->getDefinition();
         $this->assertTrue($definition->hasArgument('id'));
         $this->assertTrue($definition->hasOption('limit'));
@@ -140,7 +140,7 @@ class ShowReferentialCommandTest extends TestCase
     public function testDefaultLimitIsUsedWhenNotSpecified(): void
     {
         $references = [];
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 30; ++$i) {
             $references[] = ['id' => $i, 'title' => "Item $i", 'reference_code' => "CODE$i"];
         }
 
@@ -148,9 +148,9 @@ class ShowReferentialCommandTest extends TestCase
             'referential' => [
                 'id' => 611,
                 'name' => 'Cultures',
-                'repository_code' => 'List_BotanicalSpecies_CodeType'
+                'repository_code' => 'List_BotanicalSpecies_CodeType',
             ],
-            'references' => $references
+            'references' => $references,
         ];
 
         $this->syncService->expects($this->once())
@@ -160,12 +160,10 @@ class ShowReferentialCommandTest extends TestCase
         $exitCode = $this->commandTester->execute(['id' => '611']);
 
         $this->assertEquals(Command::SUCCESS, $exitCode);
-        
+
         $output = $this->commandTester->getDisplay();
         // La limite par défaut est 20
         $this->assertStringContainsString('affichage des 20 premiers', $output);
         $this->assertStringContainsString('10 items supplémentaires', $output);
     }
 }
-
-

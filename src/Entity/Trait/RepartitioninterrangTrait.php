@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Répartition inter rang"
+ * Trait pour le référentiel "Répartition inter rang".
  *
  * Repository Code: rep50
  * Référentiel ID: 655
@@ -32,6 +32,7 @@ trait RepartitioninterrangTrait
     public function setRepartitioninterrangId(?int $repartitioninterrangId): self
     {
         $this->repartitioninterrangId = $repartitioninterrangId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait RepartitioninterrangTrait
     public function setRepartitioninterrangTitle(?string $repartitioninterrangTitle): self
     {
         $this->repartitioninterrangTitle = $repartitioninterrangTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait RepartitioninterrangTrait
     public function setRepartitioninterrangReferenceCode(?string $repartitioninterrangReferenceCode): self
     {
         $this->repartitioninterrangReferenceCode = $repartitioninterrangReferenceCode;
+
         return $this;
     }
 }

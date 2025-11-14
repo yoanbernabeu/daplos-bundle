@@ -12,10 +12,12 @@ interface ReferentialSyncServiceInterface
     /**
      * Synchronise un référentiel DAPLOS avec une entité Doctrine.
      *
-     * @param string $entityClass Nom complet de la classe de l'entité (ex: App\Entity\Culture)
-     * @param int $referentialId ID du référentiel DAPLOS
-     * @param callable|null $mapper Fonction de mapping personnalisée (optionnel)
+     * @param string        $entityClass   Nom complet de la classe de l'entité (ex: App\Entity\Culture)
+     * @param int           $referentialId ID du référentiel DAPLOS
+     * @param callable|null $mapper        Fonction de mapping personnalisée (optionnel)
+     *
      * @return array{created: int, updated: int, total: int}
+     *
      * @throws DaplosApiException
      */
     public function syncReferential(
@@ -27,7 +29,8 @@ interface ReferentialSyncServiceInterface
     /**
      * Récupère la liste de tous les référentiels disponibles.
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
+     *
      * @throws DaplosApiException
      */
     public function getAvailableReferentials(): array;
@@ -35,8 +38,8 @@ interface ReferentialSyncServiceInterface
     /**
      * Récupère les détails d'un référentiel spécifique.
      *
-     * @param int $referentialId
-     * @return array
+     * @return array<string, mixed>
+     *
      * @throws DaplosApiException
      */
     public function getReferentialDetails(int $referentialId): array;

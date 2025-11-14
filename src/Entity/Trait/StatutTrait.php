@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Statut"
+ * Trait pour le référentiel "Statut".
  *
  * Repository Code: List_StatusCodeType
  * Référentiel ID: 679
@@ -32,6 +32,7 @@ trait StatutTrait
     public function setStatutId(?int $statutId): self
     {
         $this->statutId = $statutId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait StatutTrait
     public function setStatutTitle(?string $statutTitle): self
     {
         $this->statutTitle = $statutTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait StatutTrait
     public function setStatutReferenceCode(?string $statutReferenceCode): self
     {
         $this->statutReferenceCode = $statutReferenceCode;
+
         return $this;
     }
 }

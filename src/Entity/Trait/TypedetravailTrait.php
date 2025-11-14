@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de travail"
+ * Trait pour le référentiel "Type de travail".
  *
  * Repository Code: List_AgriculturalProcessWorkItem_CodeType
  * Référentiel ID: 603
@@ -32,6 +32,7 @@ trait TypedetravailTrait
     public function setTypedetravailId(?int $typedetravailId): self
     {
         $this->typedetravailId = $typedetravailId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedetravailTrait
     public function setTypedetravailTitle(?string $typedetravailTitle): self
     {
         $this->typedetravailTitle = $typedetravailTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedetravailTrait
     public function setTypedetravailReferenceCode(?string $typedetravailReferenceCode): self
     {
         $this->typedetravailReferenceCode = $typedetravailReferenceCode;
+
         return $this;
     }
 }

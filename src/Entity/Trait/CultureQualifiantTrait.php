@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Culture (Qualifiant)"
+ * Trait pour le référentiel "Culture (Qualifiant)".
  *
  * Repository Code: List_SupplementaryBotanicalSpecies_CodeType
  * Référentiel ID: 639
@@ -32,6 +32,7 @@ trait CultureQualifiantTrait
     public function setCultureQualifiantId(?int $cultureQualifiantId): self
     {
         $this->cultureQualifiantId = $cultureQualifiantId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CultureQualifiantTrait
     public function setCultureQualifiantTitle(?string $cultureQualifiantTitle): self
     {
         $this->cultureQualifiantTitle = $cultureQualifiantTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CultureQualifiantTrait
     public function setCultureQualifiantReferenceCode(?string $cultureQualifiantReferenceCode): self
     {
         $this->cultureQualifiantReferenceCode = $cultureQualifiantReferenceCode;
+
         return $this;
     }
 }

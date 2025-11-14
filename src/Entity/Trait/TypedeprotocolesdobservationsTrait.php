@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de protocoles d'observations"
+ * Trait pour le référentiel "Type de protocoles d'observations".
  *
  * Repository Code: List_ProtocoleFormTemplate_CodeType
  * Référentiel ID: 683
@@ -32,6 +32,7 @@ trait TypedeprotocolesdobservationsTrait
     public function setTypedeprotocolesdobservationsId(?int $typedeprotocolesdobservationsId): self
     {
         $this->typedeprotocolesdobservationsId = $typedeprotocolesdobservationsId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedeprotocolesdobservationsTrait
     public function setTypedeprotocolesdobservationsTitle(?string $typedeprotocolesdobservationsTitle): self
     {
         $this->typedeprotocolesdobservationsTitle = $typedeprotocolesdobservationsTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedeprotocolesdobservationsTrait
     public function setTypedeprotocolesdobservationsReferenceCode(?string $typedeprotocolesdobservationsReferenceCode): self
     {
         $this->typedeprotocolesdobservationsReferenceCode = $typedeprotocolesdobservationsReferenceCode;
+
         return $this;
     }
 }

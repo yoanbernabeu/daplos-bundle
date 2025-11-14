@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Profils végétatifs"
+ * Trait pour le référentiel "Profils végétatifs".
  *
  * Repository Code: Profils végétatifs
  * Référentiel ID: 657
@@ -32,6 +32,7 @@ trait ProfilsvegetatifsTrait
     public function setProfilsvegetatifsId(?int $profilsvegetatifsId): self
     {
         $this->profilsvegetatifsId = $profilsvegetatifsId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ProfilsvegetatifsTrait
     public function setProfilsvegetatifsTitle(?string $profilsvegetatifsTitle): self
     {
         $this->profilsvegetatifsTitle = $profilsvegetatifsTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ProfilsvegetatifsTrait
     public function setProfilsvegetatifsReferenceCode(?string $profilsvegetatifsReferenceCode): self
     {
         $this->profilsvegetatifsReferenceCode = $profilsvegetatifsReferenceCode;
+
         return $this;
     }
 }

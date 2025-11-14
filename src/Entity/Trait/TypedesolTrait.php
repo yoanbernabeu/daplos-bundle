@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de sol"
+ * Trait pour le référentiel "Type de sol".
  *
  * Repository Code: List_SoilType_CodeType
  * Référentiel ID: 643
@@ -32,6 +32,7 @@ trait TypedesolTrait
     public function setTypedesolId(?int $typedesolId): self
     {
         $this->typedesolId = $typedesolId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedesolTrait
     public function setTypedesolTitle(?string $typedesolTitle): self
     {
         $this->typedesolTitle = $typedesolTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedesolTrait
     public function setTypedesolReferenceCode(?string $typedesolReferenceCode): self
     {
         $this->typedesolReferenceCode = $typedesolReferenceCode;
+
         return $this;
     }
 }

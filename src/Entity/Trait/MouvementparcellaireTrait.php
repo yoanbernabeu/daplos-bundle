@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Mouvement parcellaire"
+ * Trait pour le référentiel "Mouvement parcellaire".
  *
  * Repository Code: List_Movement_CodeType
  * Référentiel ID: 691
@@ -32,6 +32,7 @@ trait MouvementparcellaireTrait
     public function setMouvementparcellaireId(?int $mouvementparcellaireId): self
     {
         $this->mouvementparcellaireId = $mouvementparcellaireId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait MouvementparcellaireTrait
     public function setMouvementparcellaireTitle(?string $mouvementparcellaireTitle): self
     {
         $this->mouvementparcellaireTitle = $mouvementparcellaireTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait MouvementparcellaireTrait
     public function setMouvementparcellaireReferenceCode(?string $mouvementparcellaireReferenceCode): self
     {
         $this->mouvementparcellaireReferenceCode = $mouvementparcellaireReferenceCode;
+
         return $this;
     }
 }

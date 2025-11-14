@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Culture (Destination)"
+ * Trait pour le référentiel "Culture (Destination)".
  *
  * Repository Code: List_PurposeCode_CodeType
  * Référentiel ID: 627
@@ -32,6 +32,7 @@ trait CultureDestinationTrait
     public function setCultureDestinationId(?int $cultureDestinationId): self
     {
         $this->cultureDestinationId = $cultureDestinationId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CultureDestinationTrait
     public function setCultureDestinationTitle(?string $cultureDestinationTitle): self
     {
         $this->cultureDestinationTitle = $cultureDestinationTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CultureDestinationTrait
     public function setCultureDestinationReferenceCode(?string $cultureDestinationReferenceCode): self
     {
         $this->cultureDestinationReferenceCode = $cultureDestinationReferenceCode;
+
         return $this;
     }
 }

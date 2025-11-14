@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Orientation cardinale des rangs"
+ * Trait pour le référentiel "Orientation cardinale des rangs".
  *
  * Repository Code: rep47
  * Référentiel ID: 649
@@ -32,6 +32,7 @@ trait OrientationcardinaledesrangsTrait
     public function setOrientationcardinaledesrangsId(?int $orientationcardinaledesrangsId): self
     {
         $this->orientationcardinaledesrangsId = $orientationcardinaledesrangsId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait OrientationcardinaledesrangsTrait
     public function setOrientationcardinaledesrangsTitle(?string $orientationcardinaledesrangsTitle): self
     {
         $this->orientationcardinaledesrangsTitle = $orientationcardinaledesrangsTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait OrientationcardinaledesrangsTrait
     public function setOrientationcardinaledesrangsReferenceCode(?string $orientationcardinaledesrangsReferenceCode): self
     {
         $this->orientationcardinaledesrangsReferenceCode = $orientationcardinaledesrangsReferenceCode;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Zone rattachée à la parcelle culturale (Type)"
+ * Trait pour le référentiel "Zone rattachée à la parcelle culturale (Type)".
  *
  * Repository Code: List_AgriculturalCountrySubdivision_CodeType
  * Référentiel ID: 687
@@ -32,6 +32,7 @@ trait ZonerattacheealaparcelleculturaleTypeTrait
     public function setZonerattacheealaparcelleculturaleTypeId(?int $zonerattacheealaparcelleculturaleTypeId): self
     {
         $this->zonerattacheealaparcelleculturaleTypeId = $zonerattacheealaparcelleculturaleTypeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ZonerattacheealaparcelleculturaleTypeTrait
     public function setZonerattacheealaparcelleculturaleTypeTitle(?string $zonerattacheealaparcelleculturaleTypeTitle): self
     {
         $this->zonerattacheealaparcelleculturaleTypeTitle = $zonerattacheealaparcelleculturaleTypeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ZonerattacheealaparcelleculturaleTypeTrait
     public function setZonerattacheealaparcelleculturaleTypeReferenceCode(?string $zonerattacheealaparcelleculturaleTypeReferenceCode): self
     {
         $this->zonerattacheealaparcelleculturaleTypeReferenceCode = $zonerattacheealaparcelleculturaleTypeReferenceCode;
+
         return $this;
     }
 }

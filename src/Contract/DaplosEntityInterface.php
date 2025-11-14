@@ -4,10 +4,10 @@ namespace YoanBernabeu\DaplosBundle\Contract;
 
 /**
  * Interface pour les entités qui utilisent les référentiels DAPLOS.
- * 
+ *
  * Les entités implémentant cette interface peuvent être synchronisées
  * automatiquement avec les données DAPLOS via le ReferentialSyncService.
- * 
+ *
  * Alternative : Utiliser l'attribut #[DaplosId] sur une propriété de l'entité
  * si vous ne souhaitez pas implémenter cette interface.
  */
@@ -43,5 +43,3 @@ interface DaplosEntityInterface
      */
     public function setDaplosReferenceCode(?string $referenceCode): self;
 }
-
-

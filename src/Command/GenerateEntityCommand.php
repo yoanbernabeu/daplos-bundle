@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace YoanBernabeu\DaplosBundle\Command;
 
-use YoanBernabeu\DaplosBundle\Service\EntityGeneratorServiceInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Helper\Table;
+use YoanBernabeu\DaplosBundle\Service\EntityGeneratorServiceInterface;
 
 #[AsCommand(
     name: 'daplos:generate:entity',
@@ -65,36 +65,37 @@ class GenerateEntityCommand extends Command
                 InputOption::VALUE_NONE,
                 'Vérifie le statut des entités sans les générer'
             )
-            ->setHelp(<<<'HELP'
-Cette commande génère automatiquement des entités Doctrine et leurs repositories
-à partir des référentiels DAPLOS disponibles.
+            ->setHelp(
+                <<<'HELP'
+                    Cette commande génère automatiquement des entités Doctrine et leurs repositories
+                    à partir des référentiels DAPLOS disponibles.
 
-<info>Exemples d'utilisation :</info>
+                    <info>Exemples d'utilisation :</info>
 
-  # Vérifier le statut des entités
-  <comment>php bin/console daplos:generate:entity --check</comment>
+                      # Vérifier le statut des entités
+                      <comment>php bin/console daplos:generate:entity --check</comment>
 
-  # Générer toutes les entités (mode interactif)
-  <comment>php bin/console daplos:generate:entity --all</comment>
+                      # Générer toutes les entités (mode interactif)
+                      <comment>php bin/console daplos:generate:entity --all</comment>
 
-  # Simuler la génération (dry-run)
-  <comment>php bin/console daplos:generate:entity --all --dry-run</comment>
+                      # Simuler la génération (dry-run)
+                      <comment>php bin/console daplos:generate:entity --all --dry-run</comment>
 
-  # Générer dans un namespace personnalisé
-  <comment>php bin/console daplos:generate:entity --all --namespace="App\Domain\Agriculture"</comment>
+                      # Générer dans un namespace personnalisé
+                      <comment>php bin/console daplos:generate:entity --all --namespace="App\Domain\Agriculture"</comment>
 
-  # Générer sans repositories
-  <comment>php bin/console daplos:generate:entity --all --no-repository</comment>
+                      # Générer sans repositories
+                      <comment>php bin/console daplos:generate:entity --all --no-repository</comment>
 
-  # Force la recréation des entités existantes
-  <comment>php bin/console daplos:generate:entity --all --force</comment>
+                      # Force la recréation des entités existantes
+                      <comment>php bin/console daplos:generate:entity --all --force</comment>
 
-<info>Principes d'idempotence :</info>
+                    <info>Principes d'idempotence :</info>
 
-  La commande est idempotente par défaut : elle ne recrée pas les entités
-  existantes. Utilisez --force pour forcer la recréation.
+                      La commande est idempotente par défaut : elle ne recrée pas les entités
+                      existantes. Utilisez --force pour forcer la recréation.
 
-HELP
+                    HELP
             )
         ;
     }
@@ -127,6 +128,7 @@ HELP
 
         // Si ni --check ni --all, afficher l'aide
         $io->note('Utilisez --check pour vérifier le statut ou --all pour générer toutes les entités');
+
         return Command::SUCCESS;
     }
 
@@ -141,6 +143,7 @@ HELP
 
         if (empty($status)) {
             $io->warning('Aucun référentiel DAPLOS disponible');
+
             return Command::SUCCESS;
         }
 
@@ -152,7 +155,7 @@ HELP
             'Entité',
             'Existe',
             'Repository',
-            'Trait'
+            'Trait',
         ]);
 
         foreach ($status as $item) {
@@ -169,7 +172,7 @@ HELP
         $table->render();
 
         // Statistiques
-        $existing = count(array_filter($status, fn($s) => $s['entity_exists']));
+        $existing = count(array_filter($status, fn ($s) => $s['entity_exists']));
         $missing = count($status) - $existing;
 
         $io->newLine();
@@ -239,9 +242,10 @@ HELP
 
         // Résumé
         $io->newLine();
-        
-        if (count($succeeded) === 0) {
+
+        if (0 === count($succeeded)) {
             $io->error('Aucune entité générée avec succès');
+
             return Command::FAILURE;
         }
 
@@ -265,7 +269,7 @@ HELP
         }
 
         // Prochaines étapes
-        if (!$dryRun && $successCount > 0) {
+        if (!$dryRun) {
             $io->section('Prochaines étapes');
             $io->listing([
                 'Créer les migrations : php bin/console make:migration',
@@ -277,4 +281,3 @@ HELP
         return Command::SUCCESS;
     }
 }
-

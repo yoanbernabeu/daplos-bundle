@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de surfaces"
+ * Trait pour le référentiel "Type de surfaces".
  *
  * Repository Code: List_AgriculturalArea_CodeType
  * Référentiel ID: 641
@@ -32,6 +32,7 @@ trait TypedesurfacesTrait
     public function setTypedesurfacesId(?int $typedesurfacesId): self
     {
         $this->typedesurfacesId = $typedesurfacesId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedesurfacesTrait
     public function setTypedesurfacesTitle(?string $typedesurfacesTitle): self
     {
         $this->typedesurfacesTitle = $typedesurfacesTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedesurfacesTrait
     public function setTypedesurfacesReferenceCode(?string $typedesurfacesReferenceCode): self
     {
         $this->typedesurfacesReferenceCode = $typedesurfacesReferenceCode;
+
         return $this;
     }
 }

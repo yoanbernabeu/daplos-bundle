@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Culture (Justification)"
+ * Trait pour le référentiel "Culture (Justification)".
  *
  * Repository Code: List_PlantingReasonCode_CodeType
  * Référentiel ID: 623
@@ -32,6 +32,7 @@ trait CultureJustificationTrait
     public function setCultureJustificationId(?int $cultureJustificationId): self
     {
         $this->cultureJustificationId = $cultureJustificationId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CultureJustificationTrait
     public function setCultureJustificationTitle(?string $cultureJustificationTitle): self
     {
         $this->cultureJustificationTitle = $cultureJustificationTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CultureJustificationTrait
     public function setCultureJustificationReferenceCode(?string $cultureJustificationReferenceCode): self
     {
         $this->cultureJustificationReferenceCode = $cultureJustificationReferenceCode;
+
         return $this;
     }
 }

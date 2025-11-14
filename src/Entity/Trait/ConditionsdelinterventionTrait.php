@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Conditions de l'intervention"
+ * Trait pour le référentiel "Conditions de l'intervention".
  *
  * Repository Code: List_AgriculturalProcessCondition_CodeType
  * Référentiel ID: 591
@@ -32,6 +32,7 @@ trait ConditionsdelinterventionTrait
     public function setConditionsdelinterventionId(?int $conditionsdelinterventionId): self
     {
         $this->conditionsdelinterventionId = $conditionsdelinterventionId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ConditionsdelinterventionTrait
     public function setConditionsdelinterventionTitle(?string $conditionsdelinterventionTitle): self
     {
         $this->conditionsdelinterventionTitle = $conditionsdelinterventionTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ConditionsdelinterventionTrait
     public function setConditionsdelinterventionReferenceCode(?string $conditionsdelinterventionReferenceCode): self
     {
         $this->conditionsdelinterventionReferenceCode = $conditionsdelinterventionReferenceCode;
+
         return $this;
     }
 }

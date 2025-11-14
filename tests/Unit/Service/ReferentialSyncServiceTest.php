@@ -2,14 +2,14 @@
 
 namespace YoanBernabeu\DaplosBundle\Tests\Unit\Service;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
 use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 use YoanBernabeu\DaplosBundle\Client\DaplosApiClientInterface;
 use YoanBernabeu\DaplosBundle\Contract\DaplosEntityInterface;
 use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 use YoanBernabeu\DaplosBundle\Service\ReferentialSyncService;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 
 class ReferentialSyncServiceTest extends TestCase
 {
@@ -32,7 +32,7 @@ class ReferentialSyncServiceTest extends TestCase
             'references' => [
                 ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
                 ['id' => 2, 'title' => 'Maïs', 'reference_code' => 'MAI'],
-            ]
+            ],
         ];
 
         $this->apiClient->expects($this->once())
@@ -75,7 +75,7 @@ class ReferentialSyncServiceTest extends TestCase
             'referential' => ['id' => 611, 'name' => 'Cultures'],
             'references' => [
                 ['id' => 1, 'title' => 'Blé Updated', 'reference_code' => 'BLE'],
-            ]
+            ],
         ];
 
         $this->apiClient->expects($this->once())
@@ -122,7 +122,7 @@ class ReferentialSyncServiceTest extends TestCase
             'referential' => ['id' => 611, 'name' => 'Cultures'],
             'references' => [
                 ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE', 'custom' => 'value'],
-            ]
+            ],
         ];
 
         $this->apiClient->expects($this->once())
@@ -146,6 +146,7 @@ class ReferentialSyncServiceTest extends TestCase
         $customMapper = function ($entity, $reference) use (&$customMapperCalled) {
             $customMapperCalled = true;
             $this->assertEquals('value', $reference['custom']);
+
             return $entity;
         };
 
@@ -165,7 +166,7 @@ class ReferentialSyncServiceTest extends TestCase
             'referential' => ['id' => 611, 'name' => 'Cultures'],
             'references' => [
                 ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
-            ]
+            ],
         ];
 
         $this->apiClient->expects($this->once())
@@ -221,7 +222,7 @@ class ReferentialSyncServiceTest extends TestCase
             'referential' => ['id' => 611, 'name' => 'Cultures'],
             'references' => [
                 ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
-            ]
+            ],
         ];
 
         $this->apiClient->expects($this->once())
@@ -242,7 +243,7 @@ class ReferentialSyncServiceTest extends TestCase
                 ['title' => 'Sans ID'], // Pas d'ID
                 ['id' => null, 'title' => 'ID null'], // ID null
                 ['id' => 1, 'title' => 'Valide', 'reference_code' => 'VAL'], // Valide
-            ]
+            ],
         ];
 
         $this->apiClient->expects($this->once())
@@ -297,6 +298,7 @@ class TestDaplosEntity implements DaplosEntityInterface
     public function setDaplosId(?int $id): self
     {
         $this->daplosId = $id;
+
         return $this;
     }
 
@@ -308,6 +310,7 @@ class TestDaplosEntity implements DaplosEntityInterface
     public function setDaplosTitle(?string $title): self
     {
         $this->daplosTitle = $title;
+
         return $this;
     }
 
@@ -319,6 +322,7 @@ class TestDaplosEntity implements DaplosEntityInterface
     public function setDaplosReferenceCode(?string $referenceCode): self
     {
         $this->daplosReferenceCode = $referenceCode;
+
         return $this;
     }
 }
@@ -346,6 +350,7 @@ class TestDaplosEntityWithAttribute
     public function setCulturesId(?int $id): self
     {
         $this->culturesId = $id;
+
         return $this;
     }
 
@@ -357,6 +362,7 @@ class TestDaplosEntityWithAttribute
     public function setCulturesTitle(?string $title): self
     {
         $this->culturesTitle = $title;
+
         return $this;
     }
 
@@ -368,8 +374,7 @@ class TestDaplosEntityWithAttribute
     public function setCulturesReferenceCode(?string $referenceCode): self
     {
         $this->culturesReferenceCode = $referenceCode;
+
         return $this;
     }
 }
-
-

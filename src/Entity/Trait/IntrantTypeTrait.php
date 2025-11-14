@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Intrant (Type)"
+ * Trait pour le référentiel "Intrant (Type)".
  *
  * Repository Code: List_AgriculturalProcessCropInput_CodeType
  * Référentiel ID: 593
@@ -32,6 +32,7 @@ trait IntrantTypeTrait
     public function setIntrantTypeId(?int $intrantTypeId): self
     {
         $this->intrantTypeId = $intrantTypeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait IntrantTypeTrait
     public function setIntrantTypeTitle(?string $intrantTypeTitle): self
     {
         $this->intrantTypeTitle = $intrantTypeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait IntrantTypeTrait
     public function setIntrantTypeReferenceCode(?string $intrantTypeReferenceCode): self
     {
         $this->intrantTypeReferenceCode = $intrantTypeReferenceCode;
+
         return $this;
     }
 }

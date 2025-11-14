@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Produit récolté (Qualifiant)"
+ * Trait pour le référentiel "Produit récolté (Qualifiant)".
  *
  * Repository Code: List_AgriculturalProduceSubordinateTypeCode_CodeType
  * Référentiel ID: 607
@@ -32,6 +32,7 @@ trait ProduitrecolteQualifiantTrait
     public function setProduitrecolteQualifiantId(?int $produitrecolteQualifiantId): self
     {
         $this->produitrecolteQualifiantId = $produitrecolteQualifiantId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ProduitrecolteQualifiantTrait
     public function setProduitrecolteQualifiantTitle(?string $produitrecolteQualifiantTitle): self
     {
         $this->produitrecolteQualifiantTitle = $produitrecolteQualifiantTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ProduitrecolteQualifiantTrait
     public function setProduitrecolteQualifiantReferenceCode(?string $produitrecolteQualifiantReferenceCode): self
     {
         $this->produitrecolteQualifiantReferenceCode = $produitrecolteQualifiantReferenceCode;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Matériel Agricole (Niveau 2)"
+ * Trait pour le référentiel "Matériel Agricole (Niveau 2)".
  *
  * Repository Code: List_AgriculturalEquipmentBCMA_CodeType
  * Référentiel ID: 699
@@ -32,6 +32,7 @@ trait MaterielAgricoleNiveau2Trait
     public function setMaterielAgricoleNiveau2Id(?int $materielAgricoleNiveau2Id): self
     {
         $this->materielAgricoleNiveau2Id = $materielAgricoleNiveau2Id;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait MaterielAgricoleNiveau2Trait
     public function setMaterielAgricoleNiveau2Title(?string $materielAgricoleNiveau2Title): self
     {
         $this->materielAgricoleNiveau2Title = $materielAgricoleNiveau2Title;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait MaterielAgricoleNiveau2Trait
     public function setMaterielAgricoleNiveau2ReferenceCode(?string $materielAgricoleNiveau2ReferenceCode): self
     {
         $this->materielAgricoleNiveau2ReferenceCode = $materielAgricoleNiveau2ReferenceCode;
+
         return $this;
     }
 }

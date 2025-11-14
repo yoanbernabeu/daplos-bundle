@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace YoanBernabeu\DaplosBundle\Tests\Unit\Command;
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use YoanBernabeu\DaplosBundle\Command\GenerateEntityCommand;
-use YoanBernabeu\DaplosBundle\Service\EntityGeneratorServiceInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use YoanBernabeu\DaplosBundle\Command\GenerateEntityCommand;
+use YoanBernabeu\DaplosBundle\Service\EntityGeneratorServiceInterface;
 
 /**
- * Tests unitaires pour GenerateEntityCommand
- * 
+ * Tests unitaires pour GenerateEntityCommand.
+ *
  * Tests suivant l'approche TDD avec structure AAA.
  * Couvre les cas nominaux et les cas d'erreur.
  */
@@ -39,7 +39,7 @@ class GenerateEntityCommandTest extends TestCase
         // Assert
         $this->assertEquals('daplos:generate:entity', $this->command->getName());
         $this->assertStringContainsString('entités', $this->command->getDescription());
-        
+
         $definition = $this->command->getDefinition();
         $this->assertTrue($definition->hasOption('namespace'));
         $this->assertTrue($definition->hasOption('no-repository'));
@@ -51,6 +51,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Mode check affiche le statut de toutes les entités
      */
     public function testCheckModeDisplaysStatus(): void
@@ -96,6 +97,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Génère toutes les entités avec l'option --all
      */
     public function testGenerateAllEntitiesOption(): void
@@ -135,6 +137,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Mode dry-run affiche ce qui serait généré sans créer de fichiers
      */
     public function testDryRunMode(): void
@@ -167,6 +170,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Option --no-repository ne génère pas les repositories
      */
     public function testNoRepositoryOption(): void
@@ -198,6 +202,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Option --force écrase les entités existantes
      */
     public function testForceOption(): void
@@ -229,6 +234,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Option --namespace permet de choisir le namespace des entités
      */
     public function testCustomNamespaceOption(): void
@@ -260,6 +266,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Affiche les échecs de génération
      */
     public function testDisplaysFailures(): void
@@ -296,6 +303,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Retourne un code d'erreur si aucune entité n'est générée
      */
     public function testReturnsFailureCodeWhenNoEntitiesGenerated(): void
@@ -325,6 +333,7 @@ class GenerateEntityCommandTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Affiche un message si aucun référentiel n'est disponible en mode check
      */
     public function testCheckModeWithNoReferentials(): void
@@ -344,4 +353,3 @@ class GenerateEntityCommandTest extends TestCase
         $this->assertStringContainsString('Aucun référentiel', $output);
     }
 }
-

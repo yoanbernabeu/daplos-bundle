@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Exposition de la parcelle"
+ * Trait pour le référentiel "Exposition de la parcelle".
  *
  * Repository Code: rep46
  * Référentiel ID: 647
@@ -32,6 +32,7 @@ trait ExpositiondelaparcelleTrait
     public function setExpositiondelaparcelleId(?int $expositiondelaparcelleId): self
     {
         $this->expositiondelaparcelleId = $expositiondelaparcelleId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ExpositiondelaparcelleTrait
     public function setExpositiondelaparcelleTitle(?string $expositiondelaparcelleTitle): self
     {
         $this->expositiondelaparcelleTitle = $expositiondelaparcelleTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ExpositiondelaparcelleTrait
     public function setExpositiondelaparcelleReferenceCode(?string $expositiondelaparcelleReferenceCode): self
     {
         $this->expositiondelaparcelleReferenceCode = $expositiondelaparcelleReferenceCode;
+
         return $this;
     }
 }

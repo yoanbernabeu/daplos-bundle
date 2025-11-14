@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Méthode de notation"
+ * Trait pour le référentiel "Méthode de notation".
  *
  * Repository Code: List_NotationMethodology_CodeType
  * Référentiel ID: 663
@@ -32,6 +32,7 @@ trait MethodedenotationTrait
     public function setMethodedenotationId(?int $methodedenotationId): self
     {
         $this->methodedenotationId = $methodedenotationId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait MethodedenotationTrait
     public function setMethodedenotationTitle(?string $methodedenotationTitle): self
     {
         $this->methodedenotationTitle = $methodedenotationTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait MethodedenotationTrait
     public function setMethodedenotationReferenceCode(?string $methodedenotationReferenceCode): self
     {
         $this->methodedenotationReferenceCode = $methodedenotationReferenceCode;
+
         return $this;
     }
 }

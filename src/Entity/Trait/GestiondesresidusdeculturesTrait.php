@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Gestion des résidus de cultures"
+ * Trait pour le référentiel "Gestion des résidus de cultures".
  *
  * Repository Code: List_SoilOccupationCropResidue_CodeType
  * Référentiel ID: 629
@@ -32,6 +32,7 @@ trait GestiondesresidusdeculturesTrait
     public function setGestiondesresidusdeculturesId(?int $gestiondesresidusdeculturesId): self
     {
         $this->gestiondesresidusdeculturesId = $gestiondesresidusdeculturesId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait GestiondesresidusdeculturesTrait
     public function setGestiondesresidusdeculturesTitle(?string $gestiondesresidusdeculturesTitle): self
     {
         $this->gestiondesresidusdeculturesTitle = $gestiondesresidusdeculturesTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait GestiondesresidusdeculturesTrait
     public function setGestiondesresidusdeculturesReferenceCode(?string $gestiondesresidusdeculturesReferenceCode): self
     {
         $this->gestiondesresidusdeculturesReferenceCode = $gestiondesresidusdeculturesReferenceCode;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Amendements du sol (Type)"
+ * Trait pour le référentiel "Amendements du sol (Type)".
  *
  * Repository Code: List_SpecifiedSoilSupplement_CodeType
  * Référentiel ID: 633
@@ -32,6 +32,7 @@ trait AmendementsdusolTypeTrait
     public function setAmendementsdusolTypeId(?int $amendementsdusolTypeId): self
     {
         $this->amendementsdusolTypeId = $amendementsdusolTypeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait AmendementsdusolTypeTrait
     public function setAmendementsdusolTypeTitle(?string $amendementsdusolTypeTitle): self
     {
         $this->amendementsdusolTypeTitle = $amendementsdusolTypeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait AmendementsdusolTypeTrait
     public function setAmendementsdusolTypeReferenceCode(?string $amendementsdusolTypeReferenceCode): self
     {
         $this->amendementsdusolTypeReferenceCode = $amendementsdusolTypeReferenceCode;
+
         return $this;
     }
 }

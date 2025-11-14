@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Intervention culturale (Justification)"
+ * Trait pour le référentiel "Intervention culturale (Justification)".
  *
  * Repository Code: List_AgriculturalProcessReason_CodeType
  * Référentiel ID: 599
@@ -32,6 +32,7 @@ trait InterventionculturaleJustificationTrait
     public function setInterventionculturaleJustificationId(?int $interventionculturaleJustificationId): self
     {
         $this->interventionculturaleJustificationId = $interventionculturaleJustificationId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait InterventionculturaleJustificationTrait
     public function setInterventionculturaleJustificationTitle(?string $interventionculturaleJustificationTitle): self
     {
         $this->interventionculturaleJustificationTitle = $interventionculturaleJustificationTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait InterventionculturaleJustificationTrait
     public function setInterventionculturaleJustificationReferenceCode(?string $interventionculturaleJustificationReferenceCode): self
     {
         $this->interventionculturaleJustificationReferenceCode = $interventionculturaleJustificationReferenceCode;
+
         return $this;
     }
 }

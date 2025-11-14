@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Valeurs qualitatives (Code)"
+ * Trait pour le référentiel "Valeurs qualitatives (Code)".
  *
  * Repository Code: List_QualitativeValue_CodeType
  * Référentiel ID: 673
@@ -32,6 +32,7 @@ trait ValeursqualitativesCodeTrait
     public function setValeursqualitativesCodeId(?int $valeursqualitativesCodeId): self
     {
         $this->valeursqualitativesCodeId = $valeursqualitativesCodeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ValeursqualitativesCodeTrait
     public function setValeursqualitativesCodeTitle(?string $valeursqualitativesCodeTitle): self
     {
         $this->valeursqualitativesCodeTitle = $valeursqualitativesCodeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ValeursqualitativesCodeTrait
     public function setValeursqualitativesCodeReferenceCode(?string $valeursqualitativesCodeReferenceCode): self
     {
         $this->valeursqualitativesCodeReferenceCode = $valeursqualitativesCodeReferenceCode;
+
         return $this;
     }
 }

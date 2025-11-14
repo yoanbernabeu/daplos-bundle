@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Période de semis"
+ * Trait pour le référentiel "Période de semis".
  *
  * Repository Code: List_SowingPeriodCode_CodeType
  * Référentiel ID: 631
@@ -32,6 +32,7 @@ trait PeriodedesemisTrait
     public function setPeriodedesemisId(?int $periodedesemisId): self
     {
         $this->periodedesemisId = $periodedesemisId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait PeriodedesemisTrait
     public function setPeriodedesemisTitle(?string $periodedesemisTitle): self
     {
         $this->periodedesemisTitle = $periodedesemisTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait PeriodedesemisTrait
     public function setPeriodedesemisReferenceCode(?string $periodedesemisReferenceCode): self
     {
         $this->periodedesemisReferenceCode = $periodedesemisReferenceCode;
+
         return $this;
     }
 }

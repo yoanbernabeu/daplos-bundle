@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Nuisibles des cultures - Cibles (maladies/ravageurs)"
+ * Trait pour le référentiel "Nuisibles des cultures - Cibles (maladies/ravageurs)".
  *
  * Repository Code: List_PestName_CodeType
  * Référentiel ID: 615
@@ -32,6 +32,7 @@ trait NuisiblesdesculturesCiblesMaladiesravageursTrait
     public function setNuisiblesdesculturesCiblesMaladiesravageursId(?int $nuisiblesdesculturesCiblesMaladiesravageursId): self
     {
         $this->nuisiblesdesculturesCiblesMaladiesravageursId = $nuisiblesdesculturesCiblesMaladiesravageursId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait NuisiblesdesculturesCiblesMaladiesravageursTrait
     public function setNuisiblesdesculturesCiblesMaladiesravageursTitle(?string $nuisiblesdesculturesCiblesMaladiesravageursTitle): self
     {
         $this->nuisiblesdesculturesCiblesMaladiesravageursTitle = $nuisiblesdesculturesCiblesMaladiesravageursTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait NuisiblesdesculturesCiblesMaladiesravageursTrait
     public function setNuisiblesdesculturesCiblesMaladiesravageursReferenceCode(?string $nuisiblesdesculturesCiblesMaladiesravageursReferenceCode): self
     {
         $this->nuisiblesdesculturesCiblesMaladiesravageursReferenceCode = $nuisiblesdesculturesCiblesMaladiesravageursReferenceCode;
+
         return $this;
     }
 }

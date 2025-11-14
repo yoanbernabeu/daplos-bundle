@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Unités de mesure (Qualifiant)"
+ * Trait pour le référentiel "Unités de mesure (Qualifiant)".
  *
  * Repository Code: List_ValueExpression_CodeType
  * Référentiel ID: 671
@@ -32,6 +32,7 @@ trait UnitesdemesureQualifiantTrait
     public function setUnitesdemesureQualifiantId(?int $unitesdemesureQualifiantId): self
     {
         $this->unitesdemesureQualifiantId = $unitesdemesureQualifiantId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait UnitesdemesureQualifiantTrait
     public function setUnitesdemesureQualifiantTitle(?string $unitesdemesureQualifiantTitle): self
     {
         $this->unitesdemesureQualifiantTitle = $unitesdemesureQualifiantTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait UnitesdemesureQualifiantTrait
     public function setUnitesdemesureQualifiantReferenceCode(?string $unitesdemesureQualifiantReferenceCode): self
     {
         $this->unitesdemesureQualifiantReferenceCode = $unitesdemesureQualifiantReferenceCode;
+
         return $this;
     }
 }

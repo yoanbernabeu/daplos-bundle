@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Matériel Agricole (Catégorie)"
+ * Trait pour le référentiel "Matériel Agricole (Catégorie)".
  *
  * Repository Code: List_AgriculturalEquipmentCategory_CodeType
  * Référentiel ID: 697
@@ -32,6 +32,7 @@ trait MaterielAgricoleCategorieTrait
     public function setMaterielAgricoleCategorieId(?int $materielAgricoleCategorieId): self
     {
         $this->materielAgricoleCategorieId = $materielAgricoleCategorieId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait MaterielAgricoleCategorieTrait
     public function setMaterielAgricoleCategorieTitle(?string $materielAgricoleCategorieTitle): self
     {
         $this->materielAgricoleCategorieTitle = $materielAgricoleCategorieTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait MaterielAgricoleCategorieTrait
     public function setMaterielAgricoleCategorieReferenceCode(?string $materielAgricoleCategorieReferenceCode): self
     {
         $this->materielAgricoleCategorieReferenceCode = $materielAgricoleCategorieReferenceCode;
+
         return $this;
     }
 }

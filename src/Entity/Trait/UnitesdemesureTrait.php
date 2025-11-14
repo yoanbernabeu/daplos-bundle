@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Unités de mesure"
+ * Trait pour le référentiel "Unités de mesure".
  *
  * Repository Code: List_UnitCode
  * Référentiel ID: 637
@@ -32,6 +32,7 @@ trait UnitesdemesureTrait
     public function setUnitesdemesureId(?int $unitesdemesureId): self
     {
         $this->unitesdemesureId = $unitesdemesureId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait UnitesdemesureTrait
     public function setUnitesdemesureTitle(?string $unitesdemesureTitle): self
     {
         $this->unitesdemesureTitle = $unitesdemesureTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait UnitesdemesureTrait
     public function setUnitesdemesureReferenceCode(?string $unitesdemesureReferenceCode): self
     {
         $this->unitesdemesureReferenceCode = $unitesdemesureReferenceCode;
+
         return $this;
     }
 }

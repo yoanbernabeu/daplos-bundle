@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Caractéristiques techniques (Type)"
+ * Trait pour le référentiel "Caractéristiques techniques (Type)".
  *
  * Repository Code: List_TechnicalCharacteristic_CodeType
  * Référentiel ID: 635
@@ -32,6 +32,7 @@ trait CaracteristiquestechniquesTypeTrait
     public function setCaracteristiquestechniquesTypeId(?int $caracteristiquestechniquesTypeId): self
     {
         $this->caracteristiquestechniquesTypeId = $caracteristiquestechniquesTypeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CaracteristiquestechniquesTypeTrait
     public function setCaracteristiquestechniquesTypeTitle(?string $caracteristiquestechniquesTypeTitle): self
     {
         $this->caracteristiquestechniquesTypeTitle = $caracteristiquestechniquesTypeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CaracteristiquestechniquesTypeTrait
     public function setCaracteristiquestechniquesTypeReferenceCode(?string $caracteristiquestechniquesTypeReferenceCode): self
     {
         $this->caracteristiquestechniquesTypeReferenceCode = $caracteristiquestechniquesTypeReferenceCode;
+
         return $this;
     }
 }

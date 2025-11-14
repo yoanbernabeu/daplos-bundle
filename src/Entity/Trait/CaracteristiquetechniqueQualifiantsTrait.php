@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Caractéristique technique (qualifiants)"
+ * Trait pour le référentiel "Caractéristique technique (qualifiants)".
  *
  * Repository Code: List_TechnicalCharacteristicSubordinateType_CodeType
  * Référentiel ID: 589
@@ -32,6 +32,7 @@ trait CaracteristiquetechniqueQualifiantsTrait
     public function setCaracteristiquetechniqueQualifiantsId(?int $caracteristiquetechniqueQualifiantsId): self
     {
         $this->caracteristiquetechniqueQualifiantsId = $caracteristiquetechniqueQualifiantsId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CaracteristiquetechniqueQualifiantsTrait
     public function setCaracteristiquetechniqueQualifiantsTitle(?string $caracteristiquetechniqueQualifiantsTitle): self
     {
         $this->caracteristiquetechniqueQualifiantsTitle = $caracteristiquetechniqueQualifiantsTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CaracteristiquetechniqueQualifiantsTrait
     public function setCaracteristiquetechniqueQualifiantsReferenceCode(?string $caracteristiquetechniqueQualifiantsReferenceCode): self
     {
         $this->caracteristiquetechniqueQualifiantsReferenceCode = $caracteristiquetechniqueQualifiantsReferenceCode;
+
         return $this;
     }
 }

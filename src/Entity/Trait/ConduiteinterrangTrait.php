@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Conduite inter rang"
+ * Trait pour le référentiel "Conduite inter rang".
  *
  * Repository Code: rep49
  * Référentiel ID: 653
@@ -32,6 +32,7 @@ trait ConduiteinterrangTrait
     public function setConduiteinterrangId(?int $conduiteinterrangId): self
     {
         $this->conduiteinterrangId = $conduiteinterrangId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ConduiteinterrangTrait
     public function setConduiteinterrangTitle(?string $conduiteinterrangTitle): self
     {
         $this->conduiteinterrangTitle = $conduiteinterrangTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ConduiteinterrangTrait
     public function setConduiteinterrangReferenceCode(?string $conduiteinterrangReferenceCode): self
     {
         $this->conduiteinterrangReferenceCode = $conduiteinterrangReferenceCode;
+
         return $this;
     }
 }

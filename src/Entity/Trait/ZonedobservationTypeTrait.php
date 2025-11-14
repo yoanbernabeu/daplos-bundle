@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Zone d'observation (Type)"
+ * Trait pour le référentiel "Zone d'observation (Type)".
  *
  * Repository Code: List_SpecifiedLocation_CodeType
  * Référentiel ID: 677
@@ -32,6 +32,7 @@ trait ZonedobservationTypeTrait
     public function setZonedobservationTypeId(?int $zonedobservationTypeId): self
     {
         $this->zonedobservationTypeId = $zonedobservationTypeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ZonedobservationTypeTrait
     public function setZonedobservationTypeTitle(?string $zonedobservationTypeTitle): self
     {
         $this->zonedobservationTypeTitle = $zonedobservationTypeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ZonedobservationTypeTrait
     public function setZonedobservationTypeReferenceCode(?string $zonedobservationTypeReferenceCode): self
     {
         $this->zonedobservationTypeReferenceCode = $zonedobservationTypeReferenceCode;
+
         return $this;
     }
 }

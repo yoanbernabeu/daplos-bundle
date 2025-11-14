@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Méthodes de mesures"
+ * Trait pour le référentiel "Méthodes de mesures".
  *
  * Repository Code: List_MeasurementMethodCode_CodeType
  * Référentiel ID: 621
@@ -32,6 +32,7 @@ trait MethodesdemesuresTrait
     public function setMethodesdemesuresId(?int $methodesdemesuresId): self
     {
         $this->methodesdemesuresId = $methodesdemesuresId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait MethodesdemesuresTrait
     public function setMethodesdemesuresTitle(?string $methodesdemesuresTitle): self
     {
         $this->methodesdemesuresTitle = $methodesdemesuresTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait MethodesdemesuresTrait
     public function setMethodesdemesuresReferenceCode(?string $methodesdemesuresReferenceCode): self
     {
         $this->methodesdemesuresReferenceCode = $methodesdemesuresReferenceCode;
+
         return $this;
     }
 }

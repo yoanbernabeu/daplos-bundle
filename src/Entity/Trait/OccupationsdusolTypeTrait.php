@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Occupations du sol (Type)"
+ * Trait pour le référentiel "Occupations du sol (Type)".
  *
  * Repository Code: List_PlotSoilOccupation_CodeType
  * Référentiel ID: 685
@@ -32,6 +32,7 @@ trait OccupationsdusolTypeTrait
     public function setOccupationsdusolTypeId(?int $occupationsdusolTypeId): self
     {
         $this->occupationsdusolTypeId = $occupationsdusolTypeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait OccupationsdusolTypeTrait
     public function setOccupationsdusolTypeTitle(?string $occupationsdusolTypeTitle): self
     {
         $this->occupationsdusolTypeTitle = $occupationsdusolTypeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait OccupationsdusolTypeTrait
     public function setOccupationsdusolTypeReferenceCode(?string $occupationsdusolTypeReferenceCode): self
     {
         $this->occupationsdusolTypeReferenceCode = $occupationsdusolTypeReferenceCode;
+
         return $this;
     }
 }

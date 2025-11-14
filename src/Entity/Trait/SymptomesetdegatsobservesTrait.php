@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Symptômes et dégâts observés"
+ * Trait pour le référentiel "Symptômes et dégâts observés".
  *
  * Repository Code: List_SymptomDamageObserved_CodeType
  * Référentiel ID: 669
@@ -32,6 +32,7 @@ trait SymptomesetdegatsobservesTrait
     public function setSymptomesetdegatsobservesId(?int $symptomesetdegatsobservesId): self
     {
         $this->symptomesetdegatsobservesId = $symptomesetdegatsobservesId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait SymptomesetdegatsobservesTrait
     public function setSymptomesetdegatsobservesTitle(?string $symptomesetdegatsobservesTitle): self
     {
         $this->symptomesetdegatsobservesTitle = $symptomesetdegatsobservesTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait SymptomesetdegatsobservesTrait
     public function setSymptomesetdegatsobservesReferenceCode(?string $symptomesetdegatsobservesReferenceCode): self
     {
         $this->symptomesetdegatsobservesReferenceCode = $symptomesetdegatsobservesReferenceCode;
+
         return $this;
     }
 }

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace YoanBernabeu\DaplosBundle\Tests\Unit\Service;
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use YoanBernabeu\DaplosBundle\Service\EntityGeneratorService;
 use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
 
 /**
- * Tests unitaires pour EntityGeneratorService
- * 
+ * Tests unitaires pour EntityGeneratorService.
+ *
  * Ce service génère des entités et repositories dans l'application utilisateur
  * en utilisant les traits DAPLOS disponibles.
- * 
+ *
  * Structure AAA (Arrange-Act-Assert) appliquée systématiquement.
  */
 class EntityGeneratorServiceTest extends TestCase
@@ -27,12 +27,12 @@ class EntityGeneratorServiceTest extends TestCase
     {
         // Arrange : Préparer les mocks
         $this->syncService = $this->createMock(ReferentialSyncServiceInterface::class);
-        $this->projectDir = sys_get_temp_dir() . '/daplos_test_' . uniqid();
-        
+        $this->projectDir = sys_get_temp_dir().'/daplos_test_'.uniqid();
+
         // Créer la structure de test
-        mkdir($this->projectDir . '/src/Entity/Daplos', 0755, true);
-        mkdir($this->projectDir . '/src/Repository', 0755, true);
-        
+        mkdir($this->projectDir.'/src/Entity/Daplos', 0o755, true);
+        mkdir($this->projectDir.'/src/Repository', 0o755, true);
+
         $this->service = new EntityGeneratorService(
             $this->syncService,
             $this->projectDir
@@ -88,7 +88,7 @@ class EntityGeneratorServiceTest extends TestCase
 
         // Créer une entité existante
         file_put_contents(
-            $this->projectDir . '/src/Entity/Daplos/Culture.php',
+            $this->projectDir.'/src/Entity/Daplos/Culture.php',
             '<?php namespace App\\Entity\\Daplos; class Culture {}'
         );
 
@@ -106,6 +106,7 @@ class EntityGeneratorServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox Génère une entité avec le trait approprié et l'attribut DaplosId
      */
     public function testGenerateEntityCreatesFileWithCorrectContent(): void
@@ -114,7 +115,7 @@ class EntityGeneratorServiceTest extends TestCase
         $referential = [
             'id' => 611,
             'name' => 'Cultures',
-            'repository_code' => 'List_BotanicalSpecies_CodeType'
+            'repository_code' => 'List_BotanicalSpecies_CodeType',
         ];
 
         // Act
@@ -127,9 +128,9 @@ class EntityGeneratorServiceTest extends TestCase
 
         // Assert
         $this->assertTrue($result['success']);
-        $this->assertFileExists($this->projectDir . '/src/Entity/Daplos/Culture.php');
-        
-        $content = file_get_contents($this->projectDir . '/src/Entity/Daplos/Culture.php');
+        $this->assertFileExists($this->projectDir.'/src/Entity/Daplos/Culture.php');
+
+        $content = file_get_contents($this->projectDir.'/src/Entity/Daplos/Culture.php');
         $this->assertStringContainsString('namespace App\\Entity\\Daplos', $content);
         $this->assertStringContainsString('class Culture', $content);
         $this->assertStringContainsString('use CulturesTrait', $content);
@@ -139,6 +140,7 @@ class EntityGeneratorServiceTest extends TestCase
 
     /**
      * @test
+     *
      * @testdox En mode dry-run, ne crée pas de fichiers
      */
     public function testGenerateEntityInDryRunDoesNotCreateFiles(): void
@@ -157,21 +159,22 @@ class EntityGeneratorServiceTest extends TestCase
         // Assert
         $this->assertTrue($result['success']);
         $this->assertTrue($result['dry_run']);
-        $this->assertFileDoesNotExist($this->projectDir . '/src/Entity/Daplos/Culture.php');
+        $this->assertFileDoesNotExist($this->projectDir.'/src/Entity/Daplos/Culture.php');
     }
 
     /**
      * @test
+     *
      * @testdox Est idempotent : ne recrée pas une entité existante sans force
      */
     public function testGenerateEntityIsIdempotentWithoutForce(): void
     {
         // Arrange
         $referential = ['id' => 611, 'name' => 'Cultures', 'repository_code' => 'Test'];
-        
+
         // Créer une entité existante
         $existingContent = '<?php namespace App\\Entity\\Daplos; class Culture { /* existing */ }';
-        file_put_contents($this->projectDir . '/src/Entity/Daplos/Culture.php', $existingContent);
+        file_put_contents($this->projectDir.'/src/Entity/Daplos/Culture.php', $existingContent);
 
         // Act
         $result = $this->service->generateEntity(
@@ -185,22 +188,23 @@ class EntityGeneratorServiceTest extends TestCase
         // Assert
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('existe déjà', $result['message']);
-        
+
         // Vérifier que le fichier n'a pas été modifié
-        $content = file_get_contents($this->projectDir . '/src/Entity/Daplos/Culture.php');
+        $content = file_get_contents($this->projectDir.'/src/Entity/Daplos/Culture.php');
         $this->assertEquals($existingContent, $content);
     }
 
     /**
      * @test
+     *
      * @testdox Écrase une entité existante avec force=true
      */
     public function testGenerateEntityWithForceOverwritesExisting(): void
     {
         // Arrange
         $referential = ['id' => 611, 'name' => 'Cultures', 'repository_code' => 'Test'];
-        
-        file_put_contents($this->projectDir . '/src/Entity/Daplos/Culture.php', '<?php // old');
+
+        file_put_contents($this->projectDir.'/src/Entity/Daplos/Culture.php', '<?php // old');
 
         // Act
         $result = $this->service->generateEntity(
@@ -213,7 +217,7 @@ class EntityGeneratorServiceTest extends TestCase
 
         // Assert
         $this->assertTrue($result['success']);
-        $content = file_get_contents($this->projectDir . '/src/Entity/Daplos/Culture.php');
+        $content = file_get_contents($this->projectDir.'/src/Entity/Daplos/Culture.php');
         $this->assertStringNotContainsString('// old', $content);
         $this->assertStringContainsString('class Culture', $content);
     }
@@ -236,9 +240,9 @@ class EntityGeneratorServiceTest extends TestCase
 
         // Assert
         $this->assertTrue($result['success']);
-        $this->assertFileExists($this->projectDir . '/src/Repository/CultureRepository.php');
-        
-        $content = file_get_contents($this->projectDir . '/src/Repository/CultureRepository.php');
+        $this->assertFileExists($this->projectDir.'/src/Repository/CultureRepository.php');
+
+        $content = file_get_contents($this->projectDir.'/src/Repository/CultureRepository.php');
         $this->assertStringContainsString('namespace App\\Repository', $content);
         $this->assertStringContainsString('class CultureRepository', $content);
         $this->assertStringContainsString('ServiceEntityRepository', $content);
@@ -250,7 +254,7 @@ class EntityGeneratorServiceTest extends TestCase
     public function testGenerateEntityWithCustomNamespace(): void
     {
         // Arrange
-        mkdir($this->projectDir . '/src/Domain/Agriculture', 0755, true);
+        mkdir($this->projectDir.'/src/Domain/Agriculture', 0o755, true);
         $referential = ['id' => 611, 'name' => 'Cultures', 'repository_code' => 'Test'];
 
         // Act
@@ -263,9 +267,9 @@ class EntityGeneratorServiceTest extends TestCase
 
         // Assert
         $this->assertTrue($result['success']);
-        $this->assertFileExists($this->projectDir . '/src/Domain/Agriculture/Culture.php');
-        
-        $content = file_get_contents($this->projectDir . '/src/Domain/Agriculture/Culture.php');
+        $this->assertFileExists($this->projectDir.'/src/Domain/Agriculture/Culture.php');
+
+        $content = file_get_contents($this->projectDir.'/src/Domain/Agriculture/Culture.php');
         $this->assertStringContainsString('namespace App\\Domain\\Agriculture', $content);
     }
 
@@ -296,12 +300,13 @@ class EntityGeneratorServiceTest extends TestCase
         $this->assertCount(2, $results);
         $this->assertTrue($results[0]['success']);
         $this->assertTrue($results[1]['success']);
-        $this->assertFileExists($this->projectDir . '/src/Entity/Daplos/Culture.php');
-        $this->assertFileExists($this->projectDir . '/src/Entity/Daplos/Amendement.php');
+        $this->assertFileExists($this->projectDir.'/src/Entity/Daplos/Culture.php');
+        $this->assertFileExists($this->projectDir.'/src/Entity/Daplos/Amendement.php');
     }
 
     /**
      * @test
+     *
      * @testdox GenerateAll est idempotent : skip les entités existantes
      */
     public function testGenerateAllIsIdempotent(): void
@@ -318,7 +323,7 @@ class EntityGeneratorServiceTest extends TestCase
 
         // Créer une entité existante
         file_put_contents(
-            $this->projectDir . '/src/Entity/Daplos/Culture.php',
+            $this->projectDir.'/src/Entity/Daplos/Culture.php',
             '<?php namespace App\\Entity\\Daplos; class Culture {}'
         );
 
@@ -333,11 +338,11 @@ class EntityGeneratorServiceTest extends TestCase
         // Assert
         $this->assertFalse($results[0]['success']); // Culture déjà existe
         $this->assertTrue($results[1]['success']);   // Amendement créé
-        $this->assertFileExists($this->projectDir . '/src/Entity/Daplos/Amendement.php');
+        $this->assertFileExists($this->projectDir.'/src/Entity/Daplos/Amendement.php');
     }
 
     /**
-     * Helper pour nettoyer les répertoires de test
+     * Helper pour nettoyer les répertoires de test.
      */
     private function deleteDirectory(string $dir): void
     {
@@ -347,10 +352,9 @@ class EntityGeneratorServiceTest extends TestCase
 
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
-            $path = $dir . '/' . $file;
+            $path = $dir.'/'.$file;
             is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
         }
         rmdir($dir);
     }
 }
-

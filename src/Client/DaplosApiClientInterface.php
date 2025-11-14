@@ -13,6 +13,7 @@ interface DaplosApiClientInterface
      * Récupère la liste de tous les référentiels disponibles.
      *
      * @return array<int, array{id: int, count: int, name: string, repository_code: string, repository_explanation: string}>
+     *
      * @throws DaplosApiException
      */
     public function getReferentials(): array;
@@ -21,7 +22,9 @@ interface DaplosApiClientInterface
      * Récupère les détails d'un référentiel spécifique avec ses références.
      *
      * @param int $referentialId ID du référentiel
-     * @return array{referential: array, references: array}
+     *
+     * @return array{referential: array<string, mixed>, references: array<int, array<string, mixed>>}
+     *
      * @throws DaplosApiException
      */
     public function getReferential(int $referentialId): array;

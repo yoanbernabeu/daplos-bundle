@@ -3,11 +3,11 @@
 namespace YoanBernabeu\DaplosBundle\Tests\Unit\Client;
 
 use PHPUnit\Framework\TestCase;
-use YoanBernabeu\DaplosBundle\Client\DaplosApiClient;
-use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
-use Symfony\Contracts\Cache\CacheInterface;
+use YoanBernabeu\DaplosBundle\Client\DaplosApiClient;
+use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 
 class DaplosApiClientTest extends TestCase
 {
@@ -39,8 +39,8 @@ class DaplosApiClientTest extends TestCase
                 'name' => 'Cultures',
                 'repository_code' => 'List_BotanicalSpecies_CodeType',
                 'count' => 716,
-                'repository_explanation' => ''
-            ]
+                'repository_explanation' => '',
+            ],
         ];
 
         $response = $this->createMock(ResponseInterface::class);
@@ -58,7 +58,7 @@ class DaplosApiClientTest extends TestCase
 
         $this->cache->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function ($key, $callback) use ($expectedData) {
+            ->willReturnCallback(function ($key, $callback) {
                 return $callback($this->createMock(\Symfony\Contracts\Cache\ItemInterface::class));
             });
 
@@ -100,12 +100,12 @@ class DaplosApiClientTest extends TestCase
             'referential' => [
                 'id' => 611,
                 'name' => 'Cultures',
-                'repository_code' => 'List_BotanicalSpecies_CodeType'
+                'repository_code' => 'List_BotanicalSpecies_CodeType',
             ],
             'references' => [
                 ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
-                ['id' => 2, 'title' => 'Maïs', 'reference_code' => 'MAI']
-            ]
+                ['id' => 2, 'title' => 'Maïs', 'reference_code' => 'MAI'],
+            ],
         ];
 
         $response = $this->createMock(ResponseInterface::class);
@@ -123,7 +123,7 @@ class DaplosApiClientTest extends TestCase
 
         $this->cache->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function ($key, $callback) use ($expectedData) {
+            ->willReturnCallback(function ($key, $callback) {
                 return $callback($this->createMock(\Symfony\Contracts\Cache\ItemInterface::class));
             });
 
@@ -197,7 +197,7 @@ class DaplosApiClientTest extends TestCase
         );
 
         $expectedData = [
-            ['id' => 611, 'name' => 'Cultures', 'repository_code' => 'List_BotanicalSpecies_CodeType', 'count' => 716, 'repository_explanation' => '']
+            ['id' => 611, 'name' => 'Cultures', 'repository_code' => 'List_BotanicalSpecies_CodeType', 'count' => 716, 'repository_explanation' => ''],
         ];
 
         $response = $this->createMock(ResponseInterface::class);

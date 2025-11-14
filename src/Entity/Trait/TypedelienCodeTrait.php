@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de lien (code)"
+ * Trait pour le référentiel "Type de lien (code)".
  *
  * Repository Code: List_linktype_CodeType
  * Référentiel ID: 895
@@ -32,6 +32,7 @@ trait TypedelienCodeTrait
     public function setTypedelienCodeId(?int $typedelienCodeId): self
     {
         $this->typedelienCodeId = $typedelienCodeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedelienCodeTrait
     public function setTypedelienCodeTitle(?string $typedelienCodeTitle): self
     {
         $this->typedelienCodeTitle = $typedelienCodeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedelienCodeTrait
     public function setTypedelienCodeReferenceCode(?string $typedelienCodeReferenceCode): self
     {
         $this->typedelienCodeReferenceCode = $typedelienCodeReferenceCode;
+
         return $this;
     }
 }

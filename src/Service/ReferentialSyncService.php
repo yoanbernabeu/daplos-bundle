@@ -2,13 +2,11 @@
 
 namespace YoanBernabeu\DaplosBundle\Service;
 
+use Doctrine\ORM\EntityManagerInterface;
 use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 use YoanBernabeu\DaplosBundle\Client\DaplosApiClientInterface;
 use YoanBernabeu\DaplosBundle\Contract\DaplosEntityInterface;
 use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
-use Doctrine\ORM\EntityManagerInterface;
-use ReflectionClass;
-use ReflectionProperty;
 
 /**
  * Service de synchronisation des référentiels DAPLOS avec les entités Doctrine.
@@ -26,10 +24,12 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
     /**
      * Synchronise un référentiel DAPLOS avec une entité Doctrine.
      *
-     * @param string $entityClass Nom complet de la classe de l'entité (ex: App\Entity\Culture)
-     * @param int $referentialId ID du référentiel DAPLOS
-     * @param callable|null $mapper Fonction de mapping personnalisée (optionnel)
+     * @param string        $entityClass   Nom complet de la classe de l'entité (ex: App\Entity\Culture)
+     * @param int           $referentialId ID du référentiel DAPLOS
+     * @param callable|null $mapper        Fonction de mapping personnalisée (optionnel)
+     *
      * @return array{created: int, updated: int, total: int}
+     *
      * @throws DaplosApiException
      */
     public function syncReferential(
@@ -38,7 +38,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         ?callable $mapper = null
     ): array {
         $data = $this->apiClient->getReferential($referentialId);
-        $references = $data['references'] ?? [];
+        $references = $data['references'];
 
         $stats = ['created' => 0, 'updated' => 0, 'total' => count($references)];
         $repository = $this->entityManager->getRepository($entityClass);
@@ -47,7 +47,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
 
         try {
             $i = 0;
-            
+
             foreach ($references as $reference) {
                 $daplosId = $reference['id'] ?? null;
                 if (!$daplosId) {
@@ -74,14 +74,14 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
                 $this->entityManager->persist($entity);
 
                 if ($isNew) {
-                    $stats['created']++;
+                    ++$stats['created'];
                 } else {
-                    $stats['updated']++;
+                    ++$stats['updated'];
                 }
 
                 // Batch processing : flush périodique pour éviter les problèmes de mémoire
-                $i++;
-                if ($i % self::BATCH_SIZE === 0) {
+                ++$i;
+                if (0 === $i % self::BATCH_SIZE) {
                     $this->entityManager->flush();
                     $this->entityManager->clear();
                 }
@@ -92,11 +92,8 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
             $this->entityManager->commit();
         } catch (\Exception $e) {
             $this->entityManager->rollback();
-            throw new DaplosApiException(
-                sprintf('Erreur lors de la synchronisation du référentiel %d : %s', $referentialId, $e->getMessage()),
-                0,
-                $e
-            );
+
+            throw new DaplosApiException(sprintf('Erreur lors de la synchronisation du référentiel %d : %s', $referentialId, $e->getMessage()), 0, $e);
         }
 
         return $stats;
@@ -104,9 +101,11 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
 
     /**
      * Mapping par défaut des champs du référentiel vers l'entité.
-     * 
+     *
      * Si l'entité implémente DaplosEntityInterface, utilise les méthodes de l'interface.
      * Sinon, tente de trouver les setters appropriés en utilisant la reflection.
+     *
+     * @param array<string, mixed> $reference
      */
     private function mapDefaultFields(object $entity, array $reference): void
     {
@@ -120,16 +119,17 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
                 ->setDaplosId($daplosId)
                 ->setDaplosTitle($title)
                 ->setDaplosReferenceCode($referenceCode);
+
             return;
         }
 
         // Sinon, chercher les setters via reflection
-        $reflection = new ReflectionClass($entity);
-        
+        $reflection = new \ReflectionClass($entity);
+
         // Chercher la propriété avec l'attribut #[DaplosId] pour déterminer le préfixe
         $prefix = $this->findPropertyPrefix($reflection);
-        
-        if ($prefix === null) {
+
+        if (null === $prefix) {
             // Fallback : impossible de déterminer le préfixe
             return;
         }
@@ -142,26 +142,26 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         ];
 
         foreach ($mappings as $suffix => $value) {
-            if ($value === null) {
+            if (null === $value) {
                 continue;
             }
 
-            $setterName = 'set' . ucfirst($prefix) . $suffix;
-            
+            $setterName = 'set'.ucfirst($prefix).$suffix;
+
             if (!$reflection->hasMethod($setterName)) {
                 continue;
             }
 
             $method = $reflection->getMethod($setterName);
-            
+
             // Vérifier que la méthode est publique et prend exactement 1 paramètre
-            if (!$method->isPublic() || $method->getNumberOfParameters() !== 1) {
+            if (!$method->isPublic() || 1 !== $method->getNumberOfParameters()) {
                 continue;
             }
 
             $params = $method->getParameters();
             $expectedType = $params[0]->getType();
-            
+
             // Vérifier la compatibilité des types
             if ($expectedType && !$this->isTypeCompatible($value, $expectedType)) {
                 continue;
@@ -173,11 +173,13 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
 
     /**
      * Trouve le préfixe des propriétés DAPLOS dans l'entité.
-     * 
+     *
      * Cherche une propriété avec l'attribut #[DaplosId] et extrait son préfixe.
      * Par exemple, si la propriété est $culturesId, retourne "cultures".
+     *
+     * @param \ReflectionClass<object> $reflection
      */
-    private function findPropertyPrefix(ReflectionClass $reflection): ?string
+    private function findPropertyPrefix(\ReflectionClass $reflection): ?string
     {
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(DaplosId::class);
@@ -190,7 +192,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -201,7 +203,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
     {
         if ($expectedType instanceof \ReflectionNamedType) {
             $typeName = $expectedType->getName();
-            
+
             return match ($typeName) {
                 'int' => is_int($value),
                 'string' => is_string($value),
@@ -219,7 +221,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
 
     /**
      * Recherche une entité par son ID DAPLOS.
-     * 
+     *
      * Stratégie :
      * 1. Si l'entité implémente DaplosEntityInterface, cherche avec getDaplosId()
      * 2. Sinon, cherche une propriété avec l'attribut #[DaplosId]
@@ -227,14 +229,14 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
     private function findEntityByDaplosId(string $entityClass, int $daplosId): ?object
     {
         $repository = $this->entityManager->getRepository($entityClass);
-        $reflection = new ReflectionClass($entityClass);
+        $reflection = new \ReflectionClass($entityClass);
 
         // Cas 1 : L'entité implémente DaplosEntityInterface
         if ($reflection->implementsInterface(DaplosEntityInterface::class)) {
             // Chercher par la méthode getDaplosId()
             // On doit deviner le nom de la propriété... essayons plusieurs variantes
             $possibleProperties = ['daplosId', 'id'];
-            
+
             foreach ($possibleProperties as $propertyName) {
                 try {
                     $result = $repository->findOneBy([$propertyName => $daplosId]);
@@ -253,7 +255,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
             $attributes = $property->getAttributes(DaplosId::class);
             if (!empty($attributes)) {
                 $propertyName = $property->getName();
-                
+
                 try {
                     $result = $repository->findOneBy([$propertyName => $daplosId]);
                     if ($result) {
@@ -272,7 +274,8 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
     /**
      * Récupère la liste de tous les référentiels disponibles.
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
+     *
      * @throws DaplosApiException
      */
     public function getAvailableReferentials(): array
@@ -283,12 +286,14 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
     /**
      * Récupère les détails d'un référentiel spécifique.
      *
-     * @param int $referentialId
-     * @return array
+     * @return array<string, mixed>
+     *
      * @throws DaplosApiException
      */
     public function getReferentialDetails(int $referentialId): array
     {
-        return $this->apiClient->getReferential($referentialId);
+        $data = $this->apiClient->getReferential($referentialId);
+
+        return $data['referential'];
     }
 }

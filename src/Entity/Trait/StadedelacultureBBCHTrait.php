@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Stade de la culture (BBCH)"
+ * Trait pour le référentiel "Stade de la culture (BBCH)".
  *
  * Repository Code: List_CropStage_CodeType
  * Référentiel ID: 597
@@ -32,6 +32,7 @@ trait StadedelacultureBBCHTrait
     public function setStadedelacultureBBCHId(?int $stadedelacultureBBCHId): self
     {
         $this->stadedelacultureBBCHId = $stadedelacultureBBCHId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait StadedelacultureBBCHTrait
     public function setStadedelacultureBBCHTitle(?string $stadedelacultureBBCHTitle): self
     {
         $this->stadedelacultureBBCHTitle = $stadedelacultureBBCHTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait StadedelacultureBBCHTrait
     public function setStadedelacultureBBCHReferenceCode(?string $stadedelacultureBBCHReferenceCode): self
     {
         $this->stadedelacultureBBCHReferenceCode = $stadedelacultureBBCHReferenceCode;
+
         return $this;
     }
 }

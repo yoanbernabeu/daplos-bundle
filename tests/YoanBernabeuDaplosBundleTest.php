@@ -21,4 +21,3 @@ class YoanBernabeuDaplosBundleTest extends TestCase
         $this->assertDirectoryExists($path);
     }
 }
-

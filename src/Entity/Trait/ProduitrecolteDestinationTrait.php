@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Produit récolté (Destination)"
+ * Trait pour le référentiel "Produit récolté (Destination)".
  *
  * Repository Code: List_AgriculturalProduceUseCode_CodeType
  * Référentiel ID: 609
@@ -32,6 +32,7 @@ trait ProduitrecolteDestinationTrait
     public function setProduitrecolteDestinationId(?int $produitrecolteDestinationId): self
     {
         $this->produitrecolteDestinationId = $produitrecolteDestinationId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ProduitrecolteDestinationTrait
     public function setProduitrecolteDestinationTitle(?string $produitrecolteDestinationTitle): self
     {
         $this->produitrecolteDestinationTitle = $produitrecolteDestinationTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ProduitrecolteDestinationTrait
     public function setProduitrecolteDestinationReferenceCode(?string $produitrecolteDestinationReferenceCode): self
     {
         $this->produitrecolteDestinationReferenceCode = $produitrecolteDestinationReferenceCode;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Cultures (Catégorie)"
+ * Trait pour le référentiel "Cultures (Catégorie)".
  *
  * Repository Code: List_CropCategory_CodeType
  * Référentiel ID: 701
@@ -32,6 +32,7 @@ trait CulturesCategorieTrait
     public function setCulturesCategorieId(?int $culturesCategorieId): self
     {
         $this->culturesCategorieId = $culturesCategorieId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CulturesCategorieTrait
     public function setCulturesCategorieTitle(?string $culturesCategorieTitle): self
     {
         $this->culturesCategorieTitle = $culturesCategorieTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CulturesCategorieTrait
     public function setCulturesCategorieReferenceCode(?string $culturesCategorieReferenceCode): self
     {
         $this->culturesCategorieReferenceCode = $culturesCategorieReferenceCode;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Réseaux d'observations d'appartenance"
+ * Trait pour le référentiel "Réseaux d'observations d'appartenance".
  *
  * Repository Code: List_ReferenceType_CodeType
  * Référentiel ID: 681
@@ -32,6 +32,7 @@ trait ReseauxdobservationsdappartenanceTrait
     public function setReseauxdobservationsdappartenanceId(?int $reseauxdobservationsdappartenanceId): self
     {
         $this->reseauxdobservationsdappartenanceId = $reseauxdobservationsdappartenanceId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait ReseauxdobservationsdappartenanceTrait
     public function setReseauxdobservationsdappartenanceTitle(?string $reseauxdobservationsdappartenanceTitle): self
     {
         $this->reseauxdobservationsdappartenanceTitle = $reseauxdobservationsdappartenanceTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait ReseauxdobservationsdappartenanceTrait
     public function setReseauxdobservationsdappartenanceReferenceCode(?string $reseauxdobservationsdappartenanceReferenceCode): self
     {
         $this->reseauxdobservationsdappartenanceReferenceCode = $reseauxdobservationsdappartenanceReferenceCode;
+
         return $this;
     }
 }

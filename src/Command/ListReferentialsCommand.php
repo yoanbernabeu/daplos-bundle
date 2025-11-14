@@ -2,14 +2,14 @@
 
 namespace YoanBernabeu\DaplosBundle\Command;
 
-use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
-use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Helper\Table;
+use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
+use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
 
 #[AsCommand(
     name: 'daplos:referentials:list',
@@ -34,6 +34,7 @@ class ListReferentialsCommand extends Command
 
             if (empty($referentials)) {
                 $io->warning('Aucun référentiel trouvé');
+
                 return Command::SUCCESS;
             }
 
@@ -45,16 +46,16 @@ class ListReferentialsCommand extends Command
                     $ref['id'],
                     $ref['name'],
                     $ref['repository_code'],
-                    $ref['count']
+                    $ref['count'],
                 ]);
             }
 
             $table->render();
 
             $io->success(sprintf('Total: %d référentiels disponibles', count($referentials)));
-
         } catch (DaplosApiException $e) {
-            $io->error('Erreur lors de la récupération des référentiels : ' . $e->getMessage());
+            $io->error('Erreur lors de la récupération des référentiels : '.$e->getMessage());
+
             return Command::FAILURE;
         }
 

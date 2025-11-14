@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de Notation"
+ * Trait pour le référentiel "Type de Notation".
  *
  * Repository Code: List_NotationType_CodeType
  * Référentiel ID: 665
@@ -32,6 +32,7 @@ trait TypedeNotationTrait
     public function setTypedeNotationId(?int $typedeNotationId): self
     {
         $this->typedeNotationId = $typedeNotationId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedeNotationTrait
     public function setTypedeNotationTitle(?string $typedeNotationTitle): self
     {
         $this->typedeNotationTitle = $typedeNotationTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedeNotationTrait
     public function setTypedeNotationReferenceCode(?string $typedeNotationReferenceCode): self
     {
         $this->typedeNotationReferenceCode = $typedeNotationReferenceCode;
+
         return $this;
     }
 }

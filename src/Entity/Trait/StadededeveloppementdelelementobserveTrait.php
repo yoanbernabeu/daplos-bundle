@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Stade de développement de l'élément observé"
+ * Trait pour le référentiel "Stade de développement de l'élément observé".
  *
  * Repository Code: List_PestDevelopementStage_CodeType
  * Référentiel ID: 659
@@ -32,6 +32,7 @@ trait StadededeveloppementdelelementobserveTrait
     public function setStadededeveloppementdelelementobserveId(?int $stadededeveloppementdelelementobserveId): self
     {
         $this->stadededeveloppementdelelementobserveId = $stadededeveloppementdelelementobserveId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait StadededeveloppementdelelementobserveTrait
     public function setStadededeveloppementdelelementobserveTitle(?string $stadededeveloppementdelelementobserveTitle): self
     {
         $this->stadededeveloppementdelelementobserveTitle = $stadededeveloppementdelelementobserveTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait StadededeveloppementdelelementobserveTrait
     public function setStadededeveloppementdelelementobserveReferenceCode(?string $stadededeveloppementdelelementobserveReferenceCode): self
     {
         $this->stadededeveloppementdelelementobserveReferenceCode = $stadededeveloppementdelelementobserveReferenceCode;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Type de piège"
+ * Trait pour le référentiel "Type de piège".
  *
  * Repository Code: List_TrapType_CodeType
  * Référentiel ID: 667
@@ -32,6 +32,7 @@ trait TypedepiegeTrait
     public function setTypedepiegeId(?int $typedepiegeId): self
     {
         $this->typedepiegeId = $typedepiegeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait TypedepiegeTrait
     public function setTypedepiegeTitle(?string $typedepiegeTitle): self
     {
         $this->typedepiegeTitle = $typedepiegeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait TypedepiegeTrait
     public function setTypedepiegeReferenceCode(?string $typedepiegeReferenceCode): self
     {
         $this->typedepiegeReferenceCode = $typedepiegeReferenceCode;
+
         return $this;
     }
 }

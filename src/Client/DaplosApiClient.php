@@ -2,16 +2,16 @@
 
 namespace YoanBernabeu\DaplosBundle\Client;
 
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 use YoanBernabeu\DaplosBundle\Exception\DaplosAuthException;
 use YoanBernabeu\DaplosBundle\Exception\DaplosNotFoundException;
 use YoanBernabeu\DaplosBundle\Exception\DaplosRateLimitException;
 use YoanBernabeu\DaplosBundle\Exception\DaplosServerException;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 /**
  * Client pour l'API DAPLOS.
@@ -35,6 +35,7 @@ class DaplosApiClient implements DaplosApiClientInterface
      * Récupère la liste de tous les référentiels disponibles.
      *
      * @return array<int, array{id: int, count: int, name: string, repository_code: string, repository_explanation: string}>
+     *
      * @throws DaplosApiException
      */
     public function getReferentials(): array
@@ -47,6 +48,7 @@ class DaplosApiClient implements DaplosApiClientInterface
                 if ($this->cache instanceof TagAwareCacheInterface) {
                     $item->tag(self::CACHE_TAG);
                 }
+
                 return $this->fetchReferentials();
             });
         }
@@ -58,7 +60,9 @@ class DaplosApiClient implements DaplosApiClientInterface
      * Récupère les détails d'un référentiel spécifique avec ses références.
      *
      * @param int $referentialId ID du référentiel
-     * @return array{referential: array, references: array}
+     *
+     * @return array{referential: array<string, mixed>, references: array<int, array<string, mixed>>}
+     *
      * @throws DaplosApiException
      */
     public function getReferential(int $referentialId): array
@@ -71,6 +75,7 @@ class DaplosApiClient implements DaplosApiClientInterface
                 if ($this->cache instanceof TagAwareCacheInterface) {
                     $item->tag(self::CACHE_TAG);
                 }
+
                 return $this->fetchReferential($referentialId);
             });
         }
@@ -80,6 +85,8 @@ class DaplosApiClient implements DaplosApiClientInterface
 
     /**
      * Effectue l'appel API pour récupérer tous les référentiels.
+     *
+     * @return array<int, array<string, mixed>>
      *
      * @throws DaplosApiException
      */
@@ -96,7 +103,7 @@ class DaplosApiClient implements DaplosApiClientInterface
             $response = $this->httpClient->request('GET', $url);
             $statusCode = $response->getStatusCode();
 
-            if ($statusCode !== 200) {
+            if (200 !== $statusCode) {
                 $this->throwHttpException($statusCode, 'Erreur API DAPLOS');
             }
 
@@ -108,25 +115,20 @@ class DaplosApiClient implements DaplosApiClientInterface
 
             return $data;
         } catch (TransportExceptionInterface $e) {
-            throw new DaplosApiException(
-                sprintf('Erreur de communication avec l\'API DAPLOS : %s', $e->getMessage()),
-                0,
-                $e
-            );
+            throw new DaplosApiException(sprintf('Erreur de communication avec l\'API DAPLOS : %s', $e->getMessage()), 0, $e);
         } catch (\Exception $e) {
             if ($e instanceof DaplosApiException) {
                 throw $e;
             }
-            throw new DaplosApiException(
-                sprintf('Erreur lors de la récupération des référentiels : %s', $e->getMessage()),
-                0,
-                $e
-            );
+
+            throw new DaplosApiException(sprintf('Erreur lors de la récupération des référentiels : %s', $e->getMessage()), 0, $e);
         }
     }
 
     /**
      * Effectue l'appel API pour récupérer un référentiel spécifique.
+     *
+     * @return array{referential: array<string, mixed>, references: array<int, array<string, mixed>>}
      *
      * @throws DaplosApiException
      */
@@ -144,7 +146,7 @@ class DaplosApiClient implements DaplosApiClientInterface
             $response = $this->httpClient->request('GET', $url);
             $statusCode = $response->getStatusCode();
 
-            if ($statusCode !== 200) {
+            if (200 !== $statusCode) {
                 $this->throwHttpException(
                     $statusCode,
                     sprintf('Erreur API DAPLOS pour le référentiel %d', $referentialId)
@@ -154,27 +156,18 @@ class DaplosApiClient implements DaplosApiClientInterface
             $data = $response->toArray();
 
             if (!is_array($data) || !isset($data['referential']) || !isset($data['references'])) {
-                throw new DaplosApiException(
-                    sprintf('Structure de données invalide pour le référentiel %d', $referentialId)
-                );
+                throw new DaplosApiException(sprintf('Structure de données invalide pour le référentiel %d', $referentialId));
             }
 
             return $data;
         } catch (TransportExceptionInterface $e) {
-            throw new DaplosApiException(
-                sprintf('Erreur de communication avec l\'API DAPLOS pour le référentiel %d : %s', $referentialId, $e->getMessage()),
-                0,
-                $e
-            );
+            throw new DaplosApiException(sprintf('Erreur de communication avec l\'API DAPLOS pour le référentiel %d : %s', $referentialId, $e->getMessage()), 0, $e);
         } catch (\Exception $e) {
             if ($e instanceof DaplosApiException) {
                 throw $e;
             }
-            throw new DaplosApiException(
-                sprintf('Erreur lors de la récupération du référentiel %d : %s', $referentialId, $e->getMessage()),
-                0,
-                $e
-            );
+
+            throw new DaplosApiException(sprintf('Erreur lors de la récupération du référentiel %d : %s', $referentialId, $e->getMessage()), 0, $e);
         }
     }
 
@@ -204,7 +197,7 @@ class DaplosApiClient implements DaplosApiClientInterface
 
     /**
      * Lance l'exception appropriée selon le code HTTP.
-     * 
+     *
      * @throws DaplosApiException
      */
     private function throwHttpException(int $statusCode, string $message): never

@@ -2,16 +2,16 @@
 
 namespace YoanBernabeu\DaplosBundle\Command;
 
-use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
-use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Helper\Table;
+use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
+use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
 
 #[AsCommand(
     name: 'daplos:referentials:show',
@@ -68,9 +68,9 @@ class ShowReferentialCommand extends Command
                     $table->addRow([
                         $ref['id'],
                         $ref['title'],
-                        $ref['reference_code']
+                        $ref['reference_code'],
                     ]);
-                    $displayed++;
+                    ++$displayed;
                 }
 
                 $table->render();
@@ -81,9 +81,9 @@ class ShowReferentialCommand extends Command
             } else {
                 $io->warning('Ce référentiel ne contient aucun item');
             }
-
         } catch (DaplosApiException $e) {
-            $io->error('Erreur lors de la récupération du référentiel : ' . $e->getMessage());
+            $io->error('Erreur lors de la récupération du référentiel : '.$e->getMessage());
+
             return Command::FAILURE;
         }
 

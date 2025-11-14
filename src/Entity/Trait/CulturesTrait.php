@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Cultures"
+ * Trait pour le référentiel "Cultures".
  *
  * Repository Code: List_BotanicalSpecies_CodeType
  * Référentiel ID: 611
@@ -32,6 +32,7 @@ trait CulturesTrait
     public function setCulturesId(?int $culturesId): self
     {
         $this->culturesId = $culturesId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CulturesTrait
     public function setCulturesTitle(?string $culturesTitle): self
     {
         $this->culturesTitle = $culturesTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CulturesTrait
     public function setCulturesReferenceCode(?string $culturesReferenceCode): self
     {
         $this->culturesReferenceCode = $culturesReferenceCode;
+
         return $this;
     }
 }

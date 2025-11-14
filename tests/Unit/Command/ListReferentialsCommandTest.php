@@ -3,11 +3,11 @@
 namespace YoanBernabeu\DaplosBundle\Tests\Unit\Command;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Tester\CommandTester;
 use YoanBernabeu\DaplosBundle\Command\ListReferentialsCommand;
 use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Tester\CommandTester;
 
 class ListReferentialsCommandTest extends TestCase
 {
@@ -29,13 +29,13 @@ class ListReferentialsCommandTest extends TestCase
                 'id' => 611,
                 'name' => 'Cultures',
                 'repository_code' => 'List_BotanicalSpecies_CodeType',
-                'count' => 716
+                'count' => 716,
             ],
             [
                 'id' => 633,
                 'name' => 'Amendements',
                 'repository_code' => 'List_SoilSupplement_CodeType',
-                'count' => 3
+                'count' => 3,
             ],
         ];
 
@@ -46,7 +46,7 @@ class ListReferentialsCommandTest extends TestCase
         $exitCode = $this->commandTester->execute([]);
 
         $this->assertEquals(Command::SUCCESS, $exitCode);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Référentiels DAPLOS disponibles', $output);
         $this->assertStringContainsString('Cultures', $output);
@@ -65,7 +65,7 @@ class ListReferentialsCommandTest extends TestCase
         $exitCode = $this->commandTester->execute([]);
 
         $this->assertEquals(Command::SUCCESS, $exitCode);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Aucun référentiel trouvé', $output);
     }
@@ -79,7 +79,7 @@ class ListReferentialsCommandTest extends TestCase
         $exitCode = $this->commandTester->execute([]);
 
         $this->assertEquals(Command::FAILURE, $exitCode);
-        
+
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Erreur lors de la récupération des référentiels', $output);
         $this->assertStringContainsString('API Error', $output);
@@ -91,5 +91,3 @@ class ListReferentialsCommandTest extends TestCase
         $this->assertStringContainsString('référentiels DAPLOS', $this->command->getDescription());
     }
 }
-
-

@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace YoanBernabeu\DaplosBundle\Service;
 
-use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
-use YoanBernabeu\DaplosBundle\Service\EntityGeneratorServiceInterface;
-
 /**
  * Service de génération d'entités et de repositories dans le projet utilisateur.
- * 
+ *
  * Ce service permet de générer automatiquement des entités Doctrine et leurs repositories
  * à partir des référentiels DAPLOS disponibles. Les entités générées utilisent les traits
  * du bundle et l'attribut #[DaplosId] pour faciliter la synchronisation.
- * 
+ *
  * Principes d'idempotence :
  * - Ne crée pas de doublons (vérifie l'existence avant création)
  * - Rejouable sans effets de bord (force=false par défaut)
  * - Utilise des identifiants uniques (nom de l'entité basé sur le référentiel)
- * 
+ *
  * @author Yoan Bernabeu
  */
 class EntityGeneratorService implements EntityGeneratorServiceInterface
@@ -31,7 +28,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
     /**
      * Vérifie le statut de toutes les entités DAPLOS potentielles.
-     * 
+     *
      * @return array<int, array{referential_id: int, referential_name: string, entity_name: string, entity_exists: bool, repository_exists: bool, entity_path: string|null, repository_path: string|null, trait_name: string}>
      */
     public function checkStatus(string $namespace = 'App\\Entity\\Daplos'): array
@@ -42,7 +39,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
         foreach ($referentials as $ref) {
             $entityName = $this->generateEntityName($ref['name']);
             $traitName = $this->generateTraitName($ref['name']);
-            
+
             $entityPath = $this->getEntityPath($entityName, $namespace);
             $repositoryPath = $this->getRepositoryPath($entityName, $namespace);
 
@@ -63,16 +60,16 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
     /**
      * Génère une entité et optionnellement son repository.
-     * 
+     *
      * Cette méthode est idempotente : elle ne recrée pas une entité existante
      * sans l'option force=true.
-     * 
-     * @param array $referential Les données du référentiel DAPLOS
-     * @param string $namespace Le namespace de l'entité (default: App\Entity\Daplos)
-     * @param bool $withRepository Générer aussi le repository
-     * @param bool $dryRun Mode simulation (ne crée pas les fichiers)
-     * @param bool $force Forcer la recréation si l'entité existe
-     * 
+     *
+     * @param array<string, mixed> $referential    Les données du référentiel DAPLOS
+     * @param string               $namespace      Le namespace de l'entité (default: App\Entity\Daplos)
+     * @param bool                 $withRepository Générer aussi le repository
+     * @param bool                 $dryRun         Mode simulation (ne crée pas les fichiers)
+     * @param bool                 $force          Forcer la recréation si l'entité existe
+     *
      * @return array{success: bool, message: string, entity_path: string|null, repository_path: string|null, dry_run: bool}
      */
     public function generateEntity(
@@ -123,7 +120,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
         // Créer le répertoire si nécessaire
         $entityDir = dirname($entityPath);
         if (!is_dir($entityDir)) {
-            mkdir($entityDir, 0755, true);
+            mkdir($entityDir, 0o755, true);
         }
 
         // Écrire l'entité
@@ -138,7 +135,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
             $repositoryDir = dirname($repositoryPath);
             if (!is_dir($repositoryDir)) {
-                mkdir($repositoryDir, 0755, true);
+                mkdir($repositoryDir, 0o755, true);
             }
 
             file_put_contents($repositoryPath, $repositoryContent);
@@ -155,9 +152,9 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
     /**
      * Génère toutes les entités pour tous les référentiels disponibles.
-     * 
+     *
      * Cette méthode est idempotente : elle ne recrée pas les entités existantes.
-     * 
+     *
      * @return array<int, array{success: bool, message: string, entity_name: string, entity_path: string|null}>
      */
     public function generateAllEntities(
@@ -188,16 +185,16 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
     /**
      * Génère le nom de l'entité à partir du nom du référentiel.
-     * Exemple: "Cultures" → "Culture"
+     * Exemple: "Cultures" → "Culture".
      */
     private function generateEntityName(string $referentialName): string
     {
         // Retirer les parenthèses et leur contenu
         $name = preg_replace('/\s*\([^)]*\)/', '', $referentialName);
-        
+
         // Normaliser
         $normalized = $this->normalizeTraitName($name);
-        
+
         // Mettre au singulier si possible (simple heuristique)
         if (str_ends_with($normalized, 's') && strlen($normalized) > 1) {
             $normalized = substr($normalized, 0, -1);
@@ -211,7 +208,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
      */
     private function generateTraitName(string $referentialName): string
     {
-        return $this->normalizeTraitName($referentialName) . 'Trait';
+        return $this->normalizeTraitName($referentialName).'Trait';
     }
 
     /**
@@ -244,7 +241,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
         $mainName = preg_replace('/[^a-zA-Z0-9]/', '', $mainName);
         $qualifier = preg_replace('/[^a-zA-Z0-9]/', '', $qualifier);
 
-        return ucfirst($mainName) . ucfirst($qualifier);
+        return ucfirst($mainName).ucfirst($qualifier);
     }
 
     /**
@@ -253,7 +250,8 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
     private function getEntityPath(string $entityName, string $namespace): string
     {
         $relativePath = str_replace('\\', '/', str_replace('App\\', 'src/', $namespace));
-        return $this->projectDir . '/' . $relativePath . '/' . $entityName . '.php';
+
+        return $this->projectDir.'/'.$relativePath.'/'.$entityName.'.php';
     }
 
     /**
@@ -263,11 +261,14 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
     {
         $relativePath = str_replace('\\Entity', '\\Repository', $namespace);
         $relativePath = str_replace('\\', '/', str_replace('App\\', 'src/', $relativePath));
-        return $this->projectDir . '/' . $relativePath . '/' . $entityName . 'Repository.php';
+
+        return $this->projectDir.'/'.$relativePath.'/'.$entityName.'Repository.php';
     }
 
     /**
      * Génère le contenu PHP de l'entité.
+     *
+     * @param array<string, mixed> $referential
      */
     private function generateEntityContent(
         string $entityName,
@@ -277,56 +278,56 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
         array $referential
     ): string {
         $repositoryNamespace = str_replace('\\Entity', '\\Repository', $namespace);
-        
+
         return <<<PHP
-<?php
+            <?php
 
-declare(strict_types=1);
+            declare(strict_types=1);
 
-namespace {$namespace};
+            namespace {$namespace};
 
-use {$repositoryNamespace}\\{$entityName}Repository;
-use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
-use YoanBernabeu\DaplosBundle\Entity\Trait\\{$traitName};
+            use {$repositoryNamespace}\\{$entityName}Repository;
+            use Doctrine\ORM\Mapping as ORM;
+            use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+            use YoanBernabeu\DaplosBundle\Entity\Trait\\{$traitName};
 
-/**
- * Entité {$entityName}
- * 
- * Correspond au référentiel DAPLOS "{$referential['name']}" (ID: {$referential['id']})
- * Repository Code: {$referential['repository_code']}
- * 
- * Générée automatiquement par DaplosBundle.
- */
-#[ORM\Entity(repositoryClass: {$entityName}Repository::class)]
-#[ORM\Table(name: '{$this->generateTableName($entityName)}')]
-class {$entityName}
-{
-    use {$traitName};
+            /**
+             * Entité {$entityName}
+             * 
+             * Correspond au référentiel DAPLOS "{$referential['name']}" (ID: {$referential['id']})
+             * Repository Code: {$referential['repository_code']}
+             * 
+             * Générée automatiquement par DaplosBundle.
+             */
+            #[ORM\Entity(repositoryClass: {$entityName}Repository::class)]
+            #[ORM\Table(name: '{$this->generateTableName($entityName)}')]
+            class {$entityName}
+            {
+                use {$traitName};
 
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int \$id = null;
+                #[ORM\Id]
+                #[ORM\GeneratedValue]
+                #[ORM\Column]
+                private ?int \$id = null;
 
-    /**
-     * Propriété marquée avec #[DaplosId] pour le mapping automatique.
-     * Le service de synchronisation utilisera cette propriété pour identifier
-     * les entités existantes et éviter les doublons.
-     */
-    #[DaplosId]
-    private ?int \${$propertyPrefix}Id = null;
+                /**
+                 * Propriété marquée avec #[DaplosId] pour le mapping automatique.
+                 * Le service de synchronisation utilisera cette propriété pour identifier
+                 * les entités existantes et éviter les doublons.
+                 */
+                #[DaplosId]
+                private ?int \${$propertyPrefix}Id = null;
 
-    public function getId(): ?int
-    {
-        return \$this->id;
-    }
+                public function getId(): ?int
+                {
+                    return \$this->id;
+                }
 
-    // Les getters/setters pour {$propertyPrefix}Id, {$propertyPrefix}Title, {$propertyPrefix}ReferenceCode
-    // sont fournis par le trait {$traitName}
-}
+                // Les getters/setters pour {$propertyPrefix}Id, {$propertyPrefix}Title, {$propertyPrefix}ReferenceCode
+                // sont fournis par le trait {$traitName}
+            }
 
-PHP;
+            PHP;
     }
 
     /**
@@ -335,43 +336,43 @@ PHP;
     private function generateRepositoryContent(string $entityName, string $namespace): string
     {
         $repositoryNamespace = str_replace('\\Entity', '\\Repository', $namespace);
-        
+
         return <<<PHP
-<?php
+            <?php
 
-declare(strict_types=1);
+            declare(strict_types=1);
 
-namespace {$repositoryNamespace};
+            namespace {$repositoryNamespace};
 
-use {$namespace}\\{$entityName};
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+            use {$namespace}\\{$entityName};
+            use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+            use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * Repository pour l'entité {$entityName}
- * 
- * Générée automatiquement par DaplosBundle.
- * 
- * @extends ServiceEntityRepository<{$entityName}>
- */
-class {$entityName}Repository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry \$registry)
-    {
-        parent::__construct(\$registry, {$entityName}::class);
-    }
+            /**
+             * Repository pour l'entité {$entityName}
+             * 
+             * Générée automatiquement par DaplosBundle.
+             * 
+             * @extends ServiceEntityRepository<{$entityName}>
+             */
+            class {$entityName}Repository extends ServiceEntityRepository
+            {
+                public function __construct(ManagerRegistry \$registry)
+                {
+                    parent::__construct(\$registry, {$entityName}::class);
+                }
 
-    /**
-     * Trouve une entité par son ID DAPLOS.
-     * Utile pour éviter les doublons lors de la synchronisation.
-     */
-    public function findOneByDaplosId(int \$daplosId): ?{$entityName}
-    {
-        return \$this->findOneBy(['{$this->lcfirst($this->normalizeTraitName($entityName))}Id' => \$daplosId]);
-    }
-}
+                /**
+                 * Trouve une entité par son ID DAPLOS.
+                 * Utile pour éviter les doublons lors de la synchronisation.
+                 */
+                public function findOneByDaplosId(int \$daplosId): ?{$entityName}
+                {
+                    return \$this->findOneBy(['{$this->lcfirst($this->normalizeTraitName($entityName))}Id' => \$daplosId]);
+                }
+            }
 
-PHP;
+            PHP;
     }
 
     /**
@@ -391,4 +392,3 @@ PHP;
         return lcfirst($string);
     }
 }
-

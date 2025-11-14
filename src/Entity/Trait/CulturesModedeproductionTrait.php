@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Cultures Mode de production"
+ * Trait pour le référentiel "Cultures Mode de production".
  *
  * Repository Code: List_ProductionType_CodeType
  * Référentiel ID: 703
@@ -32,6 +32,7 @@ trait CulturesModedeproductionTrait
     public function setCulturesModedeproductionId(?int $culturesModedeproductionId): self
     {
         $this->culturesModedeproductionId = $culturesModedeproductionId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CulturesModedeproductionTrait
     public function setCulturesModedeproductionTitle(?string $culturesModedeproductionTitle): self
     {
         $this->culturesModedeproductionTitle = $culturesModedeproductionTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CulturesModedeproductionTrait
     public function setCulturesModedeproductionReferenceCode(?string $culturesModedeproductionReferenceCode): self
     {
         $this->culturesModedeproductionReferenceCode = $culturesModedeproductionReferenceCode;
+
         return $this;
     }
 }

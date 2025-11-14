@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Intervention culturale (Qualifiant)"
+ * Trait pour le référentiel "Intervention culturale (Qualifiant)".
  *
  * Repository Code: List_PlotAgriculturalProcessSubordinateTypeCode_CodeType
  * Référentiel ID: 601
@@ -32,6 +32,7 @@ trait InterventionculturaleQualifiantTrait
     public function setInterventionculturaleQualifiantId(?int $interventionculturaleQualifiantId): self
     {
         $this->interventionculturaleQualifiantId = $interventionculturaleQualifiantId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait InterventionculturaleQualifiantTrait
     public function setInterventionculturaleQualifiantTitle(?string $interventionculturaleQualifiantTitle): self
     {
         $this->interventionculturaleQualifiantTitle = $interventionculturaleQualifiantTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait InterventionculturaleQualifiantTrait
     public function setInterventionculturaleQualifiantReferenceCode(?string $interventionculturaleQualifiantReferenceCode): self
     {
         $this->interventionculturaleQualifiantReferenceCode = $interventionculturaleQualifiantReferenceCode;
+
         return $this;
     }
 }

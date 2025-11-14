@@ -22,7 +22,11 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0|^11.0",
-        "symfony/phpunit-bridge": "^6.4|^7.0"
+        "symfony/phpunit-bridge": "^6.4|^7.0",
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpstan/phpstan": "^1.12",
+        "phpstan/phpstan-doctrine": "^1.5",
+        "phpstan/phpstan-symfony": "^1.4"
     },
     "autoload": {
         "psr-4": {
@@ -33,6 +37,17 @@
         "psr-4": {
             "YoanBernabeu\\DaplosBundle\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "cs-check": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "phpstan": "phpstan analyse --memory-limit=512M",
+        "test": "phpunit",
+        "qa": [
+            "@cs-check",
+            "@phpstan",
+            "@test"
+        ]
     },
     "minimum-stability": "dev",
     "prefer-stable": true

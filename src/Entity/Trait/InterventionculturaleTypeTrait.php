@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Intervention culturale (Type)"
+ * Trait pour le référentiel "Intervention culturale (Type)".
  *
  * Repository Code: List_PlotAgriculturalProcess_CodeType
  * Référentiel ID: 625
@@ -32,6 +32,7 @@ trait InterventionculturaleTypeTrait
     public function setInterventionculturaleTypeId(?int $interventionculturaleTypeId): self
     {
         $this->interventionculturaleTypeId = $interventionculturaleTypeId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait InterventionculturaleTypeTrait
     public function setInterventionculturaleTypeTitle(?string $interventionculturaleTypeTitle): self
     {
         $this->interventionculturaleTypeTitle = $interventionculturaleTypeTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait InterventionculturaleTypeTrait
     public function setInterventionculturaleTypeReferenceCode(?string $interventionculturaleTypeReferenceCode): self
     {
         $this->interventionculturaleTypeReferenceCode = $interventionculturaleTypeReferenceCode;
+
         return $this;
     }
 }

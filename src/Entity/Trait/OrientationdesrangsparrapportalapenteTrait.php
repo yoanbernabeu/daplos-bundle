@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Orientation des rangs par rapport à la pente"
+ * Trait pour le référentiel "Orientation des rangs par rapport à la pente".
  *
  * Repository Code: rep48
  * Référentiel ID: 651
@@ -32,6 +32,7 @@ trait OrientationdesrangsparrapportalapenteTrait
     public function setOrientationdesrangsparrapportalapenteId(?int $orientationdesrangsparrapportalapenteId): self
     {
         $this->orientationdesrangsparrapportalapenteId = $orientationdesrangsparrapportalapenteId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait OrientationdesrangsparrapportalapenteTrait
     public function setOrientationdesrangsparrapportalapenteTitle(?string $orientationdesrangsparrapportalapenteTitle): self
     {
         $this->orientationdesrangsparrapportalapenteTitle = $orientationdesrangsparrapportalapenteTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait OrientationdesrangsparrapportalapenteTrait
     public function setOrientationdesrangsparrapportalapenteReferenceCode(?string $orientationdesrangsparrapportalapenteReferenceCode): self
     {
         $this->orientationdesrangsparrapportalapenteReferenceCode = $orientationdesrangsparrapportalapenteReferenceCode;
+
         return $this;
     }
 }

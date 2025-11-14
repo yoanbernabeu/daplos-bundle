@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Support_organes observés"
+ * Trait pour le référentiel "Support_organes observés".
  *
  * Repository Code: List_AgroObsBasisType_CodeType
  * Référentiel ID: 661
@@ -32,6 +32,7 @@ trait SupportorganesobservesTrait
     public function setSupportorganesobservesId(?int $supportorganesobservesId): self
     {
         $this->supportorganesobservesId = $supportorganesobservesId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait SupportorganesobservesTrait
     public function setSupportorganesobservesTitle(?string $supportorganesobservesTitle): self
     {
         $this->supportorganesobservesTitle = $supportorganesobservesTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait SupportorganesobservesTrait
     public function setSupportorganesobservesReferenceCode(?string $supportorganesobservesReferenceCode): self
     {
         $this->supportorganesobservesReferenceCode = $supportorganesobservesReferenceCode;
+
         return $this;
     }
 }

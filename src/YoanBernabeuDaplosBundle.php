@@ -5,6 +5,9 @@ namespace YoanBernabeu\DaplosBundle;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use YoanBernabeu\DaplosBundle\Client\DaplosApiClient;
 use YoanBernabeu\DaplosBundle\Client\DaplosApiClientInterface;
@@ -15,8 +18,6 @@ use YoanBernabeu\DaplosBundle\Service\EntityGeneratorService;
 use YoanBernabeu\DaplosBundle\Service\EntityGeneratorServiceInterface;
 use YoanBernabeu\DaplosBundle\Service\ReferentialSyncService;
 use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
-
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 /**
  * Bundle Daplos.
@@ -63,6 +64,9 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
         ;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function loadExtension(
         array $config,
         ContainerConfigurator $container,
@@ -120,7 +124,7 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
             ->set(EntityGeneratorService::class)
                 ->args([
                     service(ReferentialSyncServiceInterface::class),
-                    '%kernel.project_dir%'
+                    '%kernel.project_dir%',
                 ])
                 ->public()
 
@@ -152,4 +156,3 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
         return \dirname(__DIR__);
     }
 }
-

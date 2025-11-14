@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Composition chimique"
+ * Trait pour le référentiel "Composition chimique".
  *
  * Repository Code: List_CropInputChemical_CodeType
  * Référentiel ID: 613
@@ -32,6 +32,7 @@ trait CompositionchimiqueTrait
     public function setCompositionchimiqueId(?int $compositionchimiqueId): self
     {
         $this->compositionchimiqueId = $compositionchimiqueId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait CompositionchimiqueTrait
     public function setCompositionchimiqueTitle(?string $compositionchimiqueTitle): self
     {
         $this->compositionchimiqueTitle = $compositionchimiqueTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait CompositionchimiqueTrait
     public function setCompositionchimiqueReferenceCode(?string $compositionchimiqueReferenceCode): self
     {
         $this->compositionchimiqueReferenceCode = $compositionchimiqueReferenceCode;
+
         return $this;
     }
 }

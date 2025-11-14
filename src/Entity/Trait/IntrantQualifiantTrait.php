@@ -5,7 +5,7 @@ namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Trait pour le référentiel "Intrant (qualifiant)"
+ * Trait pour le référentiel "Intrant (qualifiant)".
  *
  * Repository Code: List_AgriculturalProcessCropInputSubordinateTypeCode_CodeType
  * Référentiel ID: 595
@@ -32,6 +32,7 @@ trait IntrantQualifiantTrait
     public function setIntrantQualifiantId(?int $intrantQualifiantId): self
     {
         $this->intrantQualifiantId = $intrantQualifiantId;
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ trait IntrantQualifiantTrait
     public function setIntrantQualifiantTitle(?string $intrantQualifiantTitle): self
     {
         $this->intrantQualifiantTitle = $intrantQualifiantTitle;
+
         return $this;
     }
 
@@ -54,6 +56,7 @@ trait IntrantQualifiantTrait
     public function setIntrantQualifiantReferenceCode(?string $intrantQualifiantReferenceCode): self
     {
         $this->intrantQualifiantReferenceCode = $intrantQualifiantReferenceCode;
+
         return $this;
     }
 }
