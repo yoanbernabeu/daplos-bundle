@@ -3,6 +3,7 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
  * Trait pour le référentiel "Stade de développement de l'élément observé".
@@ -16,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait StadededeveloppementdelelementobserveTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[DaplosId]
     private ?int $stadededeveloppementdelelementobserveId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

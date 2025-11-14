@@ -3,6 +3,7 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
  * Trait pour le référentiel "Culture (Destination)".
@@ -16,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait CultureDestinationTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[DaplosId]
     private ?int $cultureDestinationId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

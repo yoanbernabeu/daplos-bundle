@@ -232,8 +232,11 @@ class ReferentialSyncServiceTest extends TestCase
 
         $result = $this->service->getReferentialDetails(611);
 
-        // getReferentialDetails retourne uniquement le contenu de 'referential'
-        $this->assertEquals($apiData['referential'], $result);
+        // getReferentialDetails retourne le tableau complet avec 'referential' et 'references'
+        $this->assertEquals($apiData, $result);
+        $this->assertArrayHasKey('referential', $result);
+        $this->assertArrayHasKey('references', $result);
+        $this->assertEquals($apiData['referential'], $result['referential']);
     }
 
     public function testSyncReferentialSkipsInvalidReferences(): void

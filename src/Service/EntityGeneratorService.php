@@ -185,21 +185,18 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
     /**
      * Génère le nom de l'entité à partir du nom du référentiel.
+     * Exemple: "Culture (Destination)" → "CultureDestination".
      * Exemple: "Cultures" → "Culture".
+     *
+     * Pour éviter les collisions, on garde les qualifiants entre parenthèses.
      */
     private function generateEntityName(string $referentialName): string
     {
-        // Retirer les parenthèses et leur contenu
-        $name = preg_replace('/\s*\([^)]*\)/', '', $referentialName);
+        // Utiliser la même logique que normalizeTraitName pour conserver les qualifiants
+        $normalized = $this->normalizeTraitName($referentialName);
 
-        // Normaliser
-        $normalized = $this->normalizeTraitName($name);
-
-        // Mettre au singulier si possible (simple heuristique)
-        if (str_ends_with($normalized, 's') && strlen($normalized) > 1) {
-            $normalized = substr($normalized, 0, -1);
-        }
-
+        // Ne pas mettre au singulier - les noms des traits n'ont pas ce traitement
+        // Garder la cohérence avec les traits pour éviter les problèmes de mapping
         return ucfirst($normalized);
     }
 
@@ -288,7 +285,6 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
             use {$repositoryNamespace}\\{$entityName}Repository;
             use Doctrine\ORM\Mapping as ORM;
-            use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
             use YoanBernabeu\DaplosBundle\Entity\Trait\\{$traitName};
 
             /**
@@ -310,14 +306,6 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
                 #[ORM\Column]
                 private ?int \$id = null;
 
-                /**
-                 * Propriété marquée avec #[DaplosId] pour le mapping automatique.
-                 * Le service de synchronisation utilisera cette propriété pour identifier
-                 * les entités existantes et éviter les doublons.
-                 */
-                #[DaplosId]
-                private ?int \${$propertyPrefix}Id = null;
-
                 public function getId(): ?int
                 {
                     return \$this->id;
@@ -325,6 +313,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
                 // Les getters/setters pour {$propertyPrefix}Id, {$propertyPrefix}Title, {$propertyPrefix}ReferenceCode
                 // sont fournis par le trait {$traitName}
+                // La propriété {$propertyPrefix}Id est définie dans le trait avec l'attribut #[DaplosId]
             }
 
             PHP;
@@ -380,8 +369,9 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
      */
     private function generateTableName(string $entityName): string
     {
-        // Convertir CamelCase en snake_case
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $entityName));
+        // Convertir CamelCase en snake_case et ajouter le préfixe daplos_
+        $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $entityName));
+        return 'daplos_' . $tableName;
     }
 
     /**

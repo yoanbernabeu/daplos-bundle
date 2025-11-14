@@ -14,6 +14,7 @@ use YoanBernabeu\DaplosBundle\Client\DaplosApiClientInterface;
 use YoanBernabeu\DaplosBundle\Command\GenerateEntityCommand;
 use YoanBernabeu\DaplosBundle\Command\ListReferentialsCommand;
 use YoanBernabeu\DaplosBundle\Command\ShowReferentialCommand;
+use YoanBernabeu\DaplosBundle\Command\SyncReferentialCommand;
 use YoanBernabeu\DaplosBundle\Service\EntityGeneratorService;
 use YoanBernabeu\DaplosBundle\Service\EntityGeneratorServiceInterface;
 use YoanBernabeu\DaplosBundle\Service\ReferentialSyncService;
@@ -147,6 +148,13 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
 
             ->set(GenerateEntityCommand::class)
                 ->args([service(EntityGeneratorServiceInterface::class)])
+                ->tag('console.command')
+
+            ->set(SyncReferentialCommand::class)
+                ->args([
+                    service(ReferentialSyncServiceInterface::class),
+                    service(EntityGeneratorServiceInterface::class),
+                ])
                 ->tag('console.command')
         ;
     }

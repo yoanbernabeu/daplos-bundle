@@ -155,8 +155,23 @@ class DaplosApiClient implements DaplosApiClientInterface
 
             $data = $response->toArray();
 
-            if (!is_array($data) || !isset($data['referential']) || !isset($data['references'])) {
-                throw new DaplosApiException(sprintf('Structure de données invalide pour le référentiel %d', $referentialId));
+            if (!is_array($data)) {
+                throw new DaplosApiException(sprintf('Structure de données invalide pour le référentiel %d : la réponse n\'est pas un tableau. Type reçu: %s', $referentialId, get_debug_type($data)));
+            }
+
+            // L'API DAPLOS utilise "referencial" (sans 't') au lieu de "referential"
+            // On normalise pour avoir toujours "referential" dans notre code
+            if (isset($data['referencial']) && !isset($data['referential'])) {
+                $data['referential'] = $data['referencial'];
+                unset($data['referencial']);
+            }
+
+            // Vérification de la structure
+            if (!isset($data['referential']) || !isset($data['references'])) {
+                $keys = implode(', ', array_keys($data));
+                $sample = json_encode(array_slice($data, 0, 3), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+                throw new DaplosApiException(sprintf('Structure de données invalide pour le référentiel %d. Clés attendues : [referential, references]. Clés reçues : [%s]. Échantillon des données : %s', $referentialId, $keys, $sample));
             }
 
             return $data;

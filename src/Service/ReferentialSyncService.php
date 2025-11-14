@@ -38,10 +38,24 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         ?callable $mapper = null
     ): array {
         $data = $this->apiClient->getReferential($referentialId);
+        
+        // Vérifier si le référentiel contient des données valides
+        if (!isset($data['references']) || !is_array($data['references'])) {
+            $receivedKeys = array_keys($data);
+            $sample = json_encode(array_slice($data, 0, 3));
+            throw new DaplosApiException(
+                sprintf(
+                    'Structure de données invalide pour le référentiel %d. Clés attendues : [referential, references]. Clés reçues : [%s]. Échantillon des données : %s',
+                    $referentialId,
+                    implode(', ', $receivedKeys),
+                    $sample
+                )
+            );
+        }
+        
         $references = $data['references'];
 
         $stats = ['created' => 0, 'updated' => 0, 'total' => count($references)];
-        $repository = $this->entityManager->getRepository($entityClass);
 
         $this->entityManager->beginTransaction();
 
@@ -55,6 +69,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
                 }
 
                 // Rechercher si l'entité existe déjà
+                // Important : on récupère le repository à chaque fois car clear() peut le détacher
                 $entity = $this->findEntityByDaplosId($entityClass, $daplosId);
 
                 $isNew = false;
@@ -166,9 +181,46 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
             if ($expectedType && !$this->isTypeCompatible($value, $expectedType)) {
                 continue;
             }
+            
+            // Tronquer les chaînes trop longues pour éviter les erreurs SQL
+            $truncatedValue = $this->truncateValueIfNeeded($reflection, $prefix, $suffix, $value);
 
-            $entity->$setterName($value);
+            $entity->$setterName($truncatedValue);
         }
+    }
+    
+    /**
+     * Tronque une valeur si elle dépasse la longueur maximale de la propriété.
+     */
+    private function truncateValueIfNeeded(\ReflectionClass $reflection, string $prefix, string $suffix, mixed $value): mixed
+    {
+        // Ne tronquer que les chaînes
+        if (!is_string($value)) {
+            return $value;
+        }
+        
+        $propertyName = lcfirst($prefix) . $suffix;
+        
+        try {
+            $property = $reflection->getProperty($propertyName);
+            $attributes = $property->getAttributes(\Doctrine\ORM\Mapping\Column::class);
+            
+            if (empty($attributes)) {
+                return $value;
+            }
+            
+            $columnAttribute = $attributes[0]->newInstance();
+            $maxLength = $columnAttribute->length ?? null;
+            
+            if ($maxLength && mb_strlen($value) > $maxLength) {
+                return mb_substr($value, 0, $maxLength);
+            }
+        } catch (\ReflectionException $e) {
+            // Si la propriété n'existe pas, retourner la valeur telle quelle
+            return $value;
+        }
+        
+        return $value;
     }
 
     /**
@@ -286,14 +338,12 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
     /**
      * Récupère les détails d'un référentiel spécifique.
      *
-     * @return array<string, mixed>
+     * @return array{referential: array<string, mixed>, references: array<int, array<string, mixed>>}
      *
      * @throws DaplosApiException
      */
     public function getReferentialDetails(int $referentialId): array
     {
-        $data = $this->apiClient->getReferential($referentialId);
-
-        return $data['referential'];
+        return $this->apiClient->getReferential($referentialId);
     }
 }

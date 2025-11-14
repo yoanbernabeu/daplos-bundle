@@ -38,7 +38,7 @@ interface ReferentialSyncServiceInterface
     /**
      * Récupère les détails d'un référentiel spécifique.
      *
-     * @return array<string, mixed>
+     * @return array{referential: array<string, mixed>, references: array<int, array<string, mixed>>}
      *
      * @throws DaplosApiException
      */

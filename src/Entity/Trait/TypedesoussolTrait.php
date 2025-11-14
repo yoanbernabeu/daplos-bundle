@@ -3,6 +3,7 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
  * Trait pour le référentiel "Type de sous-sol".
@@ -16,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait TypedesoussolTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[DaplosId]
     private ?int $typedesoussolId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

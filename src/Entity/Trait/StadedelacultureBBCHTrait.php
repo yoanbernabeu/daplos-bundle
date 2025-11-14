@@ -3,6 +3,7 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
  * Trait pour le référentiel "Stade de la culture (BBCH)".
@@ -16,9 +17,10 @@ use Doctrine\ORM\Mapping as ORM;
 trait StadedelacultureBBCHTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[DaplosId]
     private ?int $stadedelacultureBBCHId = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 1000, nullable: true)]
     private ?string $stadedelacultureBBCHTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
