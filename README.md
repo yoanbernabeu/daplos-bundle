@@ -51,6 +51,11 @@ php -d memory_limit=1G bin/console daplos:sync --all
 
 ---
 
+## ⚠️ Pré-requis d'Accès
+
+> **Important** : L'accès aux référentiels DAPLOS est restreint. Vous devez être membre de l'association **AgroEDI Europe** pour obtenir vos identifiants d'accès (Login + Clé API).
+> [Voir la liste des adhérents](https://agroedieurope.fr/les-adherents/)
+
 ## 📦 Installation
 
 ```bash
@@ -86,16 +91,16 @@ yoanbernabeu_daplos:
 
 ```bash
 ┌─────────────────────────────────────────────────────────────┐
-│ 1️⃣  php bin/console daplos:generate:entity --all           │
+│ 1️⃣  php bin/console daplos:generate:entity --all            │
 │    👉 Génère 57 entités Doctrine automatiquement            │
-│                                                              │
-│ 2️⃣  php bin/console make:migration                         │
+│                                                             │
+│ 2️⃣  php bin/console make:migration                          │
 │    👉 Crée les migrations de base de données                │
-│                                                              │
-│ 3️⃣  php bin/console doctrine:migrations:migrate            │
+│                                                             │
+│ 3️⃣  php bin/console doctrine:migrations:migrate             │
 │    👉 Applique les migrations                               │
-│                                                              │
-│ 4️⃣  php bin/console daplos:sync --all                      │
+│                                                             │
+│ 4️⃣  php bin/console daplos:sync --all                       │
 │    👉 Synchronise toutes les données (15 000+ items)        │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -525,7 +530,7 @@ Les référentiels exclus seront automatiquement filtrés lors de la génératio
 
 ## 📝 Licence
 
-MIT
+[MIT](LICENSE)
 
 ## 👤 Auteur
 
