@@ -16,9 +16,6 @@
 | IntrantEtQualifiantDIntrantTrait | Intrant et qualifiant d'intrant | 595 | List_AgriculturalProcessCropInputSubordinateTypeCode_CodeType |
 | JustificationDeLInterventionTrait | Justification de l'intervention | 599 | List_AgriculturalProcessReason_CodeType |
 | JustificationDeLaCultureTrait | Justification de la culture | 623 | List_PlantingReasonCode_CodeType |
-| MaterielAgricoleNePlusUtiliserSuppressionEnMai2026Trait | Matériel Agricole - Ne plus utiliser - Suppression en mai 2026 | 699 | List_AgriculturalEquipmentBCMA_CodeType |
-| MaterielAgricoleNePlusUtiliserSuppressionMai2026CategorieTrait | Matériel Agricole (Catégorie) - Ne plus utiliser suppression Mai 2026 | 697 | List_AgriculturalEquipmentCategory_CodeType |
-| MaterielAgricoleNePasUtiliserSuppressionMai2026TypeTrait | Matériel Agricole (Type) - Ne pas utiliser - Suppression Mai 2026 | 693 | List_AgriculturalEquipment_CodeType |
 | MethodeDeMesureTrait | Méthode de mesure | 621 | List_MeasurementMethodCode_CodeType |
 | MethodeDeNotationTrait | Méthode de notation | 663 | List_NotationMethodology_CodeType |
 | ModeDeProductionTrait | Mode de production | 703 | List_ProductionType_CodeType |
@@ -30,7 +27,6 @@
 | OrientationDesRangsParRapportALaPenteTrait | Orientation des rangs par rapport à la pente | 651 | rep48 |
 | PeriodeDeSemisDUneCultureTrait | Période de semis d’une culture | 631 | List_SowingPeriodCode_CodeType |
 | PiegeTrait | Piège | 667 | List_TrapType_CodeType |
-| ProduitRecolteGtRempalcerParDestinationDUneCultureNePlusUtiliserSuppressionMai2026Trait | Produit récolté (Ne plus utiliser suppression Mai 2026) --&gt; Rempalcer par destination d'une culture | 609 | List_AgriculturalProduceUseCode_CodeType |
 | ProfilVegetatifTrait | Profil végétatif | 657 | Profils végétatifs |
 | ProtocoleDgalTrait | Protocole DGAL | 683 | List_ProtocoleFormTemplate_CodeType |
 | QualifiantDUneCultureTrait | Qualifiant d'une culture | 639 | List_SupplementaryBotanicalSpecies_CodeType |

@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Orientation des rangs par rapport à la pente"
+ * Trait pour le référentiel "Orientation des rangs par rapport à la pente".
  *
  * Repository Code: rep48
  * Référentiel ID: 651
  * Nombre d'items: 3
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété orientationDesRangsParRapportALaPenteId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $orientationDesRangsParRapportALaPenteId = null;
  */
 trait OrientationDesRangsParRapportALaPenteTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $orientationDesRangsParRapportALaPenteId = null;
 
@@ -40,6 +42,7 @@ trait OrientationDesRangsParRapportALaPenteTrait
     public function setOrientationDesRangsParRapportALaPenteId(?int $orientationDesRangsParRapportALaPenteId): self
     {
         $this->orientationDesRangsParRapportALaPenteId = $orientationDesRangsParRapportALaPenteId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait OrientationDesRangsParRapportALaPenteTrait
     public function setOrientationDesRangsParRapportALaPenteTitle(?string $orientationDesRangsParRapportALaPenteTitle): self
     {
         $this->orientationDesRangsParRapportALaPenteTitle = $orientationDesRangsParRapportALaPenteTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait OrientationDesRangsParRapportALaPenteTrait
     public function setOrientationDesRangsParRapportALaPenteReferenceCode(?string $orientationDesRangsParRapportALaPenteReferenceCode): self
     {
         $this->orientationDesRangsParRapportALaPenteReferenceCode = $orientationDesRangsParRapportALaPenteReferenceCode;
+
         return $this;
     }
 }

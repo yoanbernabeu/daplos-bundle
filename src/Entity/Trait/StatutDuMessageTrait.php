@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Statut du message"
+ * Trait pour le référentiel "Statut du message".
  *
  * Repository Code: List_StatusCodeType
  * Référentiel ID: 679
  * Nombre d'items: 3
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété statutDuMessageId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $statutDuMessageId = null;
  */
 trait StatutDuMessageTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $statutDuMessageId = null;
 
@@ -40,6 +42,7 @@ trait StatutDuMessageTrait
     public function setStatutDuMessageId(?int $statutDuMessageId): self
     {
         $this->statutDuMessageId = $statutDuMessageId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait StatutDuMessageTrait
     public function setStatutDuMessageTitle(?string $statutDuMessageTitle): self
     {
         $this->statutDuMessageTitle = $statutDuMessageTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait StatutDuMessageTrait
     public function setStatutDuMessageReferenceCode(?string $statutDuMessageReferenceCode): self
     {
         $this->statutDuMessageReferenceCode = $statutDuMessageReferenceCode;
+
         return $this;
     }
 }

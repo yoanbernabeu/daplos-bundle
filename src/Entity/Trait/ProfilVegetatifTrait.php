@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Profil végétatif"
+ * Trait pour le référentiel "Profil végétatif".
  *
  * Repository Code: Profils végétatifs
  * Référentiel ID: 657
  * Nombre d'items: 57
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété profilVegetatifId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $profilVegetatifId = null;
  */
 trait ProfilVegetatifTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $profilVegetatifId = null;
 
@@ -40,6 +42,7 @@ trait ProfilVegetatifTrait
     public function setProfilVegetatifId(?int $profilVegetatifId): self
     {
         $this->profilVegetatifId = $profilVegetatifId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait ProfilVegetatifTrait
     public function setProfilVegetatifTitle(?string $profilVegetatifTitle): self
     {
         $this->profilVegetatifTitle = $profilVegetatifTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait ProfilVegetatifTrait
     public function setProfilVegetatifReferenceCode(?string $profilVegetatifReferenceCode): self
     {
         $this->profilVegetatifReferenceCode = $profilVegetatifReferenceCode;
+
         return $this;
     }
 }

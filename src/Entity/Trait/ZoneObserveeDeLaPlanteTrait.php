@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Zone observée de la plante"
+ * Trait pour le référentiel "Zone observée de la plante".
  *
  * Repository Code: List_AgroObsBasisType_CodeType
  * Référentiel ID: 661
  * Nombre d'items: 114
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété zoneObserveeDeLaPlanteId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $zoneObserveeDeLaPlanteId = null;
  */
 trait ZoneObserveeDeLaPlanteTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $zoneObserveeDeLaPlanteId = null;
 
@@ -40,6 +42,7 @@ trait ZoneObserveeDeLaPlanteTrait
     public function setZoneObserveeDeLaPlanteId(?int $zoneObserveeDeLaPlanteId): self
     {
         $this->zoneObserveeDeLaPlanteId = $zoneObserveeDeLaPlanteId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait ZoneObserveeDeLaPlanteTrait
     public function setZoneObserveeDeLaPlanteTitle(?string $zoneObserveeDeLaPlanteTitle): self
     {
         $this->zoneObserveeDeLaPlanteTitle = $zoneObserveeDeLaPlanteTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait ZoneObserveeDeLaPlanteTrait
     public function setZoneObserveeDeLaPlanteReferenceCode(?string $zoneObserveeDeLaPlanteReferenceCode): self
     {
         $this->zoneObserveeDeLaPlanteReferenceCode = $zoneObserveeDeLaPlanteReferenceCode;
+
         return $this;
     }
 }

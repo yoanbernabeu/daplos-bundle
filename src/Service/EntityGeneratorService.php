@@ -238,7 +238,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
         foreach ($words as $word) {
             // Ne garder que les caractères alphanumériques du mot
             $cleanWord = preg_replace('/[^a-zA-Z0-9]/', '', $word);
-            if ($cleanWord !== '') {
+            if ('' !== $cleanWord) {
                 $camelCase .= ucfirst(strtolower($cleanWord));
             }
         }
@@ -260,7 +260,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
         // Convertir en CamelCase
         $mainNameCamelCase = $this->toCamelCase($mainName);
-        $qualifierCamelCase = $qualifier !== '' ? $this->toCamelCase($qualifier) : '';
+        $qualifierCamelCase = '' !== $qualifier ? $this->toCamelCase($qualifier) : '';
 
         return $mainNameCamelCase.$qualifierCamelCase;
     }

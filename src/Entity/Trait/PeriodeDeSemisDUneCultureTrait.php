@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Période de semis d’une culture"
+ * Trait pour le référentiel "Période de semis d’une culture".
  *
  * Repository Code: List_SowingPeriodCode_CodeType
  * Référentiel ID: 631
  * Nombre d'items: 2
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété periodeDeSemisDUneCultureId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $periodeDeSemisDUneCultureId = null;
  */
 trait PeriodeDeSemisDUneCultureTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $periodeDeSemisDUneCultureId = null;
 
@@ -40,6 +42,7 @@ trait PeriodeDeSemisDUneCultureTrait
     public function setPeriodeDeSemisDUneCultureId(?int $periodeDeSemisDUneCultureId): self
     {
         $this->periodeDeSemisDUneCultureId = $periodeDeSemisDUneCultureId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait PeriodeDeSemisDUneCultureTrait
     public function setPeriodeDeSemisDUneCultureTitle(?string $periodeDeSemisDUneCultureTitle): self
     {
         $this->periodeDeSemisDUneCultureTitle = $periodeDeSemisDUneCultureTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait PeriodeDeSemisDUneCultureTrait
     public function setPeriodeDeSemisDUneCultureReferenceCode(?string $periodeDeSemisDUneCultureReferenceCode): self
     {
         $this->periodeDeSemisDUneCultureReferenceCode = $periodeDeSemisDUneCultureReferenceCode;
+
         return $this;
     }
 }

@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Organisme vivant (cible ou auxiliaire)"
+ * Trait pour le référentiel "Organisme vivant (cible ou auxiliaire)".
  *
  * Repository Code: List_PestName_CodeType
  * Référentiel ID: 615
  * Nombre d'items: 2424
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété organismeVivantCibleOuAuxiliaireId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $organismeVivantCibleOuAuxiliaireId = null;
  */
 trait OrganismeVivantCibleOuAuxiliaireTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $organismeVivantCibleOuAuxiliaireId = null;
 
@@ -40,6 +42,7 @@ trait OrganismeVivantCibleOuAuxiliaireTrait
     public function setOrganismeVivantCibleOuAuxiliaireId(?int $organismeVivantCibleOuAuxiliaireId): self
     {
         $this->organismeVivantCibleOuAuxiliaireId = $organismeVivantCibleOuAuxiliaireId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait OrganismeVivantCibleOuAuxiliaireTrait
     public function setOrganismeVivantCibleOuAuxiliaireTitle(?string $organismeVivantCibleOuAuxiliaireTitle): self
     {
         $this->organismeVivantCibleOuAuxiliaireTitle = $organismeVivantCibleOuAuxiliaireTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait OrganismeVivantCibleOuAuxiliaireTrait
     public function setOrganismeVivantCibleOuAuxiliaireReferenceCode(?string $organismeVivantCibleOuAuxiliaireReferenceCode): self
     {
         $this->organismeVivantCibleOuAuxiliaireReferenceCode = $organismeVivantCibleOuAuxiliaireReferenceCode;
+
         return $this;
     }
 }

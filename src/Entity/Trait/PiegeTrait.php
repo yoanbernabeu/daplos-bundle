@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Piège"
+ * Trait pour le référentiel "Piège".
  *
  * Repository Code: List_TrapType_CodeType
  * Référentiel ID: 667
  * Nombre d'items: 40
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété piegeId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $piegeId = null;
  */
 trait PiegeTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $piegeId = null;
 
@@ -40,6 +42,7 @@ trait PiegeTrait
     public function setPiegeId(?int $piegeId): self
     {
         $this->piegeId = $piegeId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait PiegeTrait
     public function setPiegeTitle(?string $piegeTitle): self
     {
         $this->piegeTitle = $piegeTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait PiegeTrait
     public function setPiegeReferenceCode(?string $piegeReferenceCode): self
     {
         $this->piegeReferenceCode = $piegeReferenceCode;
+
         return $this;
     }
 }

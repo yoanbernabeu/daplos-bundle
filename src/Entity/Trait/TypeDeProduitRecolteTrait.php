@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Type de produit récolté"
+ * Trait pour le référentiel "Type de produit récolté".
  *
  * Repository Code: List_AgriculturalProduce_CodeType
  * Référentiel ID: 605
  * Nombre d'items: 6
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété typeDeProduitRecolteId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $typeDeProduitRecolteId = null;
  */
 trait TypeDeProduitRecolteTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $typeDeProduitRecolteId = null;
 
@@ -40,6 +42,7 @@ trait TypeDeProduitRecolteTrait
     public function setTypeDeProduitRecolteId(?int $typeDeProduitRecolteId): self
     {
         $this->typeDeProduitRecolteId = $typeDeProduitRecolteId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait TypeDeProduitRecolteTrait
     public function setTypeDeProduitRecolteTitle(?string $typeDeProduitRecolteTitle): self
     {
         $this->typeDeProduitRecolteTitle = $typeDeProduitRecolteTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait TypeDeProduitRecolteTrait
     public function setTypeDeProduitRecolteReferenceCode(?string $typeDeProduitRecolteReferenceCode): self
     {
         $this->typeDeProduitRecolteReferenceCode = $typeDeProduitRecolteReferenceCode;
+
         return $this;
     }
 }

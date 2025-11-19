@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Surface exprimée"
+ * Trait pour le référentiel "Surface exprimée".
  *
  * Repository Code: List_AgriculturalArea_CodeType
  * Référentiel ID: 641
  * Nombre d'items: 17
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété surfaceExprimeeId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $surfaceExprimeeId = null;
  */
 trait SurfaceExprimeeTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $surfaceExprimeeId = null;
 
@@ -40,6 +42,7 @@ trait SurfaceExprimeeTrait
     public function setSurfaceExprimeeId(?int $surfaceExprimeeId): self
     {
         $this->surfaceExprimeeId = $surfaceExprimeeId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait SurfaceExprimeeTrait
     public function setSurfaceExprimeeTitle(?string $surfaceExprimeeTitle): self
     {
         $this->surfaceExprimeeTitle = $surfaceExprimeeTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait SurfaceExprimeeTrait
     public function setSurfaceExprimeeReferenceCode(?string $surfaceExprimeeReferenceCode): self
     {
         $this->surfaceExprimeeReferenceCode = $surfaceExprimeeReferenceCode;
+
         return $this;
     }
 }

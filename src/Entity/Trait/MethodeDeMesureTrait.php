@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Méthode de mesure"
+ * Trait pour le référentiel "Méthode de mesure".
  *
  * Repository Code: List_MeasurementMethodCode_CodeType
  * Référentiel ID: 621
  * Nombre d'items: 8
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété methodeDeMesureId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $methodeDeMesureId = null;
  */
 trait MethodeDeMesureTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $methodeDeMesureId = null;
 
@@ -40,6 +42,7 @@ trait MethodeDeMesureTrait
     public function setMethodeDeMesureId(?int $methodeDeMesureId): self
     {
         $this->methodeDeMesureId = $methodeDeMesureId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait MethodeDeMesureTrait
     public function setMethodeDeMesureTitle(?string $methodeDeMesureTitle): self
     {
         $this->methodeDeMesureTitle = $methodeDeMesureTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait MethodeDeMesureTrait
     public function setMethodeDeMesureReferenceCode(?string $methodeDeMesureReferenceCode): self
     {
         $this->methodeDeMesureReferenceCode = $methodeDeMesureReferenceCode;
+
         return $this;
     }
 }

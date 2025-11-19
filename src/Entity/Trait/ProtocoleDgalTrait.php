@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Protocole DGAL"
+ * Trait pour le référentiel "Protocole DGAL".
  *
  * Repository Code: List_ProtocoleFormTemplate_CodeType
  * Référentiel ID: 683
  * Nombre d'items: 2
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété protocoleDgalId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $protocoleDgalId = null;
  */
 trait ProtocoleDgalTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $protocoleDgalId = null;
 
@@ -40,6 +42,7 @@ trait ProtocoleDgalTrait
     public function setProtocoleDgalId(?int $protocoleDgalId): self
     {
         $this->protocoleDgalId = $protocoleDgalId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait ProtocoleDgalTrait
     public function setProtocoleDgalTitle(?string $protocoleDgalTitle): self
     {
         $this->protocoleDgalTitle = $protocoleDgalTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait ProtocoleDgalTrait
     public function setProtocoleDgalReferenceCode(?string $protocoleDgalReferenceCode): self
     {
         $this->protocoleDgalReferenceCode = $protocoleDgalReferenceCode;
+
         return $this;
     }
 }

@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Type de l'organisme vivant et observation"
+ * Trait pour le référentiel "Type de l'organisme vivant et observation".
  *
  * Repository Code: List_PestType_CodeType
  * Référentiel ID: 675
  * Nombre d'items: 10
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété typeDeLOrganismeVivantEtObservationId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $typeDeLOrganismeVivantEtObservationId = null;
  */
 trait TypeDeLOrganismeVivantEtObservationTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $typeDeLOrganismeVivantEtObservationId = null;
 
@@ -40,6 +42,7 @@ trait TypeDeLOrganismeVivantEtObservationTrait
     public function setTypeDeLOrganismeVivantEtObservationId(?int $typeDeLOrganismeVivantEtObservationId): self
     {
         $this->typeDeLOrganismeVivantEtObservationId = $typeDeLOrganismeVivantEtObservationId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait TypeDeLOrganismeVivantEtObservationTrait
     public function setTypeDeLOrganismeVivantEtObservationTitle(?string $typeDeLOrganismeVivantEtObservationTitle): self
     {
         $this->typeDeLOrganismeVivantEtObservationTitle = $typeDeLOrganismeVivantEtObservationTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait TypeDeLOrganismeVivantEtObservationTrait
     public function setTypeDeLOrganismeVivantEtObservationReferenceCode(?string $typeDeLOrganismeVivantEtObservationReferenceCode): self
     {
         $this->typeDeLOrganismeVivantEtObservationReferenceCode = $typeDeLOrganismeVivantEtObservationReferenceCode;
+
         return $this;
     }
 }

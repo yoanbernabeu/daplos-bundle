@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Sous-type de l'organisme vivant"
+ * Trait pour le référentiel "Sous-type de l'organisme vivant".
  *
  * Repository Code: List_PestSubType
  * Référentiel ID: 912
  * Nombre d'items: 20
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété sousTypeDeLOrganismeVivantId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $sousTypeDeLOrganismeVivantId = null;
  */
 trait SousTypeDeLOrganismeVivantTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $sousTypeDeLOrganismeVivantId = null;
 
@@ -40,6 +42,7 @@ trait SousTypeDeLOrganismeVivantTrait
     public function setSousTypeDeLOrganismeVivantId(?int $sousTypeDeLOrganismeVivantId): self
     {
         $this->sousTypeDeLOrganismeVivantId = $sousTypeDeLOrganismeVivantId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait SousTypeDeLOrganismeVivantTrait
     public function setSousTypeDeLOrganismeVivantTitle(?string $sousTypeDeLOrganismeVivantTitle): self
     {
         $this->sousTypeDeLOrganismeVivantTitle = $sousTypeDeLOrganismeVivantTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait SousTypeDeLOrganismeVivantTrait
     public function setSousTypeDeLOrganismeVivantReferenceCode(?string $sousTypeDeLOrganismeVivantReferenceCode): self
     {
         $this->sousTypeDeLOrganismeVivantReferenceCode = $sousTypeDeLOrganismeVivantReferenceCode;
+
         return $this;
     }
 }

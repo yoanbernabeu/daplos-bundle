@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Intrant et qualifiant d'intrant"
+ * Trait pour le référentiel "Intrant et qualifiant d'intrant".
  *
  * Repository Code: List_AgriculturalProcessCropInputSubordinateTypeCode_CodeType
  * Référentiel ID: 595
  * Nombre d'items: 122
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété intrantEtQualifiantDIntrantId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $intrantEtQualifiantDIntrantId = null;
  */
 trait IntrantEtQualifiantDIntrantTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $intrantEtQualifiantDIntrantId = null;
 
@@ -40,6 +42,7 @@ trait IntrantEtQualifiantDIntrantTrait
     public function setIntrantEtQualifiantDIntrantId(?int $intrantEtQualifiantDIntrantId): self
     {
         $this->intrantEtQualifiantDIntrantId = $intrantEtQualifiantDIntrantId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait IntrantEtQualifiantDIntrantTrait
     public function setIntrantEtQualifiantDIntrantTitle(?string $intrantEtQualifiantDIntrantTitle): self
     {
         $this->intrantEtQualifiantDIntrantTitle = $intrantEtQualifiantDIntrantTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait IntrantEtQualifiantDIntrantTrait
     public function setIntrantEtQualifiantDIntrantReferenceCode(?string $intrantEtQualifiantDIntrantReferenceCode): self
     {
         $this->intrantEtQualifiantDIntrantReferenceCode = $intrantEtQualifiantDIntrantReferenceCode;
+
         return $this;
     }
 }

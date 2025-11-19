@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Statut d'une intervention"
+ * Trait pour le référentiel "Statut d'une intervention".
  *
  * Repository Code: List_PlotAgriculturalProcessSubordinateTypeCode_CodeType
  * Référentiel ID: 601
  * Nombre d'items: 4
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété statutDUneInterventionId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $statutDUneInterventionId = null;
  */
 trait StatutDUneInterventionTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $statutDUneInterventionId = null;
 
@@ -40,6 +42,7 @@ trait StatutDUneInterventionTrait
     public function setStatutDUneInterventionId(?int $statutDUneInterventionId): self
     {
         $this->statutDUneInterventionId = $statutDUneInterventionId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait StatutDUneInterventionTrait
     public function setStatutDUneInterventionTitle(?string $statutDUneInterventionTitle): self
     {
         $this->statutDUneInterventionTitle = $statutDUneInterventionTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait StatutDUneInterventionTrait
     public function setStatutDUneInterventionReferenceCode(?string $statutDUneInterventionReferenceCode): self
     {
         $this->statutDUneInterventionReferenceCode = $statutDUneInterventionReferenceCode;
+
         return $this;
     }
 }

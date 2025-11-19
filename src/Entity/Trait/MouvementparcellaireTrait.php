@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Mouvement parcellaire"
+ * Trait pour le référentiel "Mouvement parcellaire".
  *
  * Repository Code: List_Movement_CodeType
  * Référentiel ID: 691
  * Nombre d'items: 2
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété mouvementParcellaireId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $mouvementParcellaireId = null;
  */
 trait MouvementParcellaireTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $mouvementParcellaireId = null;
 
@@ -40,6 +42,7 @@ trait MouvementParcellaireTrait
     public function setMouvementParcellaireId(?int $mouvementParcellaireId): self
     {
         $this->mouvementParcellaireId = $mouvementParcellaireId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait MouvementParcellaireTrait
     public function setMouvementParcellaireTitle(?string $mouvementParcellaireTitle): self
     {
         $this->mouvementParcellaireTitle = $mouvementParcellaireTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait MouvementParcellaireTrait
     public function setMouvementParcellaireReferenceCode(?string $mouvementParcellaireReferenceCode): self
     {
         $this->mouvementParcellaireReferenceCode = $mouvementParcellaireReferenceCode;
+
         return $this;
     }
 }

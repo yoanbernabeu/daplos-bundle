@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Zone rattachée à la parcelle culturale"
+ * Trait pour le référentiel "Zone rattachée à la parcelle culturale".
  *
  * Repository Code: List_AgriculturalCountrySubdivision_CodeType
  * Référentiel ID: 687
  * Nombre d'items: 2
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété zoneRattacheeALaParcelleCulturaleId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $zoneRattacheeALaParcelleCulturaleId = null;
  */
 trait ZoneRattacheeALaParcelleCulturaleTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $zoneRattacheeALaParcelleCulturaleId = null;
 
@@ -40,6 +42,7 @@ trait ZoneRattacheeALaParcelleCulturaleTrait
     public function setZoneRattacheeALaParcelleCulturaleId(?int $zoneRattacheeALaParcelleCulturaleId): self
     {
         $this->zoneRattacheeALaParcelleCulturaleId = $zoneRattacheeALaParcelleCulturaleId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait ZoneRattacheeALaParcelleCulturaleTrait
     public function setZoneRattacheeALaParcelleCulturaleTitle(?string $zoneRattacheeALaParcelleCulturaleTitle): self
     {
         $this->zoneRattacheeALaParcelleCulturaleTitle = $zoneRattacheeALaParcelleCulturaleTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait ZoneRattacheeALaParcelleCulturaleTrait
     public function setZoneRattacheeALaParcelleCulturaleReferenceCode(?string $zoneRattacheeALaParcelleCulturaleReferenceCode): self
     {
         $this->zoneRattacheeALaParcelleCulturaleReferenceCode = $zoneRattacheeALaParcelleCulturaleReferenceCode;
+
         return $this;
     }
 }

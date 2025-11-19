@@ -489,6 +489,30 @@ php bin/generate-traits --dry-run
 
 **Note** : Ce script est un outil de maintenance réservé aux mainteneurs du bundle. Les utilisateurs finaux n'ont pas besoin de l'utiliser car les traits sont déjà fournis avec le bundle.
 
+#### Exclure des référentiels abandonnés
+
+Pour exclure certains référentiels abandonnés de la génération, créez un fichier `.excluded-referentials.json` à la racine du projet :
+
+```json
+{
+    "description": "Liste des référentiels à exclure de la génération des traits",
+    "ids": [123, 456],
+    "names": ["Nom du référentiel abandonné"]
+}
+```
+
+Vous pouvez également utiliser les options en ligne de commande :
+
+```bash
+# Exclure par IDs
+php bin/generate-traits --exclude-ids=123,456
+
+# Utiliser un fichier d'exclusion personnalisé
+php bin/generate-traits --exclude-file=/path/to/excluded-referentials.json
+```
+
+Les référentiels exclus seront automatiquement filtrés lors de la génération. Le fichier `.excluded-referentials.json` est automatiquement détecté s'il existe à la racine du projet.
+
 ## Dépendances
 
 - PHP >= 8.1

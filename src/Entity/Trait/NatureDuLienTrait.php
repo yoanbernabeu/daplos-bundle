@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Nature du lien"
+ * Trait pour le référentiel "Nature du lien".
  *
  * Repository Code: List_linktype_CodeType
  * Référentiel ID: 895
  * Nombre d'items: 3
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété natureDuLienId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $natureDuLienId = null;
  */
 trait NatureDuLienTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $natureDuLienId = null;
 
@@ -40,6 +42,7 @@ trait NatureDuLienTrait
     public function setNatureDuLienId(?int $natureDuLienId): self
     {
         $this->natureDuLienId = $natureDuLienId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait NatureDuLienTrait
     public function setNatureDuLienTitle(?string $natureDuLienTitle): self
     {
         $this->natureDuLienTitle = $natureDuLienTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait NatureDuLienTrait
     public function setNatureDuLienReferenceCode(?string $natureDuLienReferenceCode): self
     {
         $this->natureDuLienReferenceCode = $natureDuLienReferenceCode;
+
         return $this;
     }
 }

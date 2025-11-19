@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Famille d'intrant"
+ * Trait pour le référentiel "Famille d'intrant".
  *
  * Repository Code: List_AgriculturalProcessCropInput_CodeType
  * Référentiel ID: 593
  * Nombre d'items: 35
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété familleDIntrantId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $familleDIntrantId = null;
  */
 trait FamilleDIntrantTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $familleDIntrantId = null;
 
@@ -40,6 +42,7 @@ trait FamilleDIntrantTrait
     public function setFamilleDIntrantId(?int $familleDIntrantId): self
     {
         $this->familleDIntrantId = $familleDIntrantId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait FamilleDIntrantTrait
     public function setFamilleDIntrantTitle(?string $familleDIntrantTitle): self
     {
         $this->familleDIntrantTitle = $familleDIntrantTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait FamilleDIntrantTrait
     public function setFamilleDIntrantReferenceCode(?string $familleDIntrantReferenceCode): self
     {
         $this->familleDIntrantReferenceCode = $familleDIntrantReferenceCode;
+
         return $this;
     }
 }

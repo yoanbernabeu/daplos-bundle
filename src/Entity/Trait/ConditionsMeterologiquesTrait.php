@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Conditions métérologiques"
+ * Trait pour le référentiel "Conditions métérologiques".
  *
  * Repository Code: List_AgriculturalProcessCondition_CodeType
  * Référentiel ID: 591
  * Nombre d'items: 12
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété conditionsMeterologiquesId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $conditionsMeterologiquesId = null;
  */
 trait ConditionsMeterologiquesTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $conditionsMeterologiquesId = null;
 
@@ -40,6 +42,7 @@ trait ConditionsMeterologiquesTrait
     public function setConditionsMeterologiquesId(?int $conditionsMeterologiquesId): self
     {
         $this->conditionsMeterologiquesId = $conditionsMeterologiquesId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait ConditionsMeterologiquesTrait
     public function setConditionsMeterologiquesTitle(?string $conditionsMeterologiquesTitle): self
     {
         $this->conditionsMeterologiquesTitle = $conditionsMeterologiquesTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait ConditionsMeterologiquesTrait
     public function setConditionsMeterologiquesReferenceCode(?string $conditionsMeterologiquesReferenceCode): self
     {
         $this->conditionsMeterologiquesReferenceCode = $conditionsMeterologiquesReferenceCode;
+
         return $this;
     }
 }

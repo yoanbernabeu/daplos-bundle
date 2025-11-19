@@ -1,0 +1,15 @@
+{
+    "description": "Liste des référentiels abandonnés à exclure de la génération des traits",
+    "ids": [
+        609,
+        693,
+        697,
+        699
+    ],
+    "names": [
+        "Produit récolté (Ne plus utiliser suppression Mai 2026) --> Rempalcer par destination d'une culture",
+        "Matériel Agricole (Type) - Ne pas utiliser - Suppression Mai 2026",
+        "Matériel Agricole (Catégorie) - Ne plus utiliser suppression Mai 2026",
+        "Matériel Agricole - Ne plus utiliser - Suppression en mai 2026"
+    ]
+}

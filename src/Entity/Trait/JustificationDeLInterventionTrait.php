@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Justification de l'intervention"
+ * Trait pour le référentiel "Justification de l'intervention".
  *
  * Repository Code: List_AgriculturalProcessReason_CodeType
  * Référentiel ID: 599
  * Nombre d'items: 19
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété justificationDeLInterventionId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $justificationDeLInterventionId = null;
  */
 trait JustificationDeLInterventionTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $justificationDeLInterventionId = null;
 
@@ -40,6 +42,7 @@ trait JustificationDeLInterventionTrait
     public function setJustificationDeLInterventionId(?int $justificationDeLInterventionId): self
     {
         $this->justificationDeLInterventionId = $justificationDeLInterventionId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait JustificationDeLInterventionTrait
     public function setJustificationDeLInterventionTitle(?string $justificationDeLInterventionTitle): self
     {
         $this->justificationDeLInterventionTitle = $justificationDeLInterventionTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait JustificationDeLInterventionTrait
     public function setJustificationDeLInterventionReferenceCode(?string $justificationDeLInterventionReferenceCode): self
     {
         $this->justificationDeLInterventionReferenceCode = $justificationDeLInterventionReferenceCode;
+
         return $this;
     }
 }

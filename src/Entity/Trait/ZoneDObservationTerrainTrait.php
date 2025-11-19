@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Zone d’observation terrain"
+ * Trait pour le référentiel "Zone d’observation terrain".
  *
  * Repository Code: List_SpecifiedLocation_CodeType
  * Référentiel ID: 677
  * Nombre d'items: 2
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété zoneDObservationTerrainId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $zoneDObservationTerrainId = null;
  */
 trait ZoneDObservationTerrainTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $zoneDObservationTerrainId = null;
 
@@ -40,6 +42,7 @@ trait ZoneDObservationTerrainTrait
     public function setZoneDObservationTerrainId(?int $zoneDObservationTerrainId): self
     {
         $this->zoneDObservationTerrainId = $zoneDObservationTerrainId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait ZoneDObservationTerrainTrait
     public function setZoneDObservationTerrainTitle(?string $zoneDObservationTerrainTitle): self
     {
         $this->zoneDObservationTerrainTitle = $zoneDObservationTerrainTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait ZoneDObservationTerrainTrait
     public function setZoneDObservationTerrainReferenceCode(?string $zoneDObservationTerrainReferenceCode): self
     {
         $this->zoneDObservationTerrainReferenceCode = $zoneDObservationTerrainReferenceCode;
+
         return $this;
     }
 }

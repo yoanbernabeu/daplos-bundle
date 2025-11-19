@@ -15,6 +15,14 @@
  *   php bin/generate-traits
  *   php bin/generate-traits --dry-run
  *   php bin/generate-traits --output-dir=/custom/path
+ *   php bin/generate-traits --exclude-ids=123,456
+ *   php bin/generate-traits --exclude-file=/path/to/excluded-referentials.json
+ * 
+ * Exclusion de référentiels:
+ *   Les référentiels abandonnés peuvent être exclus via le fichier .excluded-referentials.json
+ *   à la racine du projet. Format JSON avec deux clés optionnelles:
+ *   - "ids": [123, 456] - Liste des IDs de référentiels à exclure
+ *   - "names": ["Nom du référentiel"] - Liste des noms de référentiels à exclure
  * 
  * @author Yoan Bernabeu
  * @internal
@@ -37,6 +45,8 @@ $config = [
 
 $outputDir = null;
 $dryRun = false;
+$excludeFile = null;
+$excludeIds = [];
 
 // Parse arguments
 foreach ($argv as $arg) {
@@ -44,8 +54,32 @@ foreach ($argv as $arg) {
         $dryRun = true;
     } elseif (str_starts_with($arg, '--output-dir=')) {
         $outputDir = substr($arg, strlen('--output-dir='));
+    } elseif (str_starts_with($arg, '--exclude-file=')) {
+        $excludeFile = substr($arg, strlen('--exclude-file='));
+    } elseif (str_starts_with($arg, '--exclude-ids=')) {
+        $excludeIds = array_map('intval', explode(',', substr($arg, strlen('--exclude-ids='))));
     }
 }
+
+// Charger les IDs exclus depuis le fichier si spécifié ou depuis le fichier par défaut
+$defaultExcludeFile = __DIR__ . '/../.excluded-referentials.json';
+if ($excludeFile === null && file_exists($defaultExcludeFile)) {
+    $excludeFile = $defaultExcludeFile;
+}
+
+if ($excludeFile !== null && file_exists($excludeFile)) {
+    $excludedData = json_decode(file_get_contents($excludeFile), true);
+    if (is_array($excludedData)) {
+        if (isset($excludedData['ids']) && is_array($excludedData['ids'])) {
+            $excludeIds = array_merge($excludeIds, array_map('intval', $excludedData['ids']));
+        }
+        if (isset($excludedData['names']) && is_array($excludedData['names'])) {
+            // Les noms seront filtrés plus tard
+        }
+    }
+}
+
+$excludeIds = array_unique($excludeIds);
 
 $outputDir = $outputDir ?: __DIR__ . '/../src/Entity/Trait';
 
@@ -58,6 +92,14 @@ $output->writeln('');
 
 if ($dryRun) {
     $output->writeln('<comment>⚠️  Mode DRY-RUN : Aucun fichier ne sera créé</comment>');
+    $output->writeln('');
+}
+
+if (!empty($excludeIds)) {
+    $output->writeln(sprintf('<info>🚫 Exclusion de %d référentiel(s) par ID</info>', count($excludeIds)));
+    if ($excludeFile !== null) {
+        $output->writeln(sprintf('<info>   Fichier d\'exclusion : %s</info>', $excludeFile));
+    }
     $output->writeln('');
 }
 
@@ -96,6 +138,36 @@ if (!is_array($referentials) || empty($referentials)) {
 }
 
 $output->writeln(sprintf('<info>✅ %d référentiels trouvés</info>', count($referentials)));
+
+// Filtrer les référentiels exclus
+$excludedData = null;
+if ($excludeFile !== null && file_exists($excludeFile)) {
+    $excludedData = json_decode(file_get_contents($excludeFile), true);
+}
+
+$originalCount = count($referentials);
+$referentials = array_filter($referentials, function ($ref) use ($excludeIds, $excludedData) {
+    // Exclure par ID
+    if (in_array((int) $ref['id'], $excludeIds, true)) {
+        return false;
+    }
+
+    // Exclure par nom si spécifié dans le fichier
+    if (is_array($excludedData) && isset($excludedData['names']) && is_array($excludedData['names'])) {
+        if (in_array($ref['name'], $excludedData['names'], true)) {
+            return false;
+        }
+    }
+
+    return true;
+});
+
+$excludedCount = $originalCount - count($referentials);
+if ($excludedCount > 0) {
+    $output->writeln(sprintf('<comment>⏭️  %d référentiel(s) exclu(s)</comment>', $excludedCount));
+}
+
+$output->writeln(sprintf('<info>📦 %d référentiel(s) à générer</info>', count($referentials)));
 $output->writeln('');
 
 // Créer le répertoire si nécessaire
@@ -135,7 +207,7 @@ function toCamelCase(string $text): string
     foreach ($words as $word) {
         // Ne garder que les caractères alphanumériques du mot
         $cleanWord = preg_replace('/[^a-zA-Z0-9]/', '', $word);
-        if ($cleanWord !== '') {
+        if ('' !== $cleanWord) {
             $camelCase .= ucfirst(strtolower($cleanWord));
         }
     }
@@ -154,7 +226,7 @@ function normalizeTraitName(string $name): string
 
     // Convertir en CamelCase
     $mainNameCamelCase = toCamelCase($mainName);
-    $qualifierCamelCase = $qualifier !== '' ? toCamelCase($qualifier) : '';
+    $qualifierCamelCase = '' !== $qualifier ? toCamelCase($qualifier) : '';
 
     return $mainNameCamelCase . $qualifierCamelCase;
 }
@@ -171,26 +243,28 @@ function generateTraitContent(array $ref): string
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "{$ref['name']}"
+ * Trait pour le référentiel "{$ref['name']}".
  *
  * Repository Code: {$ref['repository_code']}
  * Référentiel ID: {$ref['id']}
  * Nombre d'items: {$ref['count']}
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété {$propertyPrefix}Id :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int \${$propertyPrefix}Id = null;
  */
 trait {$traitName}
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int \${$propertyPrefix}Id = null;
 
@@ -208,6 +282,7 @@ trait {$traitName}
     public function set{$capitalPrefix}Id(?int \${$propertyPrefix}Id): self
     {
         \$this->{$propertyPrefix}Id = \${$propertyPrefix}Id;
+
         return \$this;
     }
 
@@ -219,6 +294,7 @@ trait {$traitName}
     public function set{$capitalPrefix}Title(?string \${$propertyPrefix}Title): self
     {
         \$this->{$propertyPrefix}Title = \${$propertyPrefix}Title;
+
         return \$this;
     }
 
@@ -230,6 +306,7 @@ trait {$traitName}
     public function set{$capitalPrefix}ReferenceCode(?string \${$propertyPrefix}ReferenceCode): self
     {
         \$this->{$propertyPrefix}ReferenceCode = \${$propertyPrefix}ReferenceCode;
+
         return \$this;
     }
 }

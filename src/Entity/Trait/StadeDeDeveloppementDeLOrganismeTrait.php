@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Stade de développement de l’organisme"
+ * Trait pour le référentiel "Stade de développement de l’organisme".
  *
  * Repository Code: List_PestDevelopementStage_CodeType
  * Référentiel ID: 659
  * Nombre d'items: 79
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété stadeDeDeveloppementDeLOrganismeId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $stadeDeDeveloppementDeLOrganismeId = null;
  */
 trait StadeDeDeveloppementDeLOrganismeTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $stadeDeDeveloppementDeLOrganismeId = null;
 
@@ -40,6 +42,7 @@ trait StadeDeDeveloppementDeLOrganismeTrait
     public function setStadeDeDeveloppementDeLOrganismeId(?int $stadeDeDeveloppementDeLOrganismeId): self
     {
         $this->stadeDeDeveloppementDeLOrganismeId = $stadeDeDeveloppementDeLOrganismeId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait StadeDeDeveloppementDeLOrganismeTrait
     public function setStadeDeDeveloppementDeLOrganismeTitle(?string $stadeDeDeveloppementDeLOrganismeTitle): self
     {
         $this->stadeDeDeveloppementDeLOrganismeTitle = $stadeDeDeveloppementDeLOrganismeTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait StadeDeDeveloppementDeLOrganismeTrait
     public function setStadeDeDeveloppementDeLOrganismeReferenceCode(?string $stadeDeDeveloppementDeLOrganismeReferenceCode): self
     {
         $this->stadeDeDeveloppementDeLOrganismeReferenceCode = $stadeDeDeveloppementDeLOrganismeReferenceCode;
+
         return $this;
     }
 }

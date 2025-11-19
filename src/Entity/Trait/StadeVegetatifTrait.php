@@ -3,26 +3,28 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
+use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Stade végétatif"
+ * Trait pour le référentiel "Stade végétatif".
  *
  * Repository Code: List_CropStage_CodeType
  * Référentiel ID: 597
  * Nombre d'items: 3769
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- * 
+ *
  * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
  * sur la propriété stadeVegetatifId :
- * 
+ *
  * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- * 
+ *
  * #[DaplosId]
  * private ?int $stadeVegetatifId = null;
  */
 trait StadeVegetatifTrait
 {
+    #[DaplosId]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $stadeVegetatifId = null;
 
@@ -40,6 +42,7 @@ trait StadeVegetatifTrait
     public function setStadeVegetatifId(?int $stadeVegetatifId): self
     {
         $this->stadeVegetatifId = $stadeVegetatifId;
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ trait StadeVegetatifTrait
     public function setStadeVegetatifTitle(?string $stadeVegetatifTitle): self
     {
         $this->stadeVegetatifTitle = $stadeVegetatifTitle;
+
         return $this;
     }
 
@@ -62,6 +66,7 @@ trait StadeVegetatifTrait
     public function setStadeVegetatifReferenceCode(?string $stadeVegetatifReferenceCode): self
     {
         $this->stadeVegetatifReferenceCode = $stadeVegetatifReferenceCode;
+
         return $this;
     }
 }
