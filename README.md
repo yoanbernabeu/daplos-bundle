@@ -74,6 +74,8 @@ yoanbernabeu_daplos:
     cache:
         enabled: true  # Cache activé (recommandé)
         ttl: 3600      # Durée : 1 heure
+    database:          # Optionnel
+        schema: null   # Nom du schéma (ex: 'referentiels' pour PostgreSQL)
 ```
 
 > 💡 **Astuce** : Utilisez des variables d'environnement pour sécuriser vos credentials :
