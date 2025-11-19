@@ -2,6 +2,10 @@
 
 Bundle Symfony pour l'intégration des référentiels DAPLOS (données agricoles) dans vos applications.
 
+> 🇫🇷 **Note Francophone** : Le code, les commentaires et les entités de ce bundle sont volontairement en **Français**. Ce choix a été fait pour rester strictement aligné avec la terminologie métier utilisée dans les référentiels officiels AgroEDI (DAPLOS) et éviter toute ambiguïté de traduction.
+>
+> 🇬🇧 **English Note**: The code, comments, and entities in this bundle are intentionally in **French**. This choice was made to strictly align with the business terminology used in the official AgroEDI (DAPLOS) referentials and to avoid any translation ambiguity.
+
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208.1-blue)](https://php.net)
 [![Symfony Version](https://img.shields.io/badge/Symfony-6.4%20%7C%207.x-green)](https://symfony.com)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
