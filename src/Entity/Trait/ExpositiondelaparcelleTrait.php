@@ -3,62 +3,65 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Exposition de la parcelle".
+ * Trait pour le référentiel "Exposition de la parcelle"
  *
  * Repository Code: rep46
  * Référentiel ID: 647
  * Nombre d'items: 17
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété expositionDeLaParcelleId :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int $expositionDeLaParcelleId = null;
  */
-trait ExpositiondelaparcelleTrait
+trait ExpositionDeLaParcelleTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[DaplosId]
-    private ?int $expositiondelaparcelleId = null;
+    private ?int $expositionDeLaParcelleId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $expositiondelaparcelleTitle = null;
+    private ?string $expositionDeLaParcelleTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $expositiondelaparcelleReferenceCode = null;
+    private ?string $expositionDeLaParcelleReferenceCode = null;
 
-    public function getExpositiondelaparcelleId(): ?int
+    public function getExpositionDeLaParcelleId(): ?int
     {
-        return $this->expositiondelaparcelleId;
+        return $this->expositionDeLaParcelleId;
     }
 
-    public function setExpositiondelaparcelleId(?int $expositiondelaparcelleId): self
+    public function setExpositionDeLaParcelleId(?int $expositionDeLaParcelleId): self
     {
-        $this->expositiondelaparcelleId = $expositiondelaparcelleId;
-
+        $this->expositionDeLaParcelleId = $expositionDeLaParcelleId;
         return $this;
     }
 
-    public function getExpositiondelaparcelleTitle(): ?string
+    public function getExpositionDeLaParcelleTitle(): ?string
     {
-        return $this->expositiondelaparcelleTitle;
+        return $this->expositionDeLaParcelleTitle;
     }
 
-    public function setExpositiondelaparcelleTitle(?string $expositiondelaparcelleTitle): self
+    public function setExpositionDeLaParcelleTitle(?string $expositionDeLaParcelleTitle): self
     {
-        $this->expositiondelaparcelleTitle = $expositiondelaparcelleTitle;
-
+        $this->expositionDeLaParcelleTitle = $expositionDeLaParcelleTitle;
         return $this;
     }
 
-    public function getExpositiondelaparcelleReferenceCode(): ?string
+    public function getExpositionDeLaParcelleReferenceCode(): ?string
     {
-        return $this->expositiondelaparcelleReferenceCode;
+        return $this->expositionDeLaParcelleReferenceCode;
     }
 
-    public function setExpositiondelaparcelleReferenceCode(?string $expositiondelaparcelleReferenceCode): self
+    public function setExpositionDeLaParcelleReferenceCode(?string $expositionDeLaParcelleReferenceCode): self
     {
-        $this->expositiondelaparcelleReferenceCode = $expositiondelaparcelleReferenceCode;
-
+        $this->expositionDeLaParcelleReferenceCode = $expositionDeLaParcelleReferenceCode;
         return $this;
     }
 }

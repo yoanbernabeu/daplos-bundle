@@ -342,6 +342,161 @@ class EntityGeneratorServiceTest extends TestCase
     }
 
     /**
+     * @test
+     *
+     * @testdox Génère correctement les noms en CamelCase pour les référentiels avec espaces
+     */
+    public function testGenerateEntityWithSpacesInName(): void
+    {
+        // Arrange
+        $referential = [
+            'id' => 633,
+            'name' => 'Amendements du sol (Type)',
+            'repository_code' => 'List_SpecifiedSoilSupplement_CodeType',
+        ];
+
+        // Act
+        $result = $this->service->generateEntity(
+            referential: $referential,
+            namespace: 'App\\Entity\\Daplos',
+            withRepository: false,
+            dryRun: false
+        );
+
+        // Assert
+        $this->assertTrue($result['success']);
+        $this->assertFileExists($this->projectDir.'/src/Entity/Daplos/AmendementsDuSolType.php');
+
+        $content = file_get_contents($this->projectDir.'/src/Entity/Daplos/AmendementsDuSolType.php');
+        $this->assertStringContainsString('class AmendementsDuSolType', $content);
+        $this->assertStringContainsString('use AmendementsDuSolTypeTrait', $content);
+    }
+
+    /**
+     * @test
+     *
+     * @testdox Génère correctement les noms en CamelCase pour les référentiels simples
+     */
+    public function testGenerateEntityWithSimpleName(): void
+    {
+        // Arrange
+        $referential = [
+            'id' => 611,
+            'name' => 'Cultures',
+            'repository_code' => 'List_BotanicalSpecies_CodeType',
+        ];
+
+        // Act
+        $result = $this->service->generateEntity(
+            referential: $referential,
+            namespace: 'App\\Entity\\Daplos',
+            withRepository: false,
+            dryRun: false
+        );
+
+        // Assert
+        $this->assertTrue($result['success']);
+        $this->assertFileExists($this->projectDir.'/src/Entity/Daplos/Cultures.php');
+
+        $content = file_get_contents($this->projectDir.'/src/Entity/Daplos/Cultures.php');
+        $this->assertStringContainsString('class Cultures', $content);
+        $this->assertStringContainsString('use CulturesTrait', $content);
+    }
+
+    /**
+     * @test
+     *
+     * @testdox Génère correctement les noms en CamelCase pour les référentiels avec qualifiant
+     */
+    public function testGenerateEntityWithQualifier(): void
+    {
+        // Arrange
+        $referential = [
+            'id' => 100,
+            'name' => 'Culture (Destination)',
+            'repository_code' => 'Test_Code',
+        ];
+
+        // Act
+        $result = $this->service->generateEntity(
+            referential: $referential,
+            namespace: 'App\\Entity\\Daplos',
+            withRepository: false,
+            dryRun: false
+        );
+
+        // Assert
+        $this->assertTrue($result['success']);
+        $this->assertFileExists($this->projectDir.'/src/Entity/Daplos/CultureDestination.php');
+
+        $content = file_get_contents($this->projectDir.'/src/Entity/Daplos/CultureDestination.php');
+        $this->assertStringContainsString('class CultureDestination', $content);
+        $this->assertStringContainsString('use CultureDestinationTrait', $content);
+    }
+
+    /**
+     * @test
+     *
+     * @testdox Génère correctement les noms en CamelCase pour les référentiels avec accents
+     */
+    public function testGenerateEntityWithAccents(): void
+    {
+        // Arrange
+        $referential = [
+            'id' => 200,
+            'name' => 'Type de piège',
+            'repository_code' => 'Test_Code',
+        ];
+
+        // Act
+        $result = $this->service->generateEntity(
+            referential: $referential,
+            namespace: 'App\\Entity\\Daplos',
+            withRepository: false,
+            dryRun: false
+        );
+
+        // Assert
+        $this->assertTrue($result['success']);
+        $this->assertFileExists($this->projectDir.'/src/Entity/Daplos/TypeDePiege.php');
+
+        $content = file_get_contents($this->projectDir.'/src/Entity/Daplos/TypeDePiege.php');
+        $this->assertStringContainsString('class TypeDePiege', $content);
+        $this->assertStringContainsString('use TypeDePiegeTrait', $content);
+    }
+
+    /**
+     * @test
+     *
+     * @testdox Vérifie que checkStatus retourne les bons noms de traits en CamelCase
+     */
+    public function testCheckStatusWithCamelCaseNames(): void
+    {
+        // Arrange
+        $referentials = [
+            ['id' => 633, 'name' => 'Amendements du sol (Type)', 'repository_code' => 'List_SpecifiedSoilSupplement_CodeType'],
+            ['id' => 611, 'name' => 'Cultures', 'repository_code' => 'List_BotanicalSpecies_CodeType'],
+        ];
+
+        $this->syncService
+            ->expects($this->once())
+            ->method('getAvailableReferentials')
+            ->willReturn($referentials);
+
+        // Act
+        $status = $this->service->checkStatus();
+
+        // Assert
+        $this->assertIsArray($status);
+        $this->assertCount(2, $status);
+        $this->assertEquals('Amendements du sol (Type)', $status[0]['referential_name']);
+        $this->assertEquals('AmendementsDuSolType', $status[0]['entity_name']);
+        $this->assertEquals('AmendementsDuSolTypeTrait', $status[0]['trait_name']);
+        $this->assertEquals('Cultures', $status[1]['entity_name']);
+        $this->assertEquals('CulturesTrait', $status[1]['trait_name']);
+    }
+
+    /**
      * Helper pour nettoyer les répertoires de test.
      */
     private function deleteDirectory(string $dir): void

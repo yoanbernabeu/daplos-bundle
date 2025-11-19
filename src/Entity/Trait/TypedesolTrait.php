@@ -3,62 +3,65 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Type de sol".
+ * Trait pour le référentiel "Type de sol"
  *
  * Repository Code: List_SoilType_CodeType
  * Référentiel ID: 643
  * Nombre d'items: 21
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété typeDeSolId :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int $typeDeSolId = null;
  */
-trait TypedesolTrait
+trait TypeDeSolTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[DaplosId]
-    private ?int $typedesolId = null;
+    private ?int $typeDeSolId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $typedesolTitle = null;
+    private ?string $typeDeSolTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $typedesolReferenceCode = null;
+    private ?string $typeDeSolReferenceCode = null;
 
-    public function getTypedesolId(): ?int
+    public function getTypeDeSolId(): ?int
     {
-        return $this->typedesolId;
+        return $this->typeDeSolId;
     }
 
-    public function setTypedesolId(?int $typedesolId): self
+    public function setTypeDeSolId(?int $typeDeSolId): self
     {
-        $this->typedesolId = $typedesolId;
-
+        $this->typeDeSolId = $typeDeSolId;
         return $this;
     }
 
-    public function getTypedesolTitle(): ?string
+    public function getTypeDeSolTitle(): ?string
     {
-        return $this->typedesolTitle;
+        return $this->typeDeSolTitle;
     }
 
-    public function setTypedesolTitle(?string $typedesolTitle): self
+    public function setTypeDeSolTitle(?string $typeDeSolTitle): self
     {
-        $this->typedesolTitle = $typedesolTitle;
-
+        $this->typeDeSolTitle = $typeDeSolTitle;
         return $this;
     }
 
-    public function getTypedesolReferenceCode(): ?string
+    public function getTypeDeSolReferenceCode(): ?string
     {
-        return $this->typedesolReferenceCode;
+        return $this->typeDeSolReferenceCode;
     }
 
-    public function setTypedesolReferenceCode(?string $typedesolReferenceCode): self
+    public function setTypeDeSolReferenceCode(?string $typeDeSolReferenceCode): self
     {
-        $this->typedesolReferenceCode = $typedesolReferenceCode;
-
+        $this->typeDeSolReferenceCode = $typeDeSolReferenceCode;
         return $this;
     }
 }

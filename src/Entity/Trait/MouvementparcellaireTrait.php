@@ -3,62 +3,65 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Mouvement parcellaire".
+ * Trait pour le référentiel "Mouvement parcellaire"
  *
  * Repository Code: List_Movement_CodeType
  * Référentiel ID: 691
  * Nombre d'items: 2
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété mouvementParcellaireId :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int $mouvementParcellaireId = null;
  */
-trait MouvementparcellaireTrait
+trait MouvementParcellaireTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[DaplosId]
-    private ?int $mouvementparcellaireId = null;
+    private ?int $mouvementParcellaireId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $mouvementparcellaireTitle = null;
+    private ?string $mouvementParcellaireTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $mouvementparcellaireReferenceCode = null;
+    private ?string $mouvementParcellaireReferenceCode = null;
 
-    public function getMouvementparcellaireId(): ?int
+    public function getMouvementParcellaireId(): ?int
     {
-        return $this->mouvementparcellaireId;
+        return $this->mouvementParcellaireId;
     }
 
-    public function setMouvementparcellaireId(?int $mouvementparcellaireId): self
+    public function setMouvementParcellaireId(?int $mouvementParcellaireId): self
     {
-        $this->mouvementparcellaireId = $mouvementparcellaireId;
-
+        $this->mouvementParcellaireId = $mouvementParcellaireId;
         return $this;
     }
 
-    public function getMouvementparcellaireTitle(): ?string
+    public function getMouvementParcellaireTitle(): ?string
     {
-        return $this->mouvementparcellaireTitle;
+        return $this->mouvementParcellaireTitle;
     }
 
-    public function setMouvementparcellaireTitle(?string $mouvementparcellaireTitle): self
+    public function setMouvementParcellaireTitle(?string $mouvementParcellaireTitle): self
     {
-        $this->mouvementparcellaireTitle = $mouvementparcellaireTitle;
-
+        $this->mouvementParcellaireTitle = $mouvementParcellaireTitle;
         return $this;
     }
 
-    public function getMouvementparcellaireReferenceCode(): ?string
+    public function getMouvementParcellaireReferenceCode(): ?string
     {
-        return $this->mouvementparcellaireReferenceCode;
+        return $this->mouvementParcellaireReferenceCode;
     }
 
-    public function setMouvementparcellaireReferenceCode(?string $mouvementparcellaireReferenceCode): self
+    public function setMouvementParcellaireReferenceCode(?string $mouvementParcellaireReferenceCode): self
     {
-        $this->mouvementparcellaireReferenceCode = $mouvementparcellaireReferenceCode;
-
+        $this->mouvementParcellaireReferenceCode = $mouvementParcellaireReferenceCode;
         return $this;
     }
 }

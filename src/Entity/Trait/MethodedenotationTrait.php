@@ -3,62 +3,65 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Méthode de notation".
+ * Trait pour le référentiel "Méthode de notation"
  *
  * Repository Code: List_NotationMethodology_CodeType
  * Référentiel ID: 663
  * Nombre d'items: 4
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété methodeDeNotationId :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int $methodeDeNotationId = null;
  */
-trait MethodedenotationTrait
+trait MethodeDeNotationTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[DaplosId]
-    private ?int $methodedenotationId = null;
+    private ?int $methodeDeNotationId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $methodedenotationTitle = null;
+    private ?string $methodeDeNotationTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $methodedenotationReferenceCode = null;
+    private ?string $methodeDeNotationReferenceCode = null;
 
-    public function getMethodedenotationId(): ?int
+    public function getMethodeDeNotationId(): ?int
     {
-        return $this->methodedenotationId;
+        return $this->methodeDeNotationId;
     }
 
-    public function setMethodedenotationId(?int $methodedenotationId): self
+    public function setMethodeDeNotationId(?int $methodeDeNotationId): self
     {
-        $this->methodedenotationId = $methodedenotationId;
-
+        $this->methodeDeNotationId = $methodeDeNotationId;
         return $this;
     }
 
-    public function getMethodedenotationTitle(): ?string
+    public function getMethodeDeNotationTitle(): ?string
     {
-        return $this->methodedenotationTitle;
+        return $this->methodeDeNotationTitle;
     }
 
-    public function setMethodedenotationTitle(?string $methodedenotationTitle): self
+    public function setMethodeDeNotationTitle(?string $methodeDeNotationTitle): self
     {
-        $this->methodedenotationTitle = $methodedenotationTitle;
-
+        $this->methodeDeNotationTitle = $methodeDeNotationTitle;
         return $this;
     }
 
-    public function getMethodedenotationReferenceCode(): ?string
+    public function getMethodeDeNotationReferenceCode(): ?string
     {
-        return $this->methodedenotationReferenceCode;
+        return $this->methodeDeNotationReferenceCode;
     }
 
-    public function setMethodedenotationReferenceCode(?string $methodedenotationReferenceCode): self
+    public function setMethodeDeNotationReferenceCode(?string $methodeDeNotationReferenceCode): self
     {
-        $this->methodedenotationReferenceCode = $methodedenotationReferenceCode;
-
+        $this->methodeDeNotationReferenceCode = $methodeDeNotationReferenceCode;
         return $this;
     }
 }

@@ -105,15 +105,12 @@ if (!$dryRun && !is_dir($outputDir)) {
 }
 
 // Fonctions helper
-function normalizeTraitName(string $name): string
+/**
+ * Convertit une chaîne en CamelCase en préservant les séparateurs de mots.
+ */
+function toCamelCase(string $text): string
 {
-    $qualifier = '';
-    if (preg_match('/\(([^)]+)\)/', $name, $matches)) {
-        $qualifier = $matches[1];
-    }
-
-    $mainName = preg_replace('/\s*\([^)]*\)/', '', $name);
-
+    // Nettoyer les accents
     $unwantedArray = [
         'Š' => 'S', 'š' => 's', 'Ž' => 'Z', 'ž' => 'z',
         'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'A',
@@ -128,12 +125,38 @@ function normalizeTraitName(string $name): string
         'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y', 'þ' => 'b', 'ÿ' => 'y'
     ];
 
-    $mainName = strtr($mainName, $unwantedArray);
-    $qualifier = strtr($qualifier, $unwantedArray);
-    $mainName = preg_replace('/[^a-zA-Z0-9]/', '', $mainName);
-    $qualifier = preg_replace('/[^a-zA-Z0-9]/', '', $qualifier);
+    $text = strtr($text, $unwantedArray);
 
-    return ucfirst($mainName) . ucfirst($qualifier);
+    // Diviser en mots par espaces, tirets, underscores et autres caractères non alphanumériques
+    $words = preg_split('/[\s\-_]+|[^a-zA-Z0-9]+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+    // Mettre en majuscule la première lettre de chaque mot et concaténer
+    $camelCase = '';
+    foreach ($words as $word) {
+        // Ne garder que les caractères alphanumériques du mot
+        $cleanWord = preg_replace('/[^a-zA-Z0-9]/', '', $word);
+        if ($cleanWord !== '') {
+            $camelCase .= ucfirst(strtolower($cleanWord));
+        }
+    }
+
+    return $camelCase;
+}
+
+function normalizeTraitName(string $name): string
+{
+    $qualifier = '';
+    if (preg_match('/\(([^)]+)\)/', $name, $matches)) {
+        $qualifier = $matches[1];
+    }
+
+    $mainName = preg_replace('/\s*\([^)]*\)/', '', $name);
+
+    // Convertir en CamelCase
+    $mainNameCamelCase = toCamelCase($mainName);
+    $qualifierCamelCase = $qualifier !== '' ? toCamelCase($qualifier) : '';
+
+    return $mainNameCamelCase . $qualifierCamelCase;
 }
 
 function generateTraitContent(array $ref): string

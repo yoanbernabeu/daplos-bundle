@@ -209,6 +209,44 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
     }
 
     /**
+     * Convertit une chaîne en CamelCase en préservant les séparateurs de mots.
+     */
+    private function toCamelCase(string $text): string
+    {
+        // Nettoyer les accents
+        $unwantedArray = [
+            'Š' => 'S', 'š' => 's', 'Ž' => 'Z', 'ž' => 'z',
+            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'A',
+            'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+            'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ñ' => 'N',
+            'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O',
+            'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'B', 'ß' => 'Ss',
+            'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'a',
+            'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ð' => 'o', 'ñ' => 'n',
+            'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o',
+            'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y', 'þ' => 'b', 'ÿ' => 'y',
+        ];
+
+        $text = strtr($text, $unwantedArray);
+
+        // Diviser en mots par espaces, tirets, underscores et autres caractères non alphanumériques
+        $words = preg_split('/[\s\-_]+|[^a-zA-Z0-9]+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+        // Mettre en majuscule la première lettre de chaque mot et concaténer
+        $camelCase = '';
+        foreach ($words as $word) {
+            // Ne garder que les caractères alphanumériques du mot
+            $cleanWord = preg_replace('/[^a-zA-Z0-9]/', '', $word);
+            if ($cleanWord !== '') {
+                $camelCase .= ucfirst(strtolower($cleanWord));
+            }
+        }
+
+        return $camelCase;
+    }
+
+    /**
      * Normalise un nom de référentiel en nom de classe/trait.
      */
     private function normalizeTraitName(string $name): string
@@ -220,25 +258,11 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 
         $mainName = preg_replace('/\s*\([^)]*\)/', '', $name);
 
-        $unwantedArray = [
-            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
-            'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
-            'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
-            'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O',
-            'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U',
-            'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a',
-            'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
-            'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
-            'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
-            'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
-        ];
+        // Convertir en CamelCase
+        $mainNameCamelCase = $this->toCamelCase($mainName);
+        $qualifierCamelCase = $qualifier !== '' ? $this->toCamelCase($qualifier) : '';
 
-        $mainName = strtr($mainName, $unwantedArray);
-        $qualifier = strtr($qualifier, $unwantedArray);
-        $mainName = preg_replace('/[^a-zA-Z0-9]/', '', $mainName);
-        $qualifier = preg_replace('/[^a-zA-Z0-9]/', '', $qualifier);
-
-        return ucfirst($mainName).ucfirst($qualifier);
+        return $mainNameCamelCase.$qualifierCamelCase;
     }
 
     /**

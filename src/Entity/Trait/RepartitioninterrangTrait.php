@@ -3,62 +3,65 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Répartition inter rang".
+ * Trait pour le référentiel "Répartition inter rang"
  *
  * Repository Code: rep50
  * Référentiel ID: 655
  * Nombre d'items: 4
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété repartitionInterRangId :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int $repartitionInterRangId = null;
  */
-trait RepartitioninterrangTrait
+trait RepartitionInterRangTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[DaplosId]
-    private ?int $repartitioninterrangId = null;
+    private ?int $repartitionInterRangId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $repartitioninterrangTitle = null;
+    private ?string $repartitionInterRangTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $repartitioninterrangReferenceCode = null;
+    private ?string $repartitionInterRangReferenceCode = null;
 
-    public function getRepartitioninterrangId(): ?int
+    public function getRepartitionInterRangId(): ?int
     {
-        return $this->repartitioninterrangId;
+        return $this->repartitionInterRangId;
     }
 
-    public function setRepartitioninterrangId(?int $repartitioninterrangId): self
+    public function setRepartitionInterRangId(?int $repartitionInterRangId): self
     {
-        $this->repartitioninterrangId = $repartitioninterrangId;
-
+        $this->repartitionInterRangId = $repartitionInterRangId;
         return $this;
     }
 
-    public function getRepartitioninterrangTitle(): ?string
+    public function getRepartitionInterRangTitle(): ?string
     {
-        return $this->repartitioninterrangTitle;
+        return $this->repartitionInterRangTitle;
     }
 
-    public function setRepartitioninterrangTitle(?string $repartitioninterrangTitle): self
+    public function setRepartitionInterRangTitle(?string $repartitionInterRangTitle): self
     {
-        $this->repartitioninterrangTitle = $repartitioninterrangTitle;
-
+        $this->repartitionInterRangTitle = $repartitionInterRangTitle;
         return $this;
     }
 
-    public function getRepartitioninterrangReferenceCode(): ?string
+    public function getRepartitionInterRangReferenceCode(): ?string
     {
-        return $this->repartitioninterrangReferenceCode;
+        return $this->repartitionInterRangReferenceCode;
     }
 
-    public function setRepartitioninterrangReferenceCode(?string $repartitioninterrangReferenceCode): self
+    public function setRepartitionInterRangReferenceCode(?string $repartitionInterRangReferenceCode): self
     {
-        $this->repartitioninterrangReferenceCode = $repartitioninterrangReferenceCode;
-
+        $this->repartitionInterRangReferenceCode = $repartitionInterRangReferenceCode;
         return $this;
     }
 }

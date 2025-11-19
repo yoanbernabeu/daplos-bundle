@@ -3,62 +3,65 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Orientation cardinale des rangs".
+ * Trait pour le référentiel "Orientation cardinale des rangs"
  *
  * Repository Code: rep47
  * Référentiel ID: 649
  * Nombre d'items: 8
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété orientationCardinaleDesRangsId :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int $orientationCardinaleDesRangsId = null;
  */
-trait OrientationcardinaledesrangsTrait
+trait OrientationCardinaleDesRangsTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[DaplosId]
-    private ?int $orientationcardinaledesrangsId = null;
+    private ?int $orientationCardinaleDesRangsId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $orientationcardinaledesrangsTitle = null;
+    private ?string $orientationCardinaleDesRangsTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $orientationcardinaledesrangsReferenceCode = null;
+    private ?string $orientationCardinaleDesRangsReferenceCode = null;
 
-    public function getOrientationcardinaledesrangsId(): ?int
+    public function getOrientationCardinaleDesRangsId(): ?int
     {
-        return $this->orientationcardinaledesrangsId;
+        return $this->orientationCardinaleDesRangsId;
     }
 
-    public function setOrientationcardinaledesrangsId(?int $orientationcardinaledesrangsId): self
+    public function setOrientationCardinaleDesRangsId(?int $orientationCardinaleDesRangsId): self
     {
-        $this->orientationcardinaledesrangsId = $orientationcardinaledesrangsId;
-
+        $this->orientationCardinaleDesRangsId = $orientationCardinaleDesRangsId;
         return $this;
     }
 
-    public function getOrientationcardinaledesrangsTitle(): ?string
+    public function getOrientationCardinaleDesRangsTitle(): ?string
     {
-        return $this->orientationcardinaledesrangsTitle;
+        return $this->orientationCardinaleDesRangsTitle;
     }
 
-    public function setOrientationcardinaledesrangsTitle(?string $orientationcardinaledesrangsTitle): self
+    public function setOrientationCardinaleDesRangsTitle(?string $orientationCardinaleDesRangsTitle): self
     {
-        $this->orientationcardinaledesrangsTitle = $orientationcardinaledesrangsTitle;
-
+        $this->orientationCardinaleDesRangsTitle = $orientationCardinaleDesRangsTitle;
         return $this;
     }
 
-    public function getOrientationcardinaledesrangsReferenceCode(): ?string
+    public function getOrientationCardinaleDesRangsReferenceCode(): ?string
     {
-        return $this->orientationcardinaledesrangsReferenceCode;
+        return $this->orientationCardinaleDesRangsReferenceCode;
     }
 
-    public function setOrientationcardinaledesrangsReferenceCode(?string $orientationcardinaledesrangsReferenceCode): self
+    public function setOrientationCardinaleDesRangsReferenceCode(?string $orientationCardinaleDesRangsReferenceCode): self
     {
-        $this->orientationcardinaledesrangsReferenceCode = $orientationcardinaledesrangsReferenceCode;
-
+        $this->orientationCardinaleDesRangsReferenceCode = $orientationCardinaleDesRangsReferenceCode;
         return $this;
     }
 }

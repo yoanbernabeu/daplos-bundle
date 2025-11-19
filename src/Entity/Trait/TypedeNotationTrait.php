@@ -3,62 +3,65 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Type de Notation".
+ * Trait pour le référentiel "Type de notation"
  *
  * Repository Code: List_NotationType_CodeType
  * Référentiel ID: 665
  * Nombre d'items: 8
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété typeDeNotationId :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int $typeDeNotationId = null;
  */
-trait TypedeNotationTrait
+trait TypeDeNotationTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[DaplosId]
-    private ?int $typedeNotationId = null;
+    private ?int $typeDeNotationId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $typedeNotationTitle = null;
+    private ?string $typeDeNotationTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $typedeNotationReferenceCode = null;
+    private ?string $typeDeNotationReferenceCode = null;
 
-    public function getTypedeNotationId(): ?int
+    public function getTypeDeNotationId(): ?int
     {
-        return $this->typedeNotationId;
+        return $this->typeDeNotationId;
     }
 
-    public function setTypedeNotationId(?int $typedeNotationId): self
+    public function setTypeDeNotationId(?int $typeDeNotationId): self
     {
-        $this->typedeNotationId = $typedeNotationId;
-
+        $this->typeDeNotationId = $typeDeNotationId;
         return $this;
     }
 
-    public function getTypedeNotationTitle(): ?string
+    public function getTypeDeNotationTitle(): ?string
     {
-        return $this->typedeNotationTitle;
+        return $this->typeDeNotationTitle;
     }
 
-    public function setTypedeNotationTitle(?string $typedeNotationTitle): self
+    public function setTypeDeNotationTitle(?string $typeDeNotationTitle): self
     {
-        $this->typedeNotationTitle = $typedeNotationTitle;
-
+        $this->typeDeNotationTitle = $typeDeNotationTitle;
         return $this;
     }
 
-    public function getTypedeNotationReferenceCode(): ?string
+    public function getTypeDeNotationReferenceCode(): ?string
     {
-        return $this->typedeNotationReferenceCode;
+        return $this->typeDeNotationReferenceCode;
     }
 
-    public function setTypedeNotationReferenceCode(?string $typedeNotationReferenceCode): self
+    public function setTypeDeNotationReferenceCode(?string $typeDeNotationReferenceCode): self
     {
-        $this->typedeNotationReferenceCode = $typedeNotationReferenceCode;
-
+        $this->typeDeNotationReferenceCode = $typeDeNotationReferenceCode;
         return $this;
     }
 }

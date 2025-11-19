@@ -3,62 +3,65 @@
 namespace YoanBernabeu\DaplosBundle\Entity\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 
 /**
- * Trait pour le référentiel "Orientation des rangs par rapport à la pente".
+ * Trait pour le référentiel "Orientation des rangs par rapport à la pente"
  *
  * Repository Code: rep48
  * Référentiel ID: 651
  * Nombre d'items: 3
  *
  * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
+ * 
+ * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
+ * sur la propriété orientationDesRangsParRapportALaPenteId :
+ * 
+ * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+ * 
+ * #[DaplosId]
+ * private ?int $orientationDesRangsParRapportALaPenteId = null;
  */
-trait OrientationdesrangsparrapportalapenteTrait
+trait OrientationDesRangsParRapportALaPenteTrait
 {
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[DaplosId]
-    private ?int $orientationdesrangsparrapportalapenteId = null;
+    private ?int $orientationDesRangsParRapportALaPenteId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $orientationdesrangsparrapportalapenteTitle = null;
+    private ?string $orientationDesRangsParRapportALaPenteTitle = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $orientationdesrangsparrapportalapenteReferenceCode = null;
+    private ?string $orientationDesRangsParRapportALaPenteReferenceCode = null;
 
-    public function getOrientationdesrangsparrapportalapenteId(): ?int
+    public function getOrientationDesRangsParRapportALaPenteId(): ?int
     {
-        return $this->orientationdesrangsparrapportalapenteId;
+        return $this->orientationDesRangsParRapportALaPenteId;
     }
 
-    public function setOrientationdesrangsparrapportalapenteId(?int $orientationdesrangsparrapportalapenteId): self
+    public function setOrientationDesRangsParRapportALaPenteId(?int $orientationDesRangsParRapportALaPenteId): self
     {
-        $this->orientationdesrangsparrapportalapenteId = $orientationdesrangsparrapportalapenteId;
-
+        $this->orientationDesRangsParRapportALaPenteId = $orientationDesRangsParRapportALaPenteId;
         return $this;
     }
 
-    public function getOrientationdesrangsparrapportalapenteTitle(): ?string
+    public function getOrientationDesRangsParRapportALaPenteTitle(): ?string
     {
-        return $this->orientationdesrangsparrapportalapenteTitle;
+        return $this->orientationDesRangsParRapportALaPenteTitle;
     }
 
-    public function setOrientationdesrangsparrapportalapenteTitle(?string $orientationdesrangsparrapportalapenteTitle): self
+    public function setOrientationDesRangsParRapportALaPenteTitle(?string $orientationDesRangsParRapportALaPenteTitle): self
     {
-        $this->orientationdesrangsparrapportalapenteTitle = $orientationdesrangsparrapportalapenteTitle;
-
+        $this->orientationDesRangsParRapportALaPenteTitle = $orientationDesRangsParRapportALaPenteTitle;
         return $this;
     }
 
-    public function getOrientationdesrangsparrapportalapenteReferenceCode(): ?string
+    public function getOrientationDesRangsParRapportALaPenteReferenceCode(): ?string
     {
-        return $this->orientationdesrangsparrapportalapenteReferenceCode;
+        return $this->orientationDesRangsParRapportALaPenteReferenceCode;
     }
 
-    public function setOrientationdesrangsparrapportalapenteReferenceCode(?string $orientationdesrangsparrapportalapenteReferenceCode): self
+    public function setOrientationDesRangsParRapportALaPenteReferenceCode(?string $orientationDesRangsParRapportALaPenteReferenceCode): self
     {
-        $this->orientationdesrangsparrapportalapenteReferenceCode = $orientationdesrangsparrapportalapenteReferenceCode;
-
+        $this->orientationDesRangsParRapportALaPenteReferenceCode = $orientationDesRangsParRapportALaPenteReferenceCode;
         return $this;
     }
 }
