@@ -48,6 +48,15 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('database')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('schema')
+                            ->defaultNull()
+                            ->info('Schéma de base de données (pour PostgreSQL)')
+                        ->end()
+                    ->end()
+                ->end()
                 ->arrayNode('cache')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -78,6 +87,7 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
             ->set('yoanbernabeu_daplos.api.base_url', $config['api']['base_url'])
             ->set('yoanbernabeu_daplos.api.login', $config['api']['login'])
             ->set('yoanbernabeu_daplos.api.apikey', $config['api']['apikey'])
+            ->set('yoanbernabeu_daplos.database.schema', $config['database']['schema'])
             ->set('yoanbernabeu_daplos.cache.enabled', $config['cache']['enabled'])
             ->set('yoanbernabeu_daplos.cache.ttl', $config['cache']['ttl'])
         ;
@@ -126,6 +136,7 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
                 ->args([
                     service(ReferentialSyncServiceInterface::class),
                     '%kernel.project_dir%',
+                    '%yoanbernabeu_daplos.database.schema%',
                 ])
                 ->public()
 

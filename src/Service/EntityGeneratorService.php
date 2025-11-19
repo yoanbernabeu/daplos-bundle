@@ -22,7 +22,8 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
 {
     public function __construct(
         private readonly ReferentialSyncServiceInterface $syncService,
-        private readonly string $projectDir
+        private readonly string $projectDir,
+        private readonly ?string $dbSchema = null
     ) {
     }
 
@@ -320,7 +321,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
              * Générée automatiquement par DaplosBundle.
              */
             #[ORM\Entity(repositoryClass: {$entityName}Repository::class)]
-            #[ORM\Table(name: '{$this->generateTableName($entityName)}')]
+            #[ORM\Table(name: '{$this->generateTableName($entityName)}'{$this->getSchemaAttribute()})]
             class {$entityName}
             {
                 use {$traitName};
@@ -405,5 +406,17 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
     private function lcfirst(string $string): string
     {
         return lcfirst($string);
+    }
+
+    /**
+     * Génère l'attribut schema si défini.
+     */
+    private function getSchemaAttribute(): string
+    {
+        if (null === $this->dbSchema) {
+            return '';
+        }
+
+        return ", schema: '{$this->dbSchema}'";
     }
 }
