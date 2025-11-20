@@ -211,6 +211,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
                     'status' => 'skipped',
                     'message' => 'Déjà à jour',
                 ];
+
                 continue;
             }
 
@@ -240,16 +241,16 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
             if (!str_contains($newContent, 'findOneByDaplosId')) {
                 $methodCode = <<<PHP
 
-                    /**
-                     * Trouve une entité par son ID DAPLOS.
-                     * Utile pour éviter les doublons lors de la synchronisation.
-                     */
-                    public function findOneByDaplosId(int \$daplosId): ?{$entityName}
-                    {
-                        return \$this->findOneBy(['{$this->lcfirst($this->normalizeTraitName($entityName))}Id' => \$daplosId]);
+                        /**
+                         * Trouve une entité par son ID DAPLOS.
+                         * Utile pour éviter les doublons lors de la synchronisation.
+                         */
+                        public function findOneByDaplosId(int \$daplosId): ?{$entityName}
+                        {
+                            return \$this->findOneBy(['{$this->lcfirst($this->normalizeTraitName($entityName))}Id' => \$daplosId]);
+                        }
                     }
-                }
-                PHP;
+                    PHP;
 
                 // Remplacer la dernière accolade fermante
                 $newContent = preg_replace('/}\s*$/', $methodCode, $newContent);

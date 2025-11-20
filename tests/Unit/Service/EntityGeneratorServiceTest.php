@@ -517,18 +517,18 @@ class EntityGeneratorServiceTest extends TestCase
 
         // Créer un repo ancien sans l'interface
         $oldRepoContent = <<<'PHP'
-        <?php
-        namespace App\Repository\Daplos;
-        use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-        use Doctrine\Persistence\ManagerRegistry;
-        class CulturesRepository extends ServiceEntityRepository
-        {
-            public function __construct(ManagerRegistry $registry)
+            <?php
+            namespace App\Repository\Daplos;
+            use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+            use Doctrine\Persistence\ManagerRegistry;
+            class CulturesRepository extends ServiceEntityRepository
             {
-                parent::__construct($registry, Cultures::class);
+                public function __construct(ManagerRegistry $registry)
+                {
+                    parent::__construct($registry, Cultures::class);
+                }
             }
-        }
-        PHP;
+            PHP;
 
         file_put_contents($this->projectDir.'/src/Repository/Daplos/CulturesRepository.php', $oldRepoContent);
 

@@ -162,6 +162,7 @@ class GenerateEntityCommand extends Command
 
         if (empty($results)) {
             $io->success('Tous les repositories sont déjà à jour ou aucun repository trouvé.');
+
             return Command::SUCCESS;
         }
 
