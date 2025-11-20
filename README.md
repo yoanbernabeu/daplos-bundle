@@ -128,11 +128,12 @@ Génère automatiquement toutes les entités et leurs repositories pour tous les
 - ✅ Attribut `#[DaplosId]` pour la détection des doublons
 - ✅ Traits réutilisables avec getters/setters
 - ✅ Documentation PHPDoc complète
-- ✅ Repositories avec méthode `findOneByDaplosId()`
+- ✅ Repositories avec méthode `findOneByDaplosId()` et implémentation de `DaplosRepositoryInterface`
 
 Options :
 - `--check` : Vérifier le statut des entités sans les générer
 - `--all` : Générer toutes les entités pour tous les référentiels
+- `--update-repos` : Met à jour les repositories existants pour implémenter l'interface requise
 - `--namespace=NAMESPACE` : Namespace personnalisé (défaut: `App\Entity\Daplos`)
 - `--no-repository` : Ne pas générer les repositories
 - `--dry-run` : Simule la génération sans créer les fichiers
@@ -154,9 +155,35 @@ php bin/console daplos:generate:entity --all --no-repository
 
 # Forcer la recréation
 php bin/console daplos:generate:entity --all --force
+
+# Mettre à jour les repositories existants (pour projets existants)
+php bin/console daplos:generate:entity --update-repos
+
+# Voir ce qui sera modifié avant de mettre à jour
+php bin/console daplos:generate:entity --update-repos --dry-run
 ```
 
 **💡 Note** : Cette commande est idempotente. Vous pouvez la relancer sans risque !
+
+### Mise à jour des repositories existants
+
+Si vous avez déjà généré vos entités et repositories avant l'ajout de l'interface `DaplosRepositoryInterface`, vous pouvez mettre à jour automatiquement tous vos repositories existants :
+
+```bash
+# Mode simulation (recommandé d'abord)
+php bin/console daplos:generate:entity --update-repos --dry-run
+
+# Mise à jour réelle
+php bin/console daplos:generate:entity --update-repos
+```
+
+Cette commande va :
+- ✅ Ajouter l'import `use YoanBernabeu\DaplosBundle\Contract\DaplosRepositoryInterface;`
+- ✅ Ajouter `implements DaplosRepositoryInterface` à la classe
+- ✅ Ajouter la méthode `findOneByDaplosId()` si elle n'existe pas déjà
+- ✅ Conserver tout votre code personnalisé intact
+
+**Sécurité** : La commande ne modifie que ce qui est nécessaire et ignore les repositories déjà à jour.
 
 ### Option B : Personnalisation avec les Traits (avancé)
 
@@ -354,6 +381,9 @@ php bin/console daplos:generate:entity --all
 
 # Générer en mode simulation
 php bin/console daplos:generate:entity --all --dry-run
+
+# Mettre à jour les repositories existants
+php bin/console daplos:generate:entity --update-repos
 ```
 
 ### Synchronisation des données
@@ -440,6 +470,25 @@ class MaCulturePersonnalisée
     private ?string $monChampCustom = null;
 }
 ```
+
+### Comment mettre à jour les repositories existants ?
+
+Si vous avez généré vos repositories avant l'ajout de l'interface `DaplosRepositoryInterface`, utilisez la commande de mise à jour :
+
+```bash
+# Voir ce qui sera modifié (recommandé)
+php bin/console daplos:generate:entity --update-repos --dry-run
+
+# Mettre à jour tous les repositories
+php bin/console daplos:generate:entity --update-repos
+```
+
+Cette commande ajoute automatiquement :
+- L'import de l'interface `DaplosRepositoryInterface`
+- L'implémentation de l'interface sur la classe
+- La méthode `findOneByDaplosId()` si elle n'existe pas
+
+**Important** : Votre code personnalisé dans les repositories est préservé. Seules les modifications nécessaires sont appliquées.
 
 ---
 

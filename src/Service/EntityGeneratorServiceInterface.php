@@ -74,4 +74,17 @@ interface EntityGeneratorServiceInterface
         bool $dryRun = false,
         bool $force = false
     ): array;
+
+    /**
+     * Met à jour les repositories existants pour implémenter DaplosRepositoryInterface.
+     *
+     * @param string $namespace Le namespace des entités
+     * @param bool   $dryRun    Mode simulation
+     *
+     * @return array<int, array{repository: string, status: string, message: string}>
+     */
+    public function updateRepositories(
+        string $namespace = 'App\\Entity\\Daplos',
+        bool $dryRun = false
+    ): array;
 }

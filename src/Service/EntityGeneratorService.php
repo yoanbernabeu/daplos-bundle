@@ -185,6 +185,95 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
     }
 
     /**
+     * Met à jour les repositories existants pour implémenter DaplosRepositoryInterface.
+     */
+    public function updateRepositories(
+        string $namespace = 'App\\Entity\\Daplos',
+        bool $dryRun = false
+    ): array {
+        $referentials = $this->syncService->getAvailableReferentials();
+        $results = [];
+
+        foreach ($referentials as $ref) {
+            $entityName = $this->generateEntityName($ref['name']);
+            $repositoryPath = $this->getRepositoryPath($entityName, $namespace);
+
+            if (!file_exists($repositoryPath)) {
+                continue;
+            }
+
+            $content = file_get_contents($repositoryPath);
+
+            // Vérifier si déjà mis à jour
+            if (str_contains($content, 'implements DaplosRepositoryInterface')) {
+                $results[] = [
+                    'repository' => basename($repositoryPath),
+                    'status' => 'skipped',
+                    'message' => 'Déjà à jour',
+                ];
+
+                continue;
+            }
+
+            // Préparer les modifications
+            $newContent = $content;
+            $updated = false;
+
+            // 1. Ajouter le use
+            if (!str_contains($newContent, 'use YoanBernabeu\DaplosBundle\Contract\DaplosRepositoryInterface;')) {
+                $newContent = preg_replace(
+                    '/(use Doctrine\\\\Persistence\\\\ManagerRegistry;)/',
+                    "$1\nuse YoanBernabeu\DaplosBundle\Contract\DaplosRepositoryInterface;",
+                    $newContent
+                );
+            }
+
+            // 2. Ajouter l'interface
+            if (!str_contains($newContent, 'implements DaplosRepositoryInterface')) {
+                $newContent = preg_replace(
+                    '/class\s+\w+Repository\s+extends\s+ServiceEntityRepository/',
+                    '$0 implements DaplosRepositoryInterface',
+                    $newContent
+                );
+            }
+
+            // 3. Ajouter la méthode si absente
+            if (!str_contains($newContent, 'findOneByDaplosId')) {
+                $methodCode = <<<PHP
+
+                        /**
+                         * Trouve une entité par son ID DAPLOS.
+                         * Utile pour éviter les doublons lors de la synchronisation.
+                         */
+                        public function findOneByDaplosId(int \$daplosId): ?{$entityName}
+                        {
+                            return \$this->findOneBy(['{$this->lcfirst($this->normalizeTraitName($entityName))}Id' => \$daplosId]);
+                        }
+                    }
+                    PHP;
+
+                // Remplacer la dernière accolade fermante
+                $newContent = preg_replace('/}\s*$/', $methodCode, $newContent);
+                $updated = true;
+            }
+
+            if ($updated) {
+                if (!$dryRun) {
+                    file_put_contents($repositoryPath, $newContent);
+                }
+
+                $results[] = [
+                    'repository' => basename($repositoryPath),
+                    'status' => 'updated',
+                    'message' => $dryRun ? 'Serait mis à jour' : 'Mis à jour avec succès',
+                ];
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Génère le nom de l'entité à partir du nom du référentiel.
      * Exemple: "Culture (Destination)" → "CultureDestination".
      * Exemple: "Cultures" → "Culture".
@@ -361,6 +450,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
             use {$namespace}\\{$entityName};
             use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
             use Doctrine\Persistence\ManagerRegistry;
+            use YoanBernabeu\DaplosBundle\Contract\DaplosRepositoryInterface;
 
             /**
              * Repository pour l'entité {$entityName}
@@ -369,7 +459,7 @@ class EntityGeneratorService implements EntityGeneratorServiceInterface
              * 
              * @extends ServiceEntityRepository<{$entityName}>
              */
-            class {$entityName}Repository extends ServiceEntityRepository
+            class {$entityName}Repository extends ServiceEntityRepository implements DaplosRepositoryInterface
             {
                 public function __construct(ManagerRegistry \$registry)
                 {

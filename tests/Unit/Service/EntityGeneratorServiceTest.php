@@ -246,6 +246,8 @@ class EntityGeneratorServiceTest extends TestCase
         $this->assertStringContainsString('namespace App\\Repository', $content);
         $this->assertStringContainsString('class CulturesRepository', $content);
         $this->assertStringContainsString('ServiceEntityRepository', $content);
+        $this->assertStringContainsString('implements DaplosRepositoryInterface', $content);
+        $this->assertStringContainsString('use YoanBernabeu\DaplosBundle\Contract\DaplosRepositoryInterface;', $content);
     }
 
     /**
@@ -494,6 +496,56 @@ class EntityGeneratorServiceTest extends TestCase
         $this->assertEquals('AmendementsDuSolTypeTrait', $status[0]['trait_name']);
         $this->assertEquals('Cultures', $status[1]['entity_name']);
         $this->assertEquals('CulturesTrait', $status[1]['trait_name']);
+    }
+
+    /**
+     * @test
+     */
+    public function testUpdateRepositories(): void
+    {
+        // Arrange
+        $referentials = [
+            ['id' => 611, 'name' => 'Cultures', 'repository_code' => 'List_BotanicalSpecies_CodeType'],
+        ];
+
+        $this->syncService
+            ->method('getAvailableReferentials')
+            ->willReturn($referentials);
+
+        // Créer le répertoire manquant
+        mkdir($this->projectDir.'/src/Repository/Daplos', 0o755, true);
+
+        // Créer un repo ancien sans l'interface
+        $oldRepoContent = <<<'PHP'
+            <?php
+            namespace App\Repository\Daplos;
+            use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+            use Doctrine\Persistence\ManagerRegistry;
+            class CulturesRepository extends ServiceEntityRepository
+            {
+                public function __construct(ManagerRegistry $registry)
+                {
+                    parent::__construct($registry, Cultures::class);
+                }
+            }
+            PHP;
+
+        file_put_contents($this->projectDir.'/src/Repository/Daplos/CulturesRepository.php', $oldRepoContent);
+
+        // Act
+        $results = $this->service->updateRepositories(
+            namespace: 'App\\Entity\\Daplos',
+            dryRun: false
+        );
+
+        // Assert
+        $this->assertCount(1, $results);
+        $this->assertEquals('updated', $results[0]['status']);
+
+        $newContent = file_get_contents($this->projectDir.'/src/Repository/Daplos/CulturesRepository.php');
+        $this->assertStringContainsString('implements DaplosRepositoryInterface', $newContent);
+        $this->assertStringContainsString('use YoanBernabeu\DaplosBundle\Contract\DaplosRepositoryInterface;', $newContent);
+        $this->assertStringContainsString('function findOneByDaplosId', $newContent);
     }
 
     /**
