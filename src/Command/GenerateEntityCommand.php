@@ -65,15 +65,24 @@ class GenerateEntityCommand extends Command
                 InputOption::VALUE_NONE,
                 'Vérifie le statut des entités sans les générer'
             )
+            ->addOption(
+                'update-repos',
+                'u',
+                InputOption::VALUE_NONE,
+                'Met à jour les repositories existants pour implémenter l\'interface requise'
+            )
             ->setHelp(
                 <<<'HELP'
                     Cette commande génère automatiquement des entités Doctrine et leurs repositories
                     à partir des référentiels DAPLOS disponibles.
-
+                    
                     <info>Exemples d'utilisation :</info>
-
+                    
                       # Vérifier le statut des entités
                       <comment>php bin/console daplos:generate:entity --check</comment>
+                      
+                      # Mettre à jour les repositories existants (ajout interface/méthode)
+                      <comment>php bin/console daplos:generate:entity --update-repos</comment>
 
                       # Générer toutes les entités (mode interactif)
                       <comment>php bin/console daplos:generate:entity --all</comment>
@@ -111,6 +120,7 @@ class GenerateEntityCommand extends Command
         $force = $input->getOption('force');
         $generateAll = $input->getOption('all');
         $checkOnly = $input->getOption('check');
+        $updateRepos = $input->getOption('update-repos');
 
         if ($dryRun) {
             $io->warning('Mode DRY-RUN : Aucun fichier ne sera créé');
@@ -121,13 +131,56 @@ class GenerateEntityCommand extends Command
             return $this->checkStatus($io, $namespace);
         }
 
+        // Mode update repos
+        if ($updateRepos) {
+            return $this->updateRepositories($io, $namespace, $dryRun);
+        }
+
         // Mode génération
         if ($generateAll) {
             return $this->generateAll($io, $namespace, $withRepositories, $dryRun, $force);
         }
 
-        // Si ni --check ni --all, afficher l'aide
-        $io->note('Utilisez --check pour vérifier le statut ou --all pour générer toutes les entités');
+        // Si ni --check ni --all ni --update-repos, afficher l'aide
+        $io->note('Utilisez --check pour vérifier le statut, --all pour générer ou --update-repos pour mettre à jour.');
+
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Met à jour les repositories existants.
+     */
+    private function updateRepositories(SymfonyStyle $io, string $namespace, bool $dryRun): int
+    {
+        $io->section('Mise à jour des repositories');
+
+        if ($dryRun) {
+            $io->warning('Mode DRY-RUN : Aucun fichier ne sera modifié');
+        }
+
+        $results = $this->generatorService->updateRepositories($namespace, $dryRun);
+
+        if (empty($results)) {
+            $io->success('Tous les repositories sont déjà à jour ou aucun repository trouvé.');
+            return Command::SUCCESS;
+        }
+
+        foreach ($results as $result) {
+            $icon = match ($result['status']) {
+                'updated' => $dryRun ? '📝' : '✅',
+                'skipped' => '⏭️',
+                default => '❓'
+            };
+
+            $io->writeln(sprintf(
+                '%s <info>%s</info> : %s',
+                $icon,
+                $result['repository'],
+                $result['message']
+            ));
+        }
+
+        $io->success('Opération terminée.');
 
         return Command::SUCCESS;
     }
