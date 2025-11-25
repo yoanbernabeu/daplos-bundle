@@ -12,20 +12,20 @@ Bundle Symfony pour l'intégration des référentiels DAPLOS (données agricoles
 
 ## ✨ Caractéristiques
 
-- 🚀 **Génération automatique** de 57 entités Doctrine prêtes à l'emploi
-- 📦 **Synchronisation bidirectionnelle** avec l'API DAPLOS (création + mise à jour)
-- 🔄 **Idempotence** : rejouez les synchronisations sans risque de doublons
-- 🎯 **Détection intelligente** des mises à jour via attribut `#[DaplosId]`
+- 🚀 **Une seule entité** `DaplosReferential` pour tous les référentiels
+- 📦 **Enum type-safe** `DaplosReferentialType` pour discriminer les référentiels
+- 🔄 **Synchronisation bidirectionnelle** avec l'API DAPLOS (création + mise à jour)
+- 🎯 **Requêtes simplifiées** : `findBy(['referentialType' => DaplosReferentialType::CULTURES])`
 - 💾 **Gestion mémoire optimisée** : batch processing avec flush périodique
 - 🛡️ **Validation automatique** des données avec troncature des valeurs trop longues
-- 🏷️ **Préfixe `daplos_`** appliqué automatiquement aux tables
+- 🏷️ **Table unique** `daplos_referential` avec index composites
 - 📊 **Statistiques détaillées** : créations, mises à jour, erreurs
 - 🔒 **Transactions** : rollback automatique en cas d'erreur
 - ⚡ **Cache intelligent** avec support des tags pour invalidation rapide
 
 ## 🚀 Démarrage Rapide (5 minutes)
 
-Intégrez 57 référentiels agricoles DAPLOS (10 000+ items) dans votre application Symfony en 5 commandes :
+Intégrez les référentiels DAPLOS (10 000+ items) dans votre application Symfony en 5 commandes :
 
 ```bash
 # 1. Installation
@@ -34,8 +34,8 @@ composer require yoanbernabeu/daplos-bundle
 # 2. Configuration (créer config/packages/yoanbernabeu_daplos.yaml)
 # Voir section Configuration ci-dessous
 
-# 3. Générer TOUTES les entités automatiquement
-php bin/console daplos:generate:entity --all
+# 3. Générer l'entité DaplosReferential
+php bin/console daplos:generate:entity
 
 # 4. Créer et appliquer les migrations
 php bin/console make:migration
@@ -45,7 +45,7 @@ php bin/console doctrine:migrations:migrate
 php -d memory_limit=1G bin/console daplos:sync --all
 ```
 
-**C'est fait !** Vous avez maintenant accès à 57 référentiels agricoles (10 000+ items) dans votre base de données. 🎊
+**C'est fait !** Vous avez maintenant accès à 53 référentiels agricoles (10 000+ items) dans une seule table. 🎊
 
 > 💡 **Note** : L'option `-d memory_limit=1G` est recommandée pour la synchronisation de tous les référentiels d'un coup.
 
@@ -93,103 +93,50 @@ yoanbernabeu_daplos:
 
 ```bash
 ┌─────────────────────────────────────────────────────────────┐
-│ 1️⃣  php bin/console daplos:generate:entity --all            │
-│    👉 Génère 57 entités Doctrine automatiquement            │
+│ 1️⃣  php bin/console daplos:generate:entity                  │
+│    👉 Génère l'entité DaplosReferential et son repository   │
 │                                                             │
 │ 2️⃣  php bin/console make:migration                          │
-│    👉 Crée les migrations de base de données                │
+│    👉 Crée la migration de base de données                  │
 │                                                             │
 │ 3️⃣  php bin/console doctrine:migrations:migrate             │
-│    👉 Applique les migrations                               │
+│    👉 Applique la migration                                 │
 │                                                             │
 │ 4️⃣  php bin/console daplos:sync --all                       │
-│    👉 Synchronise toutes les données (15 000+ items)        │
+│    👉 Synchronise tous les référentiels (10 000+ items)     │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Option A : Génération Automatique (recommandé ⭐)
-
-La méthode la plus rapide et simple !
+### Génération de l'entité
 
 ```bash
-php bin/console daplos:generate:entity --check
-```
-
-Vérifie le statut des entités DAPLOS dans votre projet (quelles entités existent, lesquelles manquent).
-
-```bash
-php bin/console daplos:generate:entity --all
-```
-
-Génère automatiquement toutes les entités et leurs repositories pour tous les référentiels DAPLOS.
-
-**Caractéristiques des entités générées :**
-- ✅ Tables préfixées automatiquement avec `daplos_` (ex: `daplos_cultures`)
-- ✅ Attribut `#[DaplosId]` pour la détection des doublons
-- ✅ Traits réutilisables avec getters/setters
-- ✅ Documentation PHPDoc complète
-- ✅ Repositories avec méthode `findOneByDaplosId()` et implémentation de `DaplosRepositoryInterface`
-
-Options :
-- `--check` : Vérifier le statut des entités sans les générer
-- `--all` : Générer toutes les entités pour tous les référentiels
-- `--update-repos` : Met à jour les repositories existants pour implémenter l'interface requise
-- `--namespace=NAMESPACE` : Namespace personnalisé (défaut: `App\Entity\Daplos`)
-- `--no-repository` : Ne pas générer les repositories
-- `--dry-run` : Simule la génération sans créer les fichiers
-- `--force` : Force la recréation des entités existantes (⚠️ écrase les fichiers)
-
-Exemples :
-```bash
-# Vérifier le statut
+# Vérifier le statut de l'entité
 php bin/console daplos:generate:entity --check
 
-# Générer toutes les entités (dry-run)
-php bin/console daplos:generate:entity --all --dry-run
+# Générer l'entité et le repository
+php bin/console daplos:generate:entity
+
+# Mode simulation (dry-run)
+php bin/console daplos:generate:entity --dry-run
 
 # Générer dans un namespace personnalisé
-php bin/console daplos:generate:entity --all --namespace="App\Domain\Agriculture"
+php bin/console daplos:generate:entity --namespace="App\Domain\Agriculture"
 
-# Générer sans les repositories
-php bin/console daplos:generate:entity --all --no-repository
+# Générer sans le repository
+php bin/console daplos:generate:entity --no-repository
 
 # Forcer la recréation
-php bin/console daplos:generate:entity --all --force
-
-# Mettre à jour les repositories existants (pour projets existants)
-php bin/console daplos:generate:entity --update-repos
-
-# Voir ce qui sera modifié avant de mettre à jour
-php bin/console daplos:generate:entity --update-repos --dry-run
+php bin/console daplos:generate:entity --force
 ```
+
+**Caractéristiques de l'entité générée :**
+- ✅ Table unique `daplos_referential`
+- ✅ Index unique composite `(daplos_id, referential_type)`
+- ✅ Trait `DaplosReferentialTrait` avec getters/setters
+- ✅ Enum `DaplosReferentialType` pour typer les référentiels
+- ✅ Repository avec méthodes `findOneByDaplosIdAndType()` et `findByReferentialType()`
 
 **💡 Note** : Cette commande est idempotente. Vous pouvez la relancer sans risque !
-
-### Mise à jour des repositories existants
-
-Si vous avez déjà généré vos entités et repositories avant l'ajout de l'interface `DaplosRepositoryInterface`, vous pouvez mettre à jour automatiquement tous vos repositories existants :
-
-```bash
-# Mode simulation (recommandé d'abord)
-php bin/console daplos:generate:entity --update-repos --dry-run
-
-# Mise à jour réelle
-php bin/console daplos:generate:entity --update-repos
-```
-
-Cette commande va :
-- ✅ Ajouter l'import `use YoanBernabeu\DaplosBundle\Contract\DaplosRepositoryInterface;`
-- ✅ Ajouter `implements DaplosRepositoryInterface` à la classe
-- ✅ Ajouter la méthode `findOneByDaplosId()` si elle n'existe pas déjà
-- ✅ Conserver tout votre code personnalisé intact
-
-**Sécurité** : La commande ne modifie que ce qui est nécessaire et ignore les repositories déjà à jour.
-
-### Option B : Personnalisation avec les Traits (avancé)
-
-Si vous avez besoin de **personnaliser vos entités**, le bundle fournit **57 traits** prêts à l'emploi dans `src/Entity/Trait/`.
-
-Consultez la commande `php bin/console daplos:referentials:list` pour voir tous les traits disponibles.
 
 ---
 
@@ -198,82 +145,75 @@ Consultez la commande `php bin/console daplos:referentials:list` pour voir tous 
 **La commande la plus importante** : Synchronisez les données depuis l'API DAPLOS vers votre base
 
 ```bash
-# Synchroniser un référentiel spécifique
-php bin/console daplos:sync "App\Entity\Daplos\Cultures" 611
+# Lister tous les types de référentiels disponibles
+php bin/console daplos:sync --list
 
-# Synchroniser TOUTES les entités générées d'un coup 🚀
+# Synchroniser un référentiel spécifique par son type
+php bin/console daplos:sync --type=AMENDEMENTS_DU_SOL
+
+# Synchroniser TOUS les référentiels d'un coup 🚀
 php -d memory_limit=1G bin/console daplos:sync --all
+
+# Mode simulation
+php bin/console daplos:sync --all --dry-run
 ```
 
 Cette commande :
 - ✅ **Crée** automatiquement les nouvelles entrées du référentiel
-- ✅ **Met à jour** les entrées existantes (pas de doublons grâce à `#[DaplosId]`)
+- ✅ **Met à jour** les entrées existantes (pas de doublons grâce à l'index unique)
 - ✅ **Valide** les données et tronque automatiquement les valeurs trop longues
 - ✅ Utilise des **transactions** (rollback automatique en cas d'erreur)
 - ✅ **Batch processing** : flush tous les 100 items pour optimiser la mémoire
 - ✅ Affiche des **statistiques détaillées** (créés/mis à jour/erreurs)
 - ✅ Est **idempotente** (rejouable sans risque)
-- ✅ Peut synchroniser **toutes les entités d'un coup** avec `--all`
 
-> ⚠️ **Important** : Pour synchroniser tous les référentiels d'un coup, utilisez l'option `-d memory_limit=1G` pour éviter les erreurs de mémoire (référentiel `StadedelacultureBBCH` contient ~3800 items).
+> ⚠️ **Important** : Pour synchroniser tous les référentiels d'un coup, utilisez l'option `-d memory_limit=1G`.
 
-Options disponibles :
+**Options disponibles :**
 
-- `--all` ou `-a` : Synchronise toutes les entités générées disponibles
-- `--namespace` : Namespace des entités à synchroniser (utilisé avec --all, défaut: `App\Entity\Daplos`)
+- `--list` ou `-l` : Liste tous les types de référentiels disponibles
+- `--type=TYPE` ou `-t TYPE` : Synchronise un type spécifique (ex: `AMENDEMENTS_DU_SOL`)
+- `--all` ou `-a` : Synchronise tous les référentiels
 - `--dry-run` ou `-d` : Mode simulation sans persister les données
-- `--show-details` ou `-s` : Affiche des détails supplémentaires sur le référentiel
 
 **Exemples :**
 
 ```bash
-# Synchronisation d'un référentiel spécifique
-php bin/console daplos:sync "App\Entity\Daplos\Cultures" 611
+# Lister les types disponibles
+php bin/console daplos:sync --list
 
-# Synchroniser TOUTES les entités générées (recommandé !)
-php -d memory_limit=1G bin/console daplos:sync --all
+# Synchroniser un type spécifique
+php bin/console daplos:sync --type=CULTURES
 
-# Synchroniser toutes les entités en mode simulation
+# Synchroniser tous les types (simulation)
 php bin/console daplos:sync --all --dry-run
 
-# Synchroniser toutes les entités avec détails
-php -d memory_limit=1G bin/console daplos:sync --all --show-details
+# Synchroniser tous les types (réel)
+php -d memory_limit=1G bin/console daplos:sync --all
 
-# Mode simulation pour un référentiel spécifique
-php bin/console daplos:sync "App\Entity\Daplos\Cultures" 611 --dry-run
-
-# Avec détails supplémentaires
-php bin/console daplos:sync "App\Entity\Daplos\Cultures" 611 --show-details
-
-# Synchroniser dans un namespace personnalisé
-php -d memory_limit=1G bin/console daplos:sync --all --namespace="App\Domain\Agriculture"
+# Utiliser une entité personnalisée
+php bin/console daplos:sync "App\Domain\DaplosReferential" --type=CULTURES
 ```
 
-**Résultat (référentiel unique) :**
+**Résultat (type spécifique) :**
 
 ```
 Synchronisation des référentiels DAPLOS
 ========================================
 
-Configuration de la synchronisation
+Synchronisation : Amendements du sol
 ------------------------------------
 
- Entité             App\Entity\Daplos\Culture
- Référentiel ID     611
- Mode               Synchronisation réelle
-
-Synchronisation en cours...
- 100/100 [============================] 100%
+ Type             AMENDEMENTS_DU_SOL
+ ID API           633
+ Repository Code  List_SpecifiedSoilSupplement_CodeType
 
 Résultats de la synchronisation
 --------------------------------
 
- Total d'items traités    100
- Créées                   30 (30%)
- Mises à jour             70 (70%)
-
-  Créées       : ███████████████ 30%
-  Mises à jour : ████████████████████████████████████ 70%
+ Total d'items traités    3
+ Créés                    0 (0%)
+ Mis à jour               3 (100%)
 
 [OK] Synchronisation terminée avec succès !
 ```
@@ -284,76 +224,93 @@ Résultats de la synchronisation
 Synchronisation des référentiels DAPLOS
 ========================================
 
-Recherche des entités à synchroniser...
-------------------------------------
-Trouvé 57 entité(s) à synchroniser dans App\Entity\Daplos
+Synchronisation de tous les référentiels
+----------------------------------------
+53 types de référentiels à synchroniser
 
-Voulez-vous continuer avec la synchronisation ? (yes/no) [yes]:
-> yes
-
-Synchronisation : Cultures (ID: 611)
-------------------------------------
-[OK] Cultures : 200 créées, 516 mises à jour sur 716 items
-
-Synchronisation : Amendements (ID: 633)
-------------------------------------
-[OK] Amendements : 0 créées, 3 mises à jour sur 3 items
-
-[... autres entités ...]
+ 100/100 [============================] 100%
 
 Résumé de la synchronisation
 ----------------------------
-┌───────────────┬───────────────┬─────────┬──────────────┬───────┐
-│ Entité        │ Référentiel   │ Créées  │ Mises à jour │ Total │
-├───────────────┼───────────────┼─────────┼──────────────┼───────┤
-│ Cultures      │ Cultures      │ 200     │ 516          │ 716   │
-│ Amendements   │ Amendements   │ 0       │ 3            │ 3     │
-[... autres lignes ...]
-└───────────────┴───────────────┴─────────┴──────────────┴───────┘
+┌─────────────────────────┬─────────┬──────────────┬───────┐
+│ Type                    │ Créés   │ Mis à jour   │ Total │
+├─────────────────────────┼─────────┼──────────────┼───────┤
+│ Amendements du sol      │ 0       │ 3            │ 3     │
+│ Caractéristique tech... │ 0       │ 10           │ 10    │
+│ ...                     │ ...     │ ...          │ ...   │
+└─────────────────────────┴─────────┴──────────────┴───────┘
 
- Total d'entités synchronisées    57
- Total d'items traités             15000
- Total créées                      5000
- Total mises à jour                10000
- Erreurs                           0
+ Types synchronisés      53
+ Total d'items           10000
+ Total créés             0
+ Total mis à jour        10000
+ Erreurs                 0
 
 [OK] Synchronisation globale terminée avec succès !
 ```
 
-**Prérequis :**
+---
 
-1. L'entité doit exister et être correctement configurée
-2. L'entité doit implémenter `DaplosEntityInterface` OU utiliser l'attribut `#[DaplosId]` (automatique avec la génération)
-3. La table de l'entité doit exister en base de données (migrations appliquées)
+## 🔧 Utilisation dans votre code
 
-**Comment ça marche ?**
+### L'Enum DaplosReferentialType
 
-1. **Détection des doublons** : Le système utilise l'attribut `#[DaplosId]` pour identifier les entités existantes
-2. **Création intelligente** : Si l'ID DAPLOS n'existe pas en base → création d'une nouvelle entrée
-3. **Mise à jour automatique** : Si l'ID DAPLOS existe déjà → mise à jour de l'entrée existante
-4. **Validation des données** : Les valeurs trop longues sont automatiquement tronquées selon la définition Doctrine
-5. **Transactions sécurisées** : En cas d'erreur, toutes les modifications sont annulées (rollback)
+Le bundle fournit un Enum PHP `DaplosReferentialType` avec les 53 référentiels :
 
-**Workflow complet recommandé :**
+```php
+use YoanBernabeu\DaplosBundle\Enum\DaplosReferentialType;
 
-```bash
-# 1. Lister les référentiels disponibles
-php bin/console daplos:referentials:list
+// Accéder aux métadonnées d'un type
+$type = DaplosReferentialType::AMENDEMENTS_DU_SOL;
+echo $type->getId();            // 633
+echo $type->getLabel();         // "Amendements du sol"
+echo $type->getRepositoryCode(); // "List_SpecifiedSoilSupplement_CodeType"
 
-# 2. Générer toutes les entités
-php bin/console daplos:generate:entity --all
+// Trouver un type par ID
+$type = DaplosReferentialType::fromId(633);
 
-# 3. Créer les migrations
-php bin/console make:migration
+// Trouver un type par code repository
+$type = DaplosReferentialType::fromRepositoryCode('List_SpecifiedSoilSupplement_CodeType');
 
-# 4. Appliquer les migrations
-php bin/console doctrine:migrations:migrate
+// Lister tous les types
+foreach (DaplosReferentialType::cases() as $type) {
+    echo $type->getLabel();
+}
+```
 
-# 5. Synchroniser TOUTES les données (simulation)
-php bin/console daplos:sync --all --dry-run
+### Requêtes avec le Repository
 
-# 6. Synchroniser TOUTES les données (réel) 🚀
-php bin/console daplos:sync --all
+```php
+use App\Repository\DaplosReferentialRepository;
+use YoanBernabeu\DaplosBundle\Enum\DaplosReferentialType;
+
+class MonService
+{
+    public function __construct(
+        private DaplosReferentialRepository $repository
+    ) {}
+
+    public function exemple(): void
+    {
+        // Trouver un item par son ID DAPLOS et son type
+        $item = $this->repository->findOneByDaplosIdAndType(
+            daplosId: 123,
+            type: DaplosReferentialType::CULTURES
+        );
+
+        // Trouver tous les items d'un type
+        $cultures = $this->repository->findByReferentialType(
+            DaplosReferentialType::CULTURES
+        );
+
+        // Requête personnalisée avec QueryBuilder
+        $qb = $this->repository->createQueryBuilder('r')
+            ->where('r.referentialType = :type')
+            ->andWhere('r.daplosTitle LIKE :search')
+            ->setParameter('type', DaplosReferentialType::CULTURES)
+            ->setParameter('search', '%blé%');
+    }
+}
 ```
 
 ---
@@ -363,72 +320,76 @@ php bin/console daplos:sync --all
 ### Exploration des référentiels
 
 ```bash
-# Lister tous les référentiels disponibles
+# Lister tous les référentiels disponibles (depuis l'API)
 php bin/console daplos:referentials:list
 
 # Voir les détails d'un référentiel
 php bin/console daplos:referentials:show 611
 ```
 
-### Génération d'entités
+### Génération d'entité
 
 ```bash
-# Vérifier quelles entités existent
+# Vérifier si l'entité existe
 php bin/console daplos:generate:entity --check
 
-# Générer toutes les entités
-php bin/console daplos:generate:entity --all
+# Générer l'entité
+php bin/console daplos:generate:entity
 
 # Générer en mode simulation
-php bin/console daplos:generate:entity --all --dry-run
+php bin/console daplos:generate:entity --dry-run
 
-# Mettre à jour les repositories existants
-php bin/console daplos:generate:entity --update-repos
+# Forcer la recréation
+php bin/console daplos:generate:entity --force
 ```
 
 ### Synchronisation des données
 
 ```bash
+# Lister les types disponibles
+php bin/console daplos:sync --list
+
+# Synchroniser un type spécifique
+php bin/console daplos:sync --type=CULTURES
+
 # Synchroniser TOUT
-php bin/console daplos:sync --all
+php -d memory_limit=1G bin/console daplos:sync --all
 
-# Synchroniser un référentiel spécifique
-php bin/console daplos:sync "App\Entity\Daplos\Cultures" 611
-
-# Modes utiles
-php bin/console daplos:sync --all --dry-run        # Simulation
-php -d memory_limit=1G bin/console daplos:sync --all --show-details   # Avec détails
+# Mode simulation
+php bin/console daplos:sync --all --dry-run
 ```
 
 ---
 
 ## ❓ FAQ
 
+### Pourquoi une seule entité au lieu de 53 ?
+
+La v2.0 du bundle adopte une architecture simplifiée :
+- **Avant** : 53 traits, 53 entités, 53 tables
+- **Maintenant** : 1 trait, 1 entité, 1 table avec un discriminant `referentialType`
+
+**Avantages :**
+- Maintenance simplifiée
+- Requêtes cross-référentiels possibles
+- Enum type-safe pour le typage
+- Moins de migrations à gérer
+
 ### Pourquoi utiliser `-d memory_limit=1G` ?
 
-Le référentiel `StadedelacultureBBCH` contient ~3800 items avec des descriptions longues. Pour synchroniser tous les référentiels d'un coup (`--all`), il est recommandé d'augmenter la limite mémoire.
+Certains référentiels contiennent beaucoup d'items avec des descriptions longues. Pour synchroniser tous les référentiels d'un coup (`--all`), il est recommandé d'augmenter la limite mémoire.
 
 ```bash
 # ✅ Recommandé pour --all
 php -d memory_limit=1G bin/console daplos:sync --all
 
-# ✅ OK pour un référentiel individuel
-php bin/console daplos:sync "App\Entity\Daplos\Cultures" 611
+# ✅ OK pour un type individuel
+php bin/console daplos:sync --type=CULTURES
 ```
 
 ### Comment éviter les doublons ?
 
-Le système utilise l'attribut `#[DaplosId]` pour identifier les entités existantes. Chaque entité a :
-- Un `id` auto-incrémenté (clé primaire Doctrine)
-- Un `xxxId` (ID DAPLOS) marqué avec `#[DaplosId]` pour éviter les doublons
-
-Exemple :
-```php
-#[DaplosId]
-private ?int $culturesId = null;  // ID DAPLOS (ex: 21766)
-```
-
-La synchronisation vérifie si cet ID DAPLOS existe déjà avant de créer ou mettre à jour.
+L'entité utilise un **index unique composite** sur `(daplos_id, referential_type)`. La synchronisation vérifie si cette combinaison existe déjà avant de créer ou mettre à jour.
 
 ### Que se passe-t-il si les données API changent ?
 
@@ -442,53 +403,21 @@ Vous pouvez relancer la synchronisation à tout moment :
 php -d memory_limit=1G bin/console daplos:sync --all
 ```
 
-### Pourquoi certains champs sont-ils tronqués ?
+### Puis-je personnaliser l'entité générée ?
 
-Le bundle valide automatiquement les données et tronque les valeurs qui dépassent la longueur maximale définie dans Doctrine. Par exemple, un titre de 300 caractères sera tronqué à 255 si le champ est défini comme `VARCHAR(255)`.
+Oui ! Après génération, vous pouvez modifier l'entité dans `src/Entity/DaplosReferential.php` :
 
-**Exception** : Le référentiel `StadedelacultureBBCH` utilise `VARCHAR(1000)` pour le champ `title` car certaines descriptions DAPLOS dépassent 255 caractères.
-
-### Puis-je personnaliser les entités générées ?
-
-Oui ! Vous avez deux options :
-
-**Option 1 : Modifier après génération**
-```bash
-php bin/console daplos:generate:entity --all
-# Puis modifiez les entités générées dans src/Entity/Daplos/
-```
-
-**Option 2 : Utiliser les traits directement**
 ```php
-use YoanBernabeu\DaplosBundle\Entity\Trait\CulturesTrait;
+use YoanBernabeu\DaplosBundle\Entity\Trait\DaplosReferentialTrait;
 
-class MaCulturePersonnalisée
+class DaplosReferential implements DaplosEntityInterface
 {
-    use CulturesTrait;
+    use DaplosReferentialTrait;
     
     // Ajoutez vos propres propriétés et méthodes
     private ?string $monChampCustom = null;
 }
 ```
-
-### Comment mettre à jour les repositories existants ?
-
-Si vous avez généré vos repositories avant l'ajout de l'interface `DaplosRepositoryInterface`, utilisez la commande de mise à jour :
-
-```bash
-# Voir ce qui sera modifié (recommandé)
-php bin/console daplos:generate:entity --update-repos --dry-run
-
-# Mettre à jour tous les repositories
-php bin/console daplos:generate:entity --update-repos
-```
-
-Cette commande ajoute automatiquement :
-- L'import de l'interface `DaplosRepositoryInterface`
-- L'implémentation de l'interface sur la classe
-- La méthode `findOneByDaplosId()` si elle n'existe pas
-
-**Important** : Votre code personnalisé dans les repositories est préservé. Seules les modifications nécessaires sont appliquées.
 
 ---
 
@@ -508,17 +437,15 @@ $apiClient->clearReferentialCache(611);
 $apiClient->clearAllCache();
 ```
 
-**Note** : Si vous utilisez un cache qui supporte les tags (comme `cache.adapter.redis` ou `cache.adapter.memcached`), la méthode `clearAllCache()` invalidera tous les éléments du cache DAPLOS en une seule opération grâce aux tags.
-
 ## 🧪 Tests
 
 Le bundle dispose d'une couverture de tests complète pour les composants critiques :
 - ✅ `DaplosApiClient` - Gestion des appels API et du cache
 - ✅ `ReferentialSyncService` - Service de synchronisation
-- ✅ `EntityGeneratorService` - Service de génération d'entités
+- ✅ `EntityGeneratorService` - Service de génération d'entité
 - ✅ `ListReferentialsCommand` - Commande de listage des référentiels
 - ✅ `ShowReferentialCommand` - Commande d'affichage d'un référentiel
-- ✅ `GenerateEntityCommand` - Commande de génération d'entités
+- ✅ `GenerateEntityCommand` - Commande de génération d'entité
 - ✅ `SyncReferentialCommand` - Commande de synchronisation des données
 
 ```bash
@@ -531,23 +458,23 @@ composer test
 
 ## 🛠️ Développement du Bundle
 
-### Régénérer les traits (mainteneurs uniquement)
+### Régénérer l'Enum (mainteneurs uniquement)
 
-Si l'API DAPLOS a changé et que vous devez régénérer les traits :
+Si l'API DAPLOS évolue (nouveaux référentiels), les mainteneurs peuvent régénérer l'Enum :
 
 ```bash
 # Définir les credentials
 export DAPLOS_API_LOGIN="votre_login"
 export DAPLOS_API_KEY="votre_cle"
 
-# Régénérer les traits
-php bin/generate-traits
+# Régénérer l'Enum
+php bin/generate-enum
 
 # Ou en dry-run
-php bin/generate-traits --dry-run
+php bin/generate-enum --dry-run
 ```
 
-**Note** : Ce script est un outil de maintenance réservé aux mainteneurs du bundle. Les utilisateurs finaux n'ont pas besoin de l'utiliser car les traits sont déjà fournis avec le bundle.
+**Note** : Ce script est un outil de maintenance réservé aux mainteneurs du bundle. Les utilisateurs finaux n'ont pas besoin de l'utiliser car l'Enum est déjà fourni avec le bundle.
 
 #### Exclure des référentiels abandonnés
 
@@ -555,7 +482,7 @@ Pour exclure certains référentiels abandonnés de la génération, créez un f
 
 ```json
 {
-    "description": "Liste des référentiels à exclure de la génération des traits",
+    "description": "Liste des référentiels à exclure de la génération",
     "ids": [123, 456],
     "names": ["Nom du référentiel abandonné"]
 }
@@ -565,13 +492,11 @@ Vous pouvez également utiliser les options en ligne de commande :
 
 ```bash
 # Exclure par IDs
-php bin/generate-traits --exclude-ids=123,456
+php bin/generate-enum --exclude-ids=123,456
 
 # Utiliser un fichier d'exclusion personnalisé
-php bin/generate-traits --exclude-file=/path/to/excluded-referentials.json
+php bin/generate-enum --exclude-file=/path/to/excluded-referentials.json
 ```
-
-Les référentiels exclus seront automatiquement filtrés lors de la génération. Le fichier `.excluded-referentials.json` est automatiquement détecté s'il existe à la racine du projet.
 
 ## Dépendances
 
@@ -591,4 +516,3 @@ Les référentiels exclus seront automatiquement filtrés lors de la génératio
 ## Support
 
 Pour toute question ou problème, ouvrez une issue sur le dépôt GitHub du projet
-

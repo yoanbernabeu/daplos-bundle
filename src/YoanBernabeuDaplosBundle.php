@@ -134,7 +134,6 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
             // Entity Generator Service
             ->set(EntityGeneratorService::class)
                 ->args([
-                    service(ReferentialSyncServiceInterface::class),
                     '%kernel.project_dir%',
                     '%yoanbernabeu_daplos.database.schema%',
                 ])

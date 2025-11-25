@@ -11,8 +11,6 @@ parameters:
         - tests/bootstrap.php
         - vendor
     ignoreErrors:
-        # PHPUnit Mocks - expects() method
-        - '#Call to an undefined method [a-zA-Z0-9\\_]+Interface::expects\(\)#'
         # Symfony Configuration
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)#'
 
