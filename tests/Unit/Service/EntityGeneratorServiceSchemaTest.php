@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace YoanBernabeu\DaplosBundle\Tests\Unit\Service;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use YoanBernabeu\DaplosBundle\Service\EntityGeneratorService;
-use YoanBernabeu\DaplosBundle\Service\ReferentialSyncServiceInterface;
 
 class EntityGeneratorServiceSchemaTest extends TestCase
 {
-    private MockObject&ReferentialSyncServiceInterface $syncService;
     private string $projectDir;
 
     protected function setUp(): void
     {
-        $this->syncService = $this->createMock(ReferentialSyncServiceInterface::class);
         $this->projectDir = sys_get_temp_dir().'/daplos_test_'.uniqid();
-        mkdir($this->projectDir, 0o777, true);
+        mkdir($this->projectDir.'/src/Entity', 0o755, true);
     }
 
     protected function tearDown(): void
@@ -30,16 +26,10 @@ class EntityGeneratorServiceSchemaTest extends TestCase
     {
         // Arrange
         $schema = 'my_schema';
-        $service = new EntityGeneratorService($this->syncService, $this->projectDir, $schema);
-
-        $referential = [
-            'id' => 1,
-            'name' => 'Cultures',
-            'repository_code' => 'REF_CULTURES',
-        ];
+        $service = new EntityGeneratorService($this->projectDir, $schema);
 
         // Act
-        $result = $service->generateEntity($referential, 'App\\Entity\\Daplos', false, false, true);
+        $result = $service->generateEntity('App\\Entity', false, false, true);
 
         // Assert
         $this->assertTrue($result['success']);
@@ -49,7 +39,7 @@ class EntityGeneratorServiceSchemaTest extends TestCase
 
         // On vérifie que l'attribut Table contient bien le schema
         $this->assertStringContainsString(
-            "#[ORM\Table(name: 'daplos_cultures', schema: 'my_schema')]",
+            "schema: 'my_schema'",
             $content,
             'L\'attribut Table devrait contenir le schéma configuré'
         );
@@ -58,16 +48,10 @@ class EntityGeneratorServiceSchemaTest extends TestCase
     public function testGenerateEntityWithoutSchema(): void
     {
         // Arrange
-        $service = new EntityGeneratorService($this->syncService, $this->projectDir, null);
-
-        $referential = [
-            'id' => 1,
-            'name' => 'Cultures',
-            'repository_code' => 'REF_CULTURES',
-        ];
+        $service = new EntityGeneratorService($this->projectDir, null);
 
         // Act
-        $result = $service->generateEntity($referential, 'App\\Entity\\Daplos', false, false, true);
+        $result = $service->generateEntity('App\\Entity', false, false, true);
 
         // Assert
         $this->assertTrue($result['success']);
@@ -75,8 +59,8 @@ class EntityGeneratorServiceSchemaTest extends TestCase
         $content = file_get_contents($result['entity_path']);
 
         // On vérifie que l'attribut Table ne contient pas de schema
-        $this->assertStringContainsString(
-            "#[ORM\Table(name: 'daplos_cultures')]",
+        $this->assertStringNotContainsString(
+            'schema:',
             $content,
             'L\'attribut Table ne devrait pas contenir de schéma par défaut'
         );

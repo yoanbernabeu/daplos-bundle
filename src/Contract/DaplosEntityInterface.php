@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace YoanBernabeu\DaplosBundle\Contract;
+
+use YoanBernabeu\DaplosBundle\Enum\DaplosReferentialType;
 
 /**
  * Interface pour les entités qui utilisent les référentiels DAPLOS.
@@ -8,8 +12,8 @@ namespace YoanBernabeu\DaplosBundle\Contract;
  * Les entités implémentant cette interface peuvent être synchronisées
  * automatiquement avec les données DAPLOS via le ReferentialSyncService.
  *
- * Alternative : Utiliser l'attribut #[DaplosId] sur une propriété de l'entité
- * si vous ne souhaitez pas implémenter cette interface.
+ * Alternative : Utiliser le trait DaplosReferentialTrait qui implémente
+ * automatiquement toutes ces méthodes.
  */
 interface DaplosEntityInterface
 {
@@ -21,7 +25,7 @@ interface DaplosEntityInterface
     /**
      * Définit l'ID DAPLOS de l'entité.
      */
-    public function setDaplosId(?int $id): self;
+    public function setDaplosId(?int $id): static;
 
     /**
      * Récupère le titre/libellé DAPLOS de l'entité.
@@ -31,7 +35,7 @@ interface DaplosEntityInterface
     /**
      * Définit le titre/libellé DAPLOS de l'entité.
      */
-    public function setDaplosTitle(?string $title): self;
+    public function setDaplosTitle(?string $title): static;
 
     /**
      * Récupère le code de référence DAPLOS de l'entité.
@@ -41,5 +45,15 @@ interface DaplosEntityInterface
     /**
      * Définit le code de référence DAPLOS de l'entité.
      */
-    public function setDaplosReferenceCode(?string $referenceCode): self;
+    public function setDaplosReferenceCode(?string $referenceCode): static;
+
+    /**
+     * Récupère le type de référentiel DAPLOS.
+     */
+    public function getReferentialType(): ?DaplosReferentialType;
+
+    /**
+     * Définit le type de référentiel DAPLOS.
+     */
+    public function setReferentialType(?DaplosReferentialType $type): static;
 }

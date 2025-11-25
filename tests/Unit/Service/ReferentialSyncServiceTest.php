@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace YoanBernabeu\DaplosBundle\Tests\Unit\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
 use YoanBernabeu\DaplosBundle\Client\DaplosApiClientInterface;
 use YoanBernabeu\DaplosBundle\Contract\DaplosEntityInterface;
+use YoanBernabeu\DaplosBundle\Enum\DaplosReferentialType;
 use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 use YoanBernabeu\DaplosBundle\Service\ReferentialSyncService;
 
@@ -26,18 +28,20 @@ class ReferentialSyncServiceTest extends TestCase
 
     public function testSyncReferentialWithNewEntities(): void
     {
-        // Données de l'API
+        // Arrange
+        $type = DaplosReferentialType::AMENDEMENTS_DU_SOL;
+
         $referentialData = [
-            'referential' => ['id' => 611, 'name' => 'Cultures'],
+            'referential' => ['id' => $type->getId(), 'name' => $type->getLabel()],
             'references' => [
-                ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
-                ['id' => 2, 'title' => 'Maïs', 'reference_code' => 'MAI'],
+                ['id' => 1, 'title' => 'Calcaire', 'reference_code' => 'CAL'],
+                ['id' => 2, 'title' => 'Chaux', 'reference_code' => 'CHX'],
             ],
         ];
 
         $this->apiClient->expects($this->once())
             ->method('getReferential')
-            ->with(611)
+            ->with($type->getId())
             ->willReturn($referentialData);
 
         $repository = $this->createMock(EntityRepository::class);
@@ -59,11 +63,13 @@ class ReferentialSyncServiceTest extends TestCase
         $this->entityManager->expects($this->once())
             ->method('commit');
 
+        // Act
         $stats = $this->service->syncReferential(
             TestDaplosEntity::class,
-            611
+            $type
         );
 
+        // Assert
         $this->assertEquals(2, $stats['created']);
         $this->assertEquals(0, $stats['updated']);
         $this->assertEquals(2, $stats['total']);
@@ -71,20 +77,24 @@ class ReferentialSyncServiceTest extends TestCase
 
     public function testSyncReferentialWithExistingEntities(): void
     {
+        // Arrange
+        $type = DaplosReferentialType::AMENDEMENTS_DU_SOL;
+
         $referentialData = [
-            'referential' => ['id' => 611, 'name' => 'Cultures'],
+            'referential' => ['id' => $type->getId(), 'name' => $type->getLabel()],
             'references' => [
-                ['id' => 1, 'title' => 'Blé Updated', 'reference_code' => 'BLE'],
+                ['id' => 1, 'title' => 'Calcaire Updated', 'reference_code' => 'CAL'],
             ],
         ];
 
         $this->apiClient->expects($this->once())
             ->method('getReferential')
-            ->with(611)
+            ->with($type->getId())
             ->willReturn($referentialData);
 
         $existingEntity = new TestDaplosEntity();
         $existingEntity->setDaplosId(1);
+        $existingEntity->setReferentialType($type);
 
         $repository = $this->createMock(EntityRepository::class);
         $repository->method('findOneBy')
@@ -106,66 +116,27 @@ class ReferentialSyncServiceTest extends TestCase
         $this->entityManager->expects($this->once())
             ->method('commit');
 
+        // Act
         $stats = $this->service->syncReferential(
             TestDaplosEntity::class,
-            611
+            $type
         );
 
+        // Assert
         $this->assertEquals(0, $stats['created']);
         $this->assertEquals(1, $stats['updated']);
         $this->assertEquals(1, $stats['total']);
     }
 
-    public function testSyncReferentialWithCustomMapper(): void
-    {
-        $referentialData = [
-            'referential' => ['id' => 611, 'name' => 'Cultures'],
-            'references' => [
-                ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE', 'custom' => 'value'],
-            ],
-        ];
-
-        $this->apiClient->expects($this->once())
-            ->method('getReferential')
-            ->willReturn($referentialData);
-
-        $repository = $this->createMock(EntityRepository::class);
-        $repository->method('findOneBy')->willReturn(null);
-
-        $this->entityManager->expects($this->any())
-            ->method('getRepository')
-            ->willReturn($repository);
-
-        $this->entityManager->expects($this->once())
-            ->method('beginTransaction');
-
-        $this->entityManager->expects($this->once())
-            ->method('commit');
-
-        $customMapperCalled = false;
-        $customMapper = function ($entity, $reference) use (&$customMapperCalled) {
-            $customMapperCalled = true;
-            $this->assertEquals('value', $reference['custom']);
-
-            return $entity;
-        };
-
-        $stats = $this->service->syncReferential(
-            TestDaplosEntity::class,
-            611,
-            $customMapper
-        );
-
-        $this->assertTrue($customMapperCalled);
-        $this->assertEquals(1, $stats['created']);
-    }
-
     public function testSyncReferentialRollsBackOnError(): void
     {
+        // Arrange
+        $type = DaplosReferentialType::AMENDEMENTS_DU_SOL;
+
         $referentialData = [
-            'referential' => ['id' => 611, 'name' => 'Cultures'],
+            'referential' => ['id' => $type->getId(), 'name' => $type->getLabel()],
             'references' => [
-                ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
+                ['id' => 1, 'title' => 'Calcaire', 'reference_code' => 'CAL'],
             ],
         ];
 
@@ -191,58 +162,67 @@ class ReferentialSyncServiceTest extends TestCase
         $this->entityManager->expects($this->once())
             ->method('rollback');
 
+        // Assert
         $this->expectException(DaplosApiException::class);
-        $this->expectExceptionMessage('Erreur lors de la synchronisation du référentiel 611');
+        $this->expectExceptionMessage('Erreur lors de la synchronisation du référentiel');
 
+        // Act
         $this->service->syncReferential(
             TestDaplosEntity::class,
-            611
+            $type
         );
     }
 
     public function testGetAvailableReferentials(): void
     {
+        // Arrange
         $expectedReferentials = [
-            ['id' => 611, 'name' => 'Cultures', 'repository_code' => 'List_BotanicalSpecies_CodeType', 'count' => 716],
-            ['id' => 633, 'name' => 'Amendements', 'repository_code' => 'List_SoilSupplement_CodeType', 'count' => 3],
+            ['id' => 633, 'name' => 'Amendements du sol', 'repository_code' => 'List_SpecifiedSoilSupplement_CodeType', 'count' => 3],
+            ['id' => 635, 'name' => 'Caractéristique technique', 'repository_code' => 'List_TechnicalCharacteristic_CodeType', 'count' => 10],
         ];
 
         $this->apiClient->expects($this->once())
             ->method('getReferentials')
             ->willReturn($expectedReferentials);
 
+        // Act
         $result = $this->service->getAvailableReferentials();
 
+        // Assert
         $this->assertEquals($expectedReferentials, $result);
     }
 
     public function testGetReferentialDetails(): void
     {
+        // Arrange
         $apiData = [
-            'referential' => ['id' => 611, 'name' => 'Cultures'],
+            'referential' => ['id' => 633, 'name' => 'Amendements du sol'],
             'references' => [
-                ['id' => 1, 'title' => 'Blé', 'reference_code' => 'BLE'],
+                ['id' => 1, 'title' => 'Calcaire', 'reference_code' => 'CAL'],
             ],
         ];
 
         $this->apiClient->expects($this->once())
             ->method('getReferential')
-            ->with(611)
+            ->with(633)
             ->willReturn($apiData);
 
-        $result = $this->service->getReferentialDetails(611);
+        // Act
+        $result = $this->service->getReferentialDetails(633);
 
-        // getReferentialDetails retourne le tableau complet avec 'referential' et 'references'
+        // Assert
         $this->assertEquals($apiData, $result);
         $this->assertArrayHasKey('referential', $result);
         $this->assertArrayHasKey('references', $result);
-        $this->assertEquals($apiData['referential'], $result['referential']);
     }
 
     public function testSyncReferentialSkipsInvalidReferences(): void
     {
+        // Arrange
+        $type = DaplosReferentialType::AMENDEMENTS_DU_SOL;
+
         $referentialData = [
-            'referential' => ['id' => 611, 'name' => 'Cultures'],
+            'referential' => ['id' => $type->getId(), 'name' => $type->getLabel()],
             'references' => [
                 ['title' => 'Sans ID'], // Pas d'ID
                 ['id' => null, 'title' => 'ID null'], // ID null
@@ -271,23 +251,64 @@ class ReferentialSyncServiceTest extends TestCase
         $this->entityManager->expects($this->once())
             ->method('commit');
 
+        // Act
         $stats = $this->service->syncReferential(
             TestDaplosEntity::class,
-            611
+            $type
         );
 
+        // Assert
         $this->assertEquals(1, $stats['created']);
         $this->assertEquals(3, $stats['total']); // Total inclut toutes les références
     }
+
+    public function testSyncAllReferentials(): void
+    {
+        // Arrange - Préparer les données pour chaque type de référentiel
+        $this->apiClient->expects($this->exactly(count(DaplosReferentialType::cases())))
+            ->method('getReferential')
+            ->willReturnCallback(function (int $id) {
+                return [
+                    'referential' => ['id' => $id, 'name' => 'Test'],
+                    'references' => [
+                        ['id' => 1, 'title' => 'Item 1', 'reference_code' => 'IT1'],
+                    ],
+                ];
+            });
+
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->method('findOneBy')->willReturn(null);
+
+        $this->entityManager->expects($this->any())
+            ->method('getRepository')
+            ->willReturn($repository);
+
+        $this->entityManager->expects($this->exactly(count(DaplosReferentialType::cases())))
+            ->method('beginTransaction');
+
+        $this->entityManager->expects($this->exactly(count(DaplosReferentialType::cases())))
+            ->method('commit');
+
+        // Act
+        $stats = $this->service->syncAllReferentials(TestDaplosEntity::class);
+
+        // Assert
+        $this->assertEquals(count(DaplosReferentialType::cases()), $stats['types_synced']);
+        $this->assertEquals(count(DaplosReferentialType::cases()), $stats['created']); // 1 item par type
+        $this->assertEquals(0, $stats['updated']);
+    }
 }
 
-// Classe de test implémentant l'interface DaplosEntityInterface
+/**
+ * Classe de test implémentant l'interface DaplosEntityInterface.
+ */
 class TestDaplosEntity implements DaplosEntityInterface
 {
     private ?int $id = null;
     private ?int $daplosId = null;
     private ?string $daplosTitle = null;
     private ?string $daplosReferenceCode = null;
+    private ?DaplosReferentialType $referentialType = null;
 
     public function getId(): ?int
     {
@@ -299,7 +320,7 @@ class TestDaplosEntity implements DaplosEntityInterface
         return $this->daplosId;
     }
 
-    public function setDaplosId(?int $id): self
+    public function setDaplosId(?int $id): static
     {
         $this->daplosId = $id;
 
@@ -311,7 +332,7 @@ class TestDaplosEntity implements DaplosEntityInterface
         return $this->daplosTitle;
     }
 
-    public function setDaplosTitle(?string $title): self
+    public function setDaplosTitle(?string $title): static
     {
         $this->daplosTitle = $title;
 
@@ -323,61 +344,21 @@ class TestDaplosEntity implements DaplosEntityInterface
         return $this->daplosReferenceCode;
     }
 
-    public function setDaplosReferenceCode(?string $referenceCode): self
+    public function setDaplosReferenceCode(?string $referenceCode): static
     {
         $this->daplosReferenceCode = $referenceCode;
 
         return $this;
     }
-}
 
-// Classe de test utilisant l'attribut #[DaplosId]
-class TestDaplosEntityWithAttribute
-{
-    private ?int $id = null;
-
-    #[DaplosId]
-    private ?int $culturesId = null;
-    private ?string $culturesTitle = null;
-    private ?string $culturesReferenceCode = null;
-
-    public function getId(): ?int
+    public function getReferentialType(): ?DaplosReferentialType
     {
-        return $this->id;
+        return $this->referentialType;
     }
 
-    public function getCulturesId(): ?int
+    public function setReferentialType(?DaplosReferentialType $type): static
     {
-        return $this->culturesId;
-    }
-
-    public function setCulturesId(?int $id): self
-    {
-        $this->culturesId = $id;
-
-        return $this;
-    }
-
-    public function getCulturesTitle(): ?string
-    {
-        return $this->culturesTitle;
-    }
-
-    public function setCulturesTitle(?string $title): self
-    {
-        $this->culturesTitle = $title;
-
-        return $this;
-    }
-
-    public function getCulturesReferenceCode(): ?string
-    {
-        return $this->culturesReferenceCode;
-    }
-
-    public function setCulturesReferenceCode(?string $referenceCode): self
-    {
-        $this->culturesReferenceCode = $referenceCode;
+        $this->referentialType = $type;
 
         return $this;
     }

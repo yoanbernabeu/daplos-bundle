@@ -2,21 +2,20 @@
 <?php
 
 /**
- * Script de maintenance pour générer les traits DAPLOS.
+ * Script de maintenance pour générer l'Enum DaplosReferentialType.
  * 
  * Ce script interroge l'API DAPLOS pour récupérer tous les référentiels disponibles
- * et génère automatiquement les traits PHP correspondants dans src/Entity/Trait/.
+ * et génère automatiquement l'Enum PHP correspondant dans src/Enum/.
  * 
  * ⚠️ USAGE INTERNE UNIQUEMENT
  * Ce script est destiné aux mainteneurs du bundle uniquement.
  * Les utilisateurs finaux du bundle ne doivent PAS l'utiliser.
  * 
  * Usage:
- *   php bin/generate-traits
- *   php bin/generate-traits --dry-run
- *   php bin/generate-traits --output-dir=/custom/path
- *   php bin/generate-traits --exclude-ids=123,456
- *   php bin/generate-traits --exclude-file=/path/to/excluded-referentials.json
+ *   php bin/generate-enum
+ *   php bin/generate-enum --dry-run
+ *   php bin/generate-enum --exclude-ids=123,456
+ *   php bin/generate-enum --exclude-file=/path/to/excluded-referentials.json
  * 
  * Exclusion de référentiels:
  *   Les référentiels abandonnés peuvent être exclus via le fichier .excluded-referentials.json
@@ -73,20 +72,17 @@ if ($excludeFile !== null && file_exists($excludeFile)) {
         if (isset($excludedData['ids']) && is_array($excludedData['ids'])) {
             $excludeIds = array_merge($excludeIds, array_map('intval', $excludedData['ids']));
         }
-        if (isset($excludedData['names']) && is_array($excludedData['names'])) {
-            // Les noms seront filtrés plus tard
-        }
     }
 }
 
 $excludeIds = array_unique($excludeIds);
 
-$outputDir = $outputDir ?: __DIR__ . '/../src/Entity/Trait';
+$outputDir = $outputDir ?: __DIR__ . '/../src/Enum';
 
 // Output
 $output = new ConsoleOutput();
 $output->writeln('<info>═══════════════════════════════════════════════════════════</info>');
-$output->writeln('<info>  🔧 DAPLOS Bundle - Générateur de Traits (Maintenance)</info>');
+$output->writeln('<info>  🔧 DAPLOS Bundle - Générateur d\'Enum (Maintenance)</info>');
 $output->writeln('<info>═══════════════════════════════════════════════════════════</info>');
 $output->writeln('');
 
@@ -167,7 +163,7 @@ if ($excludedCount > 0) {
     $output->writeln(sprintf('<comment>⏭️  %d référentiel(s) exclu(s)</comment>', $excludedCount));
 }
 
-$output->writeln(sprintf('<info>📦 %d référentiel(s) à générer</info>', count($referentials)));
+$output->writeln(sprintf('<info>📦 %d référentiel(s) à inclure dans l\'Enum</info>', count($referentials)));
 $output->writeln('');
 
 // Créer le répertoire si nécessaire
@@ -178,9 +174,9 @@ if (!$dryRun && !is_dir($outputDir)) {
 
 // Fonctions helper
 /**
- * Convertit une chaîne en CamelCase en préservant les séparateurs de mots.
+ * Convertit une chaîne en SCREAMING_SNAKE_CASE pour les cases d'enum.
  */
-function toCamelCase(string $text): string
+function toEnumCase(string $text): string
 {
     // Nettoyer les accents
     $unwantedArray = [
@@ -199,189 +195,193 @@ function toCamelCase(string $text): string
 
     $text = strtr($text, $unwantedArray);
 
-    // Diviser en mots par espaces, tirets, underscores et autres caractères non alphanumériques
-    $words = preg_split('/[\s\-_]+|[^a-zA-Z0-9]+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+    // Remplacer les caractères non alphanumériques par des underscores
+    $text = preg_replace('/[^a-zA-Z0-9]+/', '_', $text);
+    
+    // Convertir en majuscules
+    $text = strtoupper($text);
+    
+    // Supprimer les underscores en début/fin
+    $text = trim($text, '_');
+    
+    // Éviter les underscores multiples
+    $text = preg_replace('/_+/', '_', $text);
 
-    // Mettre en majuscule la première lettre de chaque mot et concaténer
-    $camelCase = '';
-    foreach ($words as $word) {
-        // Ne garder que les caractères alphanumériques du mot
-        $cleanWord = preg_replace('/[^a-zA-Z0-9]/', '', $word);
-        if ('' !== $cleanWord) {
-            $camelCase .= ucfirst(strtolower($cleanWord));
-        }
-    }
-
-    return $camelCase;
+    return $text;
 }
 
-function normalizeTraitName(string $name): string
+/**
+ * Convertit une chaîne en snake_case pour la valeur de l'enum.
+ */
+function toSnakeCase(string $text): string
 {
-    $qualifier = '';
-    if (preg_match('/\(([^)]+)\)/', $name, $matches)) {
-        $qualifier = $matches[1];
-    }
+    // Nettoyer les accents
+    $unwantedArray = [
+        'Š' => 'S', 'š' => 's', 'Ž' => 'Z', 'ž' => 'z',
+        'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'A',
+        'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+        'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ñ' => 'N',
+        'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O',
+        'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'B', 'ß' => 'Ss',
+        'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'a',
+        'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+        'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ð' => 'o', 'ñ' => 'n',
+        'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o',
+        'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y', 'þ' => 'b', 'ÿ' => 'y'
+    ];
 
-    $mainName = preg_replace('/\s*\([^)]*\)/', '', $name);
+    $text = strtr($text, $unwantedArray);
 
-    // Convertir en CamelCase
-    $mainNameCamelCase = toCamelCase($mainName);
-    $qualifierCamelCase = '' !== $qualifier ? toCamelCase($qualifier) : '';
+    // Remplacer les caractères non alphanumériques par des underscores
+    $text = preg_replace('/[^a-zA-Z0-9]+/', '_', $text);
+    
+    // Convertir en minuscules
+    $text = strtolower($text);
+    
+    // Supprimer les underscores en début/fin
+    $text = trim($text, '_');
+    
+    // Éviter les underscores multiples
+    $text = preg_replace('/_+/', '_', $text);
 
-    return $mainNameCamelCase . $qualifierCamelCase;
+    return $text;
 }
 
-function generateTraitContent(array $ref): string
+/**
+ * Génère le contenu de l'Enum.
+ */
+function generateEnumContent(array $referentials): string
 {
-    $traitName = normalizeTraitName($ref['name']) . 'Trait';
-    $propertyPrefix = lcfirst(normalizeTraitName($ref['name']));
-    $capitalPrefix = ucfirst($propertyPrefix);
+    $cases = [];
+    $idMapping = [];
+    $labelMapping = [];
+    $repoCodeMapping = [];
+
+    foreach ($referentials as $ref) {
+        $caseName = toEnumCase($ref['name']);
+        $caseValue = toSnakeCase($ref['name']);
+        
+        $cases[] = sprintf("    case %s = '%s';", $caseName, $caseValue);
+        $idMapping[] = sprintf("            self::%s => %d,", $caseName, $ref['id']);
+        $labelMapping[] = sprintf("            self::%s => '%s',", $caseName, addslashes($ref['name']));
+        $repoCodeMapping[] = sprintf("            self::%s => '%s',", $caseName, addslashes($ref['repository_code']));
+    }
+
+    $casesStr = implode("\n", $cases);
+    $idMappingStr = implode("\n", $idMapping);
+    $labelMappingStr = implode("\n", $labelMapping);
+    $repoCodeMappingStr = implode("\n", $repoCodeMapping);
 
     return <<<PHPCODE
 <?php
 
-namespace YoanBernabeu\DaplosBundle\Entity\Trait;
+declare(strict_types=1);
 
-use Doctrine\ORM\Mapping as ORM;
-use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
+namespace YoanBernabeu\DaplosBundle\Enum;
 
 /**
- * Trait pour le référentiel "{$ref['name']}".
+ * Enum représentant tous les types de référentiels DAPLOS disponibles.
  *
- * Repository Code: {$ref['repository_code']}
- * Référentiel ID: {$ref['id']}
- * Nombre d'items: {$ref['count']}
+ * Cette enum est générée automatiquement par le script bin/generate-enum.
+ * Ne pas modifier manuellement - utiliser le script pour régénérer.
  *
- * Ce trait permet d'associer une entité avec les données du référentiel DAPLOS.
- *
- * Pour utiliser ce trait avec le mapping automatique, ajoutez l'attribut #[DaplosId]
- * sur la propriété {$propertyPrefix}Id :
- *
- * use YoanBernabeu\DaplosBundle\Attribute\DaplosId;
- *
- * #[DaplosId]
- * private ?int \${$propertyPrefix}Id = null;
+ * @author Yoan Bernabeu
  */
-trait {$traitName}
+enum DaplosReferentialType: string
 {
-    #[DaplosId]
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int \${$propertyPrefix}Id = null;
+{$casesStr}
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string \${$propertyPrefix}Title = null;
-
-    #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string \${$propertyPrefix}ReferenceCode = null;
-
-    public function get{$capitalPrefix}Id(): ?int
+    /**
+     * Retourne l'ID du référentiel dans l'API DAPLOS.
+     */
+    public function getId(): int
     {
-        return \$this->{$propertyPrefix}Id;
+        return match (\$this) {
+{$idMappingStr}
+        };
     }
 
-    public function set{$capitalPrefix}Id(?int \${$propertyPrefix}Id): self
+    /**
+     * Retourne le libellé lisible du référentiel.
+     */
+    public function getLabel(): string
     {
-        \$this->{$propertyPrefix}Id = \${$propertyPrefix}Id;
-
-        return \$this;
+        return match (\$this) {
+{$labelMappingStr}
+        };
     }
 
-    public function get{$capitalPrefix}Title(): ?string
+    /**
+     * Retourne le code du repository dans l'API DAPLOS.
+     */
+    public function getRepositoryCode(): string
     {
-        return \$this->{$propertyPrefix}Title;
+        return match (\$this) {
+{$repoCodeMappingStr}
+        };
     }
 
-    public function set{$capitalPrefix}Title(?string \${$propertyPrefix}Title): self
+    /**
+     * Trouve un type de référentiel par son ID API.
+     */
+    public static function fromId(int \$id): ?self
     {
-        \$this->{$propertyPrefix}Title = \${$propertyPrefix}Title;
+        foreach (self::cases() as \$case) {
+            if (\$case->getId() === \$id) {
+                return \$case;
+            }
+        }
 
-        return \$this;
+        return null;
     }
 
-    public function get{$capitalPrefix}ReferenceCode(): ?string
+    /**
+     * Trouve un type de référentiel par son code repository.
+     */
+    public static function fromRepositoryCode(string \$code): ?self
     {
-        return \$this->{$propertyPrefix}ReferenceCode;
-    }
+        foreach (self::cases() as \$case) {
+            if (\$case->getRepositoryCode() === \$code) {
+                return \$case;
+            }
+        }
 
-    public function set{$capitalPrefix}ReferenceCode(?string \${$propertyPrefix}ReferenceCode): self
-    {
-        \$this->{$propertyPrefix}ReferenceCode = \${$propertyPrefix}ReferenceCode;
-
-        return \$this;
+        return null;
     }
 }
 
 PHPCODE;
 }
 
-// Générer les traits
-$output->writeln('🔨 Génération des traits...');
-$progressBar = new ProgressBar($output, count($referentials));
-$progressBar->start();
+// Générer l'Enum
+$output->writeln('🔨 Génération de l\'Enum DaplosReferentialType...');
 
-$generated = [];
+$enumContent = generateEnumContent($referentials);
+$filePath = $outputDir . '/DaplosReferentialType.php';
 
-foreach ($referentials as $ref) {
-    $traitName = normalizeTraitName($ref['name']) . 'Trait';
-    $fileName = $traitName . '.php';
-    $filePath = $outputDir . '/' . $fileName;
-
-    if (!$dryRun) {
-        file_put_contents($filePath, generateTraitContent($ref));
-    }
-
-    $generated[] = [
-        'trait' => $traitName,
-        'file' => $fileName,
-        'referential' => $ref['name'],
-        'id' => $ref['id'],
-        'repository_code' => $ref['repository_code']
-    ];
-
-    $progressBar->advance();
-}
-
-$progressBar->finish();
-$output->writeln('');
-$output->writeln('');
-
-// Générer l'index
 if (!$dryRun) {
-    $indexPath = dirname($outputDir) . '/TRAITS_INDEX.md';
-    $indexContent = "# Index des Traits DAPLOS\n\n";
-    $indexContent .= "| Trait | Référentiel | ID | Repository Code |\n";
-    $indexContent .= "|-------|-------------|----|-----------------|\n";
-
-    foreach ($generated as $item) {
-        $indexContent .= sprintf(
-            "| %s | %s | %d | %s |\n",
-            $item['trait'],
-            $item['referential'],
-            $item['id'],
-            $item['repository_code']
-        );
-    }
-
-    file_put_contents($indexPath, $indexContent);
-    $output->writeln(sprintf('<info>📄 Index généré : %s</info>', $indexPath));
+    file_put_contents($filePath, $enumContent);
+    $output->writeln(sprintf('<info>✅ Enum généré : %s</info>', $filePath));
+} else {
+    $output->writeln('<comment>📝 [DRY-RUN] L\'Enum serait généré</comment>');
 }
 
 // Résumé
 $output->writeln('');
 $output->writeln('<info>═══════════════════════════════════════════════════════════</info>');
 $output->writeln(sprintf(
-    '<info>  ✅ %d traits %s avec succès</info>',
-    count($generated),
-    $dryRun ? 'seraient générés' : 'générés'
+    '<info>  ✅ Enum %s avec %d référentiels</info>',
+    $dryRun ? 'serait généré' : 'généré',
+    count($referentials)
 ));
 $output->writeln('<info>═══════════════════════════════════════════════════════════</info>');
 $output->writeln('');
 
 if (!$dryRun) {
     $output->writeln('📝 Prochaines étapes :');
-    $output->writeln('  1. Vérifier les traits générés');
-    $output->writeln('  2. Commit les changements : git add src/Entity/Trait/');
-    $output->writeln('  3. git commit -m "Régénération des traits DAPLOS"');
+    $output->writeln('  1. Vérifier l\'Enum généré');
+    $output->writeln('  2. Commit les changements : git add src/Enum/');
+    $output->writeln('  3. git commit -m "Régénération de l\'Enum DaplosReferentialType"');
 }
 
 $output->writeln('');

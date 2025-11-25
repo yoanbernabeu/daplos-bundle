@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace YoanBernabeu\DaplosBundle\Service;
 
+use YoanBernabeu\DaplosBundle\Enum\DaplosReferentialType;
 use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 
 /**
@@ -10,11 +13,10 @@ use YoanBernabeu\DaplosBundle\Exception\DaplosApiException;
 interface ReferentialSyncServiceInterface
 {
     /**
-     * Synchronise un référentiel DAPLOS avec une entité Doctrine.
+     * Synchronise un référentiel DAPLOS spécifique.
      *
-     * @param string        $entityClass   Nom complet de la classe de l'entité (ex: App\Entity\Culture)
-     * @param int           $referentialId ID du référentiel DAPLOS
-     * @param callable|null $mapper        Fonction de mapping personnalisée (optionnel)
+     * @param string                $entityClass Le nom complet de la classe entité (ex: App\Entity\DaplosReferential)
+     * @param DaplosReferentialType $type        Le type de référentiel à synchroniser
      *
      * @return array{created: int, updated: int, total: int}
      *
@@ -22,9 +24,19 @@ interface ReferentialSyncServiceInterface
      */
     public function syncReferential(
         string $entityClass,
-        int $referentialId,
-        ?callable $mapper = null
+        DaplosReferentialType $type
     ): array;
+
+    /**
+     * Synchronise tous les référentiels DAPLOS.
+     *
+     * @param string $entityClass Le nom complet de la classe entité (ex: App\Entity\DaplosReferential)
+     *
+     * @return array{created: int, updated: int, total: int, types_synced: int}
+     *
+     * @throws DaplosApiException
+     */
+    public function syncAllReferentials(string $entityClass): array;
 
     /**
      * Récupère la liste de tous les référentiels disponibles.
