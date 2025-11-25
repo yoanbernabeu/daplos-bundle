@@ -89,11 +89,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         } catch (\Exception $e) {
             $this->entityManager->rollback();
 
-            throw new DaplosApiException(
-                sprintf('Erreur lors de la synchronisation du référentiel %s (ID: %d) : %s', $type->getLabel(), $referentialId, $e->getMessage()),
-                0,
-                $e
-            );
+            throw new DaplosApiException(sprintf('Erreur lors de la synchronisation du référentiel %s (ID: %d) : %s', $type->getLabel(), $referentialId, $e->getMessage()), 0, $e);
         }
 
         return $stats;
@@ -142,9 +138,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
     private function mapFields(object $entity, array $reference, DaplosReferentialType $type): void
     {
         if (!$entity instanceof DaplosEntityInterface) {
-            throw new \InvalidArgumentException(
-                sprintf('L\'entité doit implémenter %s', DaplosEntityInterface::class)
-            );
+            throw new \InvalidArgumentException(sprintf('L\'entité doit implémenter %s', DaplosEntityInterface::class));
         }
 
         $daplosId = $reference['id'] ?? null;
@@ -152,12 +146,12 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         $referenceCode = $reference['reference_code'] ?? null;
 
         // Tronquer le title si nécessaire (max 255 caractères)
-        if ($title !== null && mb_strlen($title) > 255) {
+        if (null !== $title && mb_strlen($title) > 255) {
             $title = mb_substr($title, 0, 255);
         }
 
         // Tronquer le referenceCode si nécessaire (max 100 caractères)
-        if ($referenceCode !== null && mb_strlen($referenceCode) > 100) {
+        if (null !== $referenceCode && mb_strlen($referenceCode) > 100) {
             $referenceCode = mb_substr($referenceCode, 0, 100);
         }
 

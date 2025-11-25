@@ -15,8 +15,8 @@ interface ReferentialSyncServiceInterface
     /**
      * Synchronise un référentiel DAPLOS spécifique.
      *
-     * @param string                  $entityClass Le nom complet de la classe entité (ex: App\Entity\DaplosReferential)
-     * @param DaplosReferentialType   $type        Le type de référentiel à synchroniser
+     * @param string                $entityClass Le nom complet de la classe entité (ex: App\Entity\DaplosReferential)
+     * @param DaplosReferentialType $type        Le type de référentiel à synchroniser
      *
      * @return array{created: int, updated: int, total: int}
      *

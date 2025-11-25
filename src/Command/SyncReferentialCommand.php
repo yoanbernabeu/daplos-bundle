@@ -202,6 +202,7 @@ class SyncReferentialCommand extends Command
         foreach (DaplosReferentialType::cases() as $case) {
             if ($case->name === $typeName || $case->value === $typeName) {
                 $type = $case;
+
                 break;
             }
         }
@@ -347,7 +348,7 @@ class SyncReferentialCommand extends Command
      * Affiche le résumé de la synchronisation globale.
      *
      * @param array<array{type: DaplosReferentialType, stats: array{created: int, updated: int, total: int}}> $results
-     * @param array<array{type: DaplosReferentialType, error: string}> $errors
+     * @param array<array{type: DaplosReferentialType, error: string}>                                        $errors
      */
     private function displaySummary(SymfonyStyle $io, array $results, array $errors): void
     {

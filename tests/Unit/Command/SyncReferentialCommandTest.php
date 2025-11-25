@@ -252,8 +252,8 @@ class SyncReferentialCommandTest extends TestCase
         $this->syncService->expects($this->atLeast(2))
             ->method('syncReferential')
             ->willReturnCallback(function () use ($stats, &$callCount) {
-                $callCount++;
-                if ($callCount === 2) {
+                ++$callCount;
+                if (2 === $callCount) {
                     throw new DaplosApiException('Sync failed');
                 }
 

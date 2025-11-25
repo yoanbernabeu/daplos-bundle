@@ -11,7 +11,6 @@ use YoanBernabeu\DaplosBundle\Enum\DaplosReferentialType;
 /**
  * Trait unifié pour les entités de référentiels DAPLOS.
  *
- *
  * Usage:
  *   use DaplosReferentialTrait;
  *
@@ -86,4 +85,3 @@ trait DaplosReferentialTrait
         return $this;
     }
 }
-
