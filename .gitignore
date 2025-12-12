@@ -68,3 +68,4 @@ Desktop.ini
 # Fichiers de test temporaires
 /tests/tmp/
 /tests/fixtures/tmp/
+/temp/
