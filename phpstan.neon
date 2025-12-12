@@ -13,6 +13,11 @@ parameters:
     ignoreErrors:
         # PHPUnit Mocks - expects() method on mock objects
         - '#Call to an undefined method [a-zA-Z0-9\\\\]+Interface::expects\(\)#'
-        # Symfony Configuration
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)#'
+        # Symfony Configuration - different errors between Symfony 7.x and 8.x
+        -
+            message: '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)#'
+            reportUnmatched: false
+        -
+            message: '#Call to method .+Node\(\) on an unknown class Symfony\\Component\\Config\\Definition\\Builder\\NodeBuilder<.+>#'
+            reportUnmatched: false
 
