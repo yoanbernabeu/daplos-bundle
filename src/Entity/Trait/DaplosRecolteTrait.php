@@ -43,7 +43,7 @@ trait DaplosRecolteTrait
     private ?string $daplosLibelleProduit = null;
 
     #[ORM\Column(type: 'decimal', precision: 12, scale: 4, nullable: true)]
-    private ?float $daplosQuantite = null;
+    private ?string $daplosQuantite = null;
 
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosCodeUnite = null;
@@ -123,14 +123,14 @@ trait DaplosRecolteTrait
         return $this;
     }
 
-    public function getDaplosQuantite(): ?float
+    public function getDaplosQuantite(): ?string
     {
         return $this->daplosQuantite;
     }
 
-    public function setDaplosQuantite(?float $daplosQuantite): static
+    public function setDaplosQuantite(float|string|null $daplosQuantite): static
     {
-        $this->daplosQuantite = $daplosQuantite;
+        $this->daplosQuantite = null !== $daplosQuantite ? (string) $daplosQuantite : null;
 
         return $this;
     }
@@ -170,7 +170,7 @@ trait DaplosRecolteTrait
         $this->daplosCodeTypeProduitRecolte = $dto->codeTypeProduitRecolte;
         $this->daplosCodeEspeceBotanique = $dto->codeEspeceBotanique;
         $this->daplosLibelleProduit = $dto->libelleProduit;
-        $this->daplosQuantite = $dto->quantite;
+        $this->daplosQuantite = null !== $dto->quantite ? (string) $dto->quantite : null;
         $this->daplosCodeUnite = $dto->codeUnite;
         $this->daplosDestinationProduit = $dto->destinationProduit;
 

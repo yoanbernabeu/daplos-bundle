@@ -39,7 +39,7 @@ trait DaplosIntrantTrait
     private ?string $daplosDesignation = null;
 
     #[ORM\Column(type: 'decimal', precision: 12, scale: 4, nullable: true)]
-    private ?float $daplosQuantite = null;
+    private ?string $daplosQuantite = null;
 
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosCodeUnite = null;
@@ -125,14 +125,14 @@ trait DaplosIntrantTrait
         return $this;
     }
 
-    public function getDaplosQuantite(): ?float
+    public function getDaplosQuantite(): ?string
     {
         return $this->daplosQuantite;
     }
 
-    public function setDaplosQuantite(?float $daplosQuantite): static
+    public function setDaplosQuantite(float|string|null $daplosQuantite): static
     {
-        $this->daplosQuantite = $daplosQuantite;
+        $this->daplosQuantite = null !== $daplosQuantite ? (string) $daplosQuantite : null;
 
         return $this;
     }
@@ -287,7 +287,7 @@ trait DaplosIntrantTrait
         $this->daplosRefIntervention = $dto->refIntervention;
         $this->daplosCodeTypeIntrant = $dto->codeTypeIntrant;
         $this->daplosDesignation = $dto->designation;
-        $this->daplosQuantite = $dto->quantite;
+        $this->daplosQuantite = null !== $dto->quantite ? (string) $dto->quantite : null;
         $this->daplosCodeUnite = $dto->codeUnite;
         $this->daplosCodeAMM = $dto->codeAMM;
         $this->daplosCodeGNIS = $dto->codeGNIS;

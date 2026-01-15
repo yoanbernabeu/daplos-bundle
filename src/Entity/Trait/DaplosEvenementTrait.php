@@ -66,7 +66,7 @@ trait DaplosEvenementTrait
     private ?string $daplosCommentaire = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    private ?float $daplosSurfaceTraitee = null;
+    private ?string $daplosSurfaceTraitee = null;
 
     public function getDaplosIdentifiantParcelle(): ?string
     {
@@ -236,14 +236,14 @@ trait DaplosEvenementTrait
         return $this;
     }
 
-    public function getDaplosSurfaceTraitee(): ?float
+    public function getDaplosSurfaceTraitee(): ?string
     {
         return $this->daplosSurfaceTraitee;
     }
 
-    public function setDaplosSurfaceTraitee(?float $daplosSurfaceTraitee): static
+    public function setDaplosSurfaceTraitee(float|string|null $daplosSurfaceTraitee): static
     {
-        $this->daplosSurfaceTraitee = $daplosSurfaceTraitee;
+        $this->daplosSurfaceTraitee = null !== $daplosSurfaceTraitee ? (string) $daplosSurfaceTraitee : null;
 
         return $this;
     }
@@ -267,7 +267,7 @@ trait DaplosEvenementTrait
         $this->daplosLibelleStadeVegetatif = $dto->libelleStadeVegetatif;
         $this->daplosCodeConditionsMeteo = $dto->codeConditionsMeteo;
         $this->daplosCommentaire = $dto->commentaire;
-        $this->daplosSurfaceTraitee = $dto->surfaceTraitee;
+        $this->daplosSurfaceTraitee = null !== $dto->surfaceTraitee ? (string) $dto->surfaceTraitee : null;
 
         return $this;
     }

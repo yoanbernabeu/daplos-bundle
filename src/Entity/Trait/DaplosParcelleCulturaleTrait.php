@@ -63,7 +63,7 @@ trait DaplosParcelleCulturaleTrait
     private ?string $daplosCodeTypeSousSol = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    private ?float $daplosSurface = null;
+    private ?string $daplosSurface = null;
 
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosCodeUniteSurface = null;
@@ -236,14 +236,14 @@ trait DaplosParcelleCulturaleTrait
         return $this;
     }
 
-    public function getDaplosSurface(): ?float
+    public function getDaplosSurface(): ?string
     {
         return $this->daplosSurface;
     }
 
-    public function setDaplosSurface(?float $daplosSurface): static
+    public function setDaplosSurface(float|string|null $daplosSurface): static
     {
-        $this->daplosSurface = $daplosSurface;
+        $this->daplosSurface = null !== $daplosSurface ? (string) $daplosSurface : null;
 
         return $this;
     }
@@ -326,7 +326,7 @@ trait DaplosParcelleCulturaleTrait
         $this->daplosCodePeriodeSemis = $dto->codePeriodeSemis;
         $this->daplosCodeTypeSol = $dto->codeTypeSol;
         $this->daplosCodeTypeSousSol = $dto->codeTypeSousSol;
-        $this->daplosSurface = $dto->surface;
+        $this->daplosSurface = null !== $dto->surface ? (string) $dto->surface : null;
         $this->daplosCodeUniteSurface = $dto->codeUniteSurface;
         $this->daplosNumeroIlot = $dto->numeroIlot;
         $this->daplosCodeCommune = $dto->codeCommune;

@@ -36,7 +36,7 @@ trait DaplosParcelleCadastraleTrait
     private ?string $daplosNumero = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
-    private ?float $daplosSurface = null;
+    private ?string $daplosSurface = null;
 
     public function getDaplosIdentifiantParcelle(): ?string
     {
@@ -110,14 +110,14 @@ trait DaplosParcelleCadastraleTrait
         return $this;
     }
 
-    public function getDaplosSurface(): ?float
+    public function getDaplosSurface(): ?string
     {
         return $this->daplosSurface;
     }
 
-    public function setDaplosSurface(?float $daplosSurface): static
+    public function setDaplosSurface(float|string|null $daplosSurface): static
     {
-        $this->daplosSurface = $daplosSurface;
+        $this->daplosSurface = null !== $daplosSurface ? (string) $daplosSurface : null;
 
         return $this;
     }
@@ -133,7 +133,7 @@ trait DaplosParcelleCadastraleTrait
         $this->daplosPrefixe = $dto->prefixe;
         $this->daplosSection = $dto->section;
         $this->daplosNumero = $dto->numero;
-        $this->daplosSurface = $dto->surface;
+        $this->daplosSurface = null !== $dto->surface ? (string) $dto->surface : null;
 
         return $this;
     }

@@ -27,10 +27,10 @@ trait DaplosCoordonneeTrait
     private ?string $daplosSystemeCoordonnees = null;
 
     #[ORM\Column(type: 'decimal', precision: 15, scale: 8, nullable: true)]
-    private ?float $daplosX = null;
+    private ?string $daplosX = null;
 
     #[ORM\Column(type: 'decimal', precision: 15, scale: 8, nullable: true)]
-    private ?float $daplosY = null;
+    private ?string $daplosY = null;
 
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private ?string $daplosRefIntervention = null;
@@ -71,26 +71,26 @@ trait DaplosCoordonneeTrait
         return $this;
     }
 
-    public function getDaplosX(): ?float
+    public function getDaplosX(): ?string
     {
         return $this->daplosX;
     }
 
-    public function setDaplosX(?float $daplosX): static
+    public function setDaplosX(float|string|null $daplosX): static
     {
-        $this->daplosX = $daplosX;
+        $this->daplosX = null !== $daplosX ? (string) $daplosX : null;
 
         return $this;
     }
 
-    public function getDaplosY(): ?float
+    public function getDaplosY(): ?string
     {
         return $this->daplosY;
     }
 
-    public function setDaplosY(?float $daplosY): static
+    public function setDaplosY(float|string|null $daplosY): static
     {
-        $this->daplosY = $daplosY;
+        $this->daplosY = null !== $daplosY ? (string) $daplosY : null;
 
         return $this;
     }
@@ -115,8 +115,8 @@ trait DaplosCoordonneeTrait
         $this->daplosIdentifiantParcelle = $dto->identifiantParcelle;
         $this->daplosAnnee = $dto->annee;
         $this->daplosSystemeCoordonnees = $dto->systemeCoordonnees;
-        $this->daplosX = $dto->x;
-        $this->daplosY = $dto->y;
+        $this->daplosX = null !== $dto->x ? (string) $dto->x : null;
+        $this->daplosY = null !== $dto->y ? (string) $dto->y : null;
         $this->daplosRefIntervention = $dto->refIntervention;
 
         return $this;

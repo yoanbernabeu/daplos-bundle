@@ -33,7 +33,7 @@ trait DaplosAnalyseEffluentTrait
     private ?string $daplosCodeElement = null;
 
     #[ORM\Column(type: 'decimal', precision: 12, scale: 4, nullable: true)]
-    private ?float $daplosValeur = null;
+    private ?string $daplosValeur = null;
 
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosCodeUnite = null;
@@ -98,14 +98,14 @@ trait DaplosAnalyseEffluentTrait
         return $this;
     }
 
-    public function getDaplosValeur(): ?float
+    public function getDaplosValeur(): ?string
     {
         return $this->daplosValeur;
     }
 
-    public function setDaplosValeur(?float $daplosValeur): static
+    public function setDaplosValeur(float|string|null $daplosValeur): static
     {
-        $this->daplosValeur = $daplosValeur;
+        $this->daplosValeur = null !== $daplosValeur ? (string) $daplosValeur : null;
 
         return $this;
     }
@@ -132,7 +132,7 @@ trait DaplosAnalyseEffluentTrait
         $this->daplosRefIntervention = $dto->refIntervention;
         $this->daplosTypeAnalyse = $dto->typeAnalyse;
         $this->daplosCodeElement = $dto->codeElement;
-        $this->daplosValeur = $dto->valeur;
+        $this->daplosValeur = null !== $dto->valeur ? (string) $dto->valeur : null;
         $this->daplosCodeUnite = $dto->codeUnite;
 
         return $this;

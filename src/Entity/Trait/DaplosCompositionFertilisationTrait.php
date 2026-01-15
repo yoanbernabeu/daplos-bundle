@@ -33,7 +33,7 @@ trait DaplosCompositionFertilisationTrait
     private ?int $daplosIndexElement = null;
 
     #[ORM\Column(type: 'decimal', precision: 12, scale: 4, nullable: true)]
-    private ?float $daplosTeneur = null;
+    private ?string $daplosTeneur = null;
 
     public function getDaplosIdentifiantParcelle(): ?string
     {
@@ -95,14 +95,14 @@ trait DaplosCompositionFertilisationTrait
         return $this;
     }
 
-    public function getDaplosTeneur(): ?float
+    public function getDaplosTeneur(): ?string
     {
         return $this->daplosTeneur;
     }
 
-    public function setDaplosTeneur(?float $daplosTeneur): static
+    public function setDaplosTeneur(float|string|null $daplosTeneur): static
     {
-        $this->daplosTeneur = $daplosTeneur;
+        $this->daplosTeneur = null !== $daplosTeneur ? (string) $daplosTeneur : null;
 
         return $this;
     }
@@ -117,7 +117,7 @@ trait DaplosCompositionFertilisationTrait
         $this->daplosRefIntervention = $dto->refIntervention;
         $this->daplosCodeElement = $dto->codeElement;
         $this->daplosIndexElement = $dto->indexElement;
-        $this->daplosTeneur = $dto->teneur;
+        $this->daplosTeneur = null !== $dto->teneur ? (string) $dto->teneur : null;
 
         return $this;
     }

@@ -33,7 +33,7 @@ class DaplosParcelleCulturaleTraitTest extends TestCase
         $this->assertSame('Champ du moulin', $entity->getDaplosNom());
         $this->assertSame('ZDH', $entity->getDaplosCodeEspeceBotanique());
         $this->assertSame('APACHE', $entity->getDaplosCodeVariete());
-        $this->assertSame(25.54, $entity->getDaplosSurface());
+        $this->assertSame('25.54', $entity->getDaplosSurface());
         $this->assertSame('HA', $entity->getDaplosCodeUniteSurface());
         $this->assertSame(12, $entity->getDaplosNumeroIlot());
         $this->assertSame('01234', $entity->getDaplosCodeCommune());
