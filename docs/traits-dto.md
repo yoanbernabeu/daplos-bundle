@@ -159,6 +159,51 @@ $intrant->isDaplosIrrigation();     // Irrigation ?
 
 ---
 
+### Traits supplémentaires pour données détaillées
+
+Le bundle fournit des Traits supplémentaires pour persister les données détaillées des fichiers DAPLOS :
+
+| Trait | Description | DTO correspondant |
+| ----- | ----------- | ----------------- |
+| `DaplosSurfaceParcelleTrait` | Surfaces de parcelle | `SurfaceParcelle` |
+| `DaplosCoordonneeTrait` | Coordonnées GPS | `Coordonnee` |
+| `DaplosParcelleCadastraleTrait` | Parcelles cadastrales | `ParcelleCadastrale` |
+| `DaplosEngagementTrait` | Engagements (MAE, Bio...) | `Engagement` |
+| `DaplosHistoriqueTrait` | Historique/précédent cultural | `Historique` |
+| `DaplosAmendementTrait` | Amendements/résidus | `Amendement` |
+| `DaplosAnalyseTrait` | Analyses de sol | `Analyse` |
+| `DaplosCibleEvenementTrait` | Cibles d'intervention | `CibleEvenement` |
+| `DaplosHistoriqueDecisionTrait` | Historique de décision | `HistoriqueDecision` |
+| `DaplosCompositionFertilisationTrait` | Composition fertilisation | `CompositionFertilisation` |
+| `DaplosLotFabricantTrait` | Lots fabricant | `LotFabricant` |
+| `DaplosAnalyseEffluentTrait` | Analyses d'effluent | `AnalyseEffluent` |
+| `DaplosRecolteTrait` | Données de récolte | `Recolte` |
+| `DaplosLotRecolteTrait` | Lots de récolte | `LotRecolte` |
+| `DaplosCaracterisationProduitTrait` | Caractérisation produit | `CaracterisationProduit` |
+
+Chaque Trait suit le même pattern :
+
+```php
+use YoanBernabeu\DaplosBundle\Entity\Trait\DaplosRecolteTrait;
+
+#[ORM\Entity]
+class MaRecolte
+{
+    use DaplosRecolteTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+}
+
+// Hydratation depuis le DTO
+$recolte = new MaRecolte();
+$recolte->hydrateFromDaplosRecolte($dtoFromParser);
+```
+
+---
+
 ## DTOs (Data Transfer Objects)
 
 Les DTOs sont des objets immuables (`readonly`) retournés par le parser. Ils représentent les données brutes du fichier DAPLOS.
