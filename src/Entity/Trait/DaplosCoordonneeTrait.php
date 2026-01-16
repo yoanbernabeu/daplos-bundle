@@ -35,6 +35,12 @@ trait DaplosCoordonneeTrait
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private ?string $daplosRefIntervention = null;
 
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $daplosNumeroParcelleCadastrale = null;
+
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    private ?string $daplosAltitude = null;
+
     public function getDaplosIdentifiantParcelle(): ?string
     {
         return $this->daplosIdentifiantParcelle;
@@ -107,6 +113,30 @@ trait DaplosCoordonneeTrait
         return $this;
     }
 
+    public function getDaplosNumeroParcelleCadastrale(): ?string
+    {
+        return $this->daplosNumeroParcelleCadastrale;
+    }
+
+    public function setDaplosNumeroParcelleCadastrale(?string $daplosNumeroParcelleCadastrale): static
+    {
+        $this->daplosNumeroParcelleCadastrale = $daplosNumeroParcelleCadastrale;
+
+        return $this;
+    }
+
+    public function getDaplosAltitude(): ?string
+    {
+        return $this->daplosAltitude;
+    }
+
+    public function setDaplosAltitude(float|string|null $daplosAltitude): static
+    {
+        $this->daplosAltitude = null !== $daplosAltitude ? (string) $daplosAltitude : null;
+
+        return $this;
+    }
+
     /**
      * Hydrate l'entité depuis un DTO Coordonnee.
      */
@@ -118,6 +148,8 @@ trait DaplosCoordonneeTrait
         $this->daplosX = null !== $dto->x ? (string) $dto->x : null;
         $this->daplosY = null !== $dto->y ? (string) $dto->y : null;
         $this->daplosRefIntervention = $dto->refIntervention;
+        $this->daplosNumeroParcelleCadastrale = $dto->numeroParcelleCadastrale;
+        $this->daplosAltitude = null !== $dto->altitude ? (string) $dto->altitude : null;
 
         return $this;
     }

@@ -6,6 +6,9 @@ namespace YoanBernabeu\DaplosBundle\DTO\Parcelle;
 
 /**
  * DTO pour les FLAGS SC, CC, VC (Coordonnees).
+ *
+ * Note: Le champ numeroParcelleCadastrale n'est renseigne que pour le FLAG CC
+ * (Coordonnees Cadastrales) selon la specification DAPLOS v0.95.
  */
 final class Coordonnee
 {
@@ -16,6 +19,8 @@ final class Coordonnee
         public readonly ?float $x = null,
         public readonly ?float $y = null,
         public readonly ?string $refIntervention = null,
+        public readonly ?string $numeroParcelleCadastrale = null,
+        public readonly ?float $altitude = null,
     ) {
     }
 }
