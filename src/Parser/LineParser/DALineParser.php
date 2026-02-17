@@ -23,7 +23,7 @@ use YoanBernabeu\DaplosBundle\DTO\Document\Intervenant;
  * Position 201-209: Code postal (9 an)
  * Position 210-211: Code pays ISO (2 an)
  * Position 212-220: Code commune (9 an)
- * Position 221-235: Numero package (15 an)
+ * Position 221-240: Numero package (20 an)
  */
 final class DALineParser extends AbstractLineParser
 {
@@ -46,7 +46,7 @@ final class DALineParser extends AbstractLineParser
             codePostal: $this->extractField($line, 201, 9),
             codePays: $this->extractField($line, 210, 2),
             codeCommune: $this->extractField($line, 212, 9),
-            numeroPackage: $this->extractField($line, 221, 15),
+            numeroPackage: $this->extractField($line, 221, 20),
         );
     }
 }
