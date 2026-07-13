@@ -29,6 +29,9 @@ trait DaplosCompositionFertilisationTrait
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosCodeElement = null;
 
+    /**
+     * @deprecated champ hors guide v0.95, plus jamais rempli par le parser (les positions 50-58 portent la teneur)
+     */
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $daplosIndexElement = null;
 

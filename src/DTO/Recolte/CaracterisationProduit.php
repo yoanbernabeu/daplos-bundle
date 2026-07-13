@@ -18,4 +18,18 @@ final class CaracterisationProduit
         public readonly ?string $codeUnite = null,
     ) {
     }
+
+    /**
+     * Accès numérique à la valeur de la caractéristique (format guide 9 n).
+     */
+    public function getValeurNumerique(): ?float
+    {
+        if (null === $this->valeur) {
+            return null;
+        }
+
+        $normalized = str_replace(',', '.', $this->valeur);
+
+        return is_numeric($normalized) ? (float) $normalized : null;
+    }
 }

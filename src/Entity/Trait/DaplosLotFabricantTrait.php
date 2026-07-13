@@ -33,6 +33,9 @@ trait DaplosLotFabricantTrait
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private ?string $daplosRefIntervention = null;
 
+    /**
+     * @deprecated champ hors guide v0.95, plus jamais rempli par le parser (voir $daplosCodeProduit)
+     */
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $daplosIndexLot = null;
 
@@ -44,6 +47,15 @@ trait DaplosLotFabricantTrait
 
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosCodeUnite = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $daplosCodeProduit = null;
+
+    #[ORM\Column(type: 'decimal', precision: 12, scale: 4, nullable: true)]
+    private ?string $daplosPmg = null;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    private ?string $daplosCodeUnitePmg = null;
 
     public function getDaplosIdentifiantParcelle(): ?string
     {
@@ -129,6 +141,42 @@ trait DaplosLotFabricantTrait
         return $this;
     }
 
+    public function getDaplosCodeProduit(): ?string
+    {
+        return $this->daplosCodeProduit;
+    }
+
+    public function setDaplosCodeProduit(?string $daplosCodeProduit): static
+    {
+        $this->daplosCodeProduit = $daplosCodeProduit;
+
+        return $this;
+    }
+
+    public function getDaplosPmg(): ?string
+    {
+        return $this->daplosPmg;
+    }
+
+    public function setDaplosPmg(float|string|null $daplosPmg): static
+    {
+        $this->daplosPmg = null !== $daplosPmg ? (string) $daplosPmg : null;
+
+        return $this;
+    }
+
+    public function getDaplosCodeUnitePmg(): ?string
+    {
+        return $this->daplosCodeUnitePmg;
+    }
+
+    public function setDaplosCodeUnitePmg(?string $daplosCodeUnitePmg): static
+    {
+        $this->daplosCodeUnitePmg = $daplosCodeUnitePmg;
+
+        return $this;
+    }
+
     /**
      * Hydrate l'entité depuis un DTO LotFabricant.
      */
@@ -141,6 +189,9 @@ trait DaplosLotFabricantTrait
         $this->daplosNumeroLot = $dto->numeroLot;
         $this->daplosQuantite = null !== $dto->quantite ? (string) $dto->quantite : null;
         $this->daplosCodeUnite = $dto->codeUnite;
+        $this->daplosCodeProduit = $dto->codeProduit;
+        $this->daplosPmg = null !== $dto->pmg ? (string) $dto->pmg : null;
+        $this->daplosCodeUnitePmg = $dto->codeUnitePmg;
 
         return $this;
     }

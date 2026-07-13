@@ -9,12 +9,14 @@ use YoanBernabeu\DaplosBundle\DTO\Interchange\InterchangeHeader;
 /**
  * Parser pour le FLAG EI (Enveloppe Interchange).
  *
- * Format de la ligne :
- * Position 1-2   : FLAG "EI"
- * Position 3-37  : Identification emetteur (35 an)
- * Position 38-72 : Identification destinataire (35 an)
- * Position 73-86 : Date/heure preparation (14 n) YYYYMMDDHHMM
- * Position 87-100: Reference interchange (14 an)
+ * Positions selon le guide utilisateur DAPLOS fichier à plat v0.95
+ * (AgroEDI Europe, octobre 2025), page 8 :
+ *
+ * Position 3-16  : Identification de l'émetteur (14 an) — SIRET si exploitation, sinon EAN
+ * Position 17-19 : Type de codification émetteur en code (3 an) — 5 SIRET / 14 EAN
+ * Position 20-33 : Identification du destinataire (14 an) — SIRET si exploitation, sinon EAN
+ * Position 34-36 : Type de codification destinataire en code (3 an) — 5 SIRET / 14 EAN
+ * Position 37-40 : Nombre de documents dans l'envoi (4 n)
  */
 final class EILineParser extends AbstractLineParser
 {
@@ -26,10 +28,11 @@ final class EILineParser extends AbstractLineParser
     protected function doParse(string $line, int $lineNumber): InterchangeHeader
     {
         return new InterchangeHeader(
-            identificationEmetteur: $this->extractField($line, 3, 35),
-            identificationDestinataire: $this->extractField($line, 38, 35),
-            dateHeurePreparation: $this->extractDateTime($line, 73, 14),
-            referenceInterchange: $this->extractField($line, 87, 14),
+            identificationEmetteur: $this->extractField($line, 3, 14),
+            identificationDestinataire: $this->extractField($line, 20, 14),
+            typeCodificationEmetteur: $this->extractField($line, 17, 3),
+            typeCodificationDestinataire: $this->extractField($line, 34, 3),
+            nombreDocuments: $this->extractInt($line, 37, 4),
         );
     }
 }

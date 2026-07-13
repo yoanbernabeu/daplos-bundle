@@ -25,6 +25,7 @@ final class CompositionFertilisation
         public readonly ?int $annee = null,
         public readonly ?string $refIntervention = null,
         public readonly ?string $codeElement = null,
+        /** @deprecated champ hors guide v0.95, plus jamais rempli par le parser (les positions 50-58 portent la teneur) */
         public readonly ?int $indexElement = null,
         public readonly ?float $teneur = null,
     ) {

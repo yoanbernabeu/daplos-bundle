@@ -7,16 +7,22 @@ namespace YoanBernabeu\DaplosBundle\Parser\LineParser;
 use YoanBernabeu\DaplosBundle\DTO\Recolte\LotRecolte;
 
 /**
- * Parser pour le FLAG RL (Lot Recolte).
+ * Parser pour le FLAG RL (Lot Récolte).
  *
- * Format observe :
- * Position 1-2   : FLAG "RL"
- * Position 3-10  : Identifiant parcelle (8 an)
- * Position 11-14 : Annee (4 n)
- * Position 15-46 : Reference intervention UUID (32 an)
- * Position 47-81 : Numero lot (35 an)
- * Position 82-90 : Quantite (9 n)
- * Position 91-93 : Code unite (3 an)
+ * Positions selon le guide utilisateur DAPLOS fichier à plat v0.95
+ * (AgroEDI Europe, octobre 2025), page 47 :
+ *
+ * Position 3-6     : N° d'ordre de la parcelle (4 n)
+ * Position 7-10    : Référence parcelle culturale (4 an)
+ * Position 11-14   : Année prévue de récolte (4 n)
+ * Position 15-46   : Référence de l'événement, GUID (32 an)
+ * Position 47-81   : N° de lot OS, Organisme Stockeur (35 an)
+ * Position 82-116  : N° de lot Agriculteur (35 an) — si stockage en ferme
+ * Position 117-125 : Quantité du lot (9 n) — en tonnes
+ *
+ * L'ancien champ codeUnite (91-93) ne correspondait à aucun champ du guide
+ * (pas d'unité dans le FLAG RL, la quantité est exprimée en tonnes) : il est
+ * déprécié et n'est plus rempli.
  */
 final class RLLineParser extends AbstractLineParser
 {
@@ -32,8 +38,8 @@ final class RLLineParser extends AbstractLineParser
             annee: $this->extractInt($line, 11, 4),
             refIntervention: $this->extractField($line, 15, 32),
             numeroLot: $this->extractField($line, 47, 35),
-            quantite: $this->extractFloat($line, 82, 9),
-            codeUnite: $this->extractField($line, 91, 3),
+            quantite: $this->extractFloat($line, 117, 9),
+            numeroLotAgriculteur: $this->extractField($line, 82, 35),
         );
     }
 }

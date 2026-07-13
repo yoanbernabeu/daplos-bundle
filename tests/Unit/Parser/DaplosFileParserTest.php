@@ -46,8 +46,8 @@ class DaplosFileParserTest extends TestCase
 
     public function testParseMinimalDocument(): void
     {
-        // Version à la fin de la ligne pour être detectée par extractVersionFromEnd
-        $content = "EI\nDE                                   0.95";
+        // Ligne DE au format guide v0.95 : version du message aux positions 51-54
+        $content = "EI\nDE                                   92025100700410.95";
 
         $result = $this->parser->parseString($content);
 
@@ -61,7 +61,7 @@ class DaplosFileParserTest extends TestCase
     {
         // Ligne DP avec code espèce à la position 47-49 (après 32 espaces pour pos 15-46)
         $dpLine = 'DP00001   2024'.str_repeat(' ', 32).'ZDH'.str_repeat(' ', 91);
-        $content = "EI\nDE                                   0.95\n".$dpLine;
+        $content = "EI\nDE                                   92025100700410.95\n".$dpLine;
 
         $result = $this->parser->parseString($content);
 
@@ -76,7 +76,7 @@ class DaplosFileParserTest extends TestCase
     {
         $dpLine1 = 'DP00001   2024'.str_repeat(' ', 32).'ZDH'.str_repeat(' ', 91);
         $dpLine2 = 'DP00002   2024'.str_repeat(' ', 32).'ZAR'.str_repeat(' ', 91);
-        $content = "EI\nDE                                   0.95\n".$dpLine1."\n".$dpLine2;
+        $content = "EI\nDE                                   92025100700410.95\n".$dpLine1."\n".$dpLine2;
 
         $result = $this->parser->parseString($content);
 
@@ -121,7 +121,7 @@ class DaplosFileParserTest extends TestCase
 
     public function testParseIgnoresEmptyLines(): void
     {
-        $content = "EI\n\nDE                                   0.95\n\n";
+        $content = "EI\n\nDE                                   92025100700410.95\n\n";
 
         $result = $this->parser->parseString($content);
 
@@ -136,7 +136,7 @@ class DaplosFileParserTest extends TestCase
         // PV: pos 3-10 identifiant, 11-14 annee, 15-46 refIntervention (32), 47-49 codeIntervention
         $pvLine1 = 'PV00001   2024ABCD1234567890ABCD1234567890ABZG7';
         $pvLine2 = 'PV00001   2024EFGH5678901234EFGH5678901234EFZF8';
-        $content = "EI\nDE                                   0.95\n".$dpLine."\n".$pvLine1."\n".$pvLine2;
+        $content = "EI\nDE                                   92025100700410.95\n".$dpLine."\n".$pvLine1."\n".$pvLine2;
 
         $result = $this->parser->parseString($content);
 

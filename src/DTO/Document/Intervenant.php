@@ -27,8 +27,11 @@ final class Intervenant
         public readonly ?string $ville = null,
         public readonly ?string $codePostal = null,
         public readonly ?string $codePays = null,
+        /** @deprecated champ hors guide v0.95, plus jamais rempli par le parser (voir referenceComplementaire1) */
         public readonly ?string $codeCommune = null,
         public readonly ?string $numeroPackage = null,
+        public readonly ?string $referenceComplementaire1 = null,
+        public readonly ?string $codeMSA = null,
     ) {
     }
 
