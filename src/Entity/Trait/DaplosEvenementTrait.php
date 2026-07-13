@@ -68,6 +68,57 @@ trait DaplosEvenementTrait
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
     private ?string $daplosSurfaceTraitee = null;
 
+    #[ORM\Column(type: 'string', length: 3, nullable: true)]
+    private ?string $daplosCodeAction = null;
+
+    #[ORM\Column(type: 'string', length: 6, nullable: true)]
+    private ?string $daplosDureeTraitement = null;
+
+    #[ORM\Column(type: 'date_immutable', nullable: true)]
+    private ?\DateTimeImmutable $daplosDatePreconisation = null;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    private ?string $daplosCodeTypeTravail = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $daplosComplementTypeTravail = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $daplosComplementMotivation = null;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    private ?string $daplosCodeTypeOperateur = null;
+
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $daplosNumeroLicenceOperateur = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $daplosNomOperateur = null;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    private ?string $daplosCodeTraitementsSpeciaux = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $daplosTemperatureExterieure = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $daplosPourcentageHygrometrie = null;
+
+    #[ORM\Column(type: 'decimal', precision: 12, scale: 4, nullable: true)]
+    private ?string $daplosQuantiteBouillieViseeHa = null;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    private ?string $daplosUniteBouillieViseeHa = null;
+
+    #[ORM\Column(type: 'decimal', precision: 12, scale: 4, nullable: true)]
+    private ?string $daplosQuantiteBouillieEffectiveHa = null;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    private ?string $daplosUniteBouillieEffectiveHa = null;
+
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private ?string $daplosCodeStadeCultureBBCH = null;
+
     public function getDaplosIdentifiantParcelle(): ?string
     {
         return $this->daplosIdentifiantParcelle;
@@ -248,6 +299,226 @@ trait DaplosEvenementTrait
         return $this;
     }
 
+    public function getDaplosCodeAction(): ?string
+    {
+        return $this->daplosCodeAction;
+    }
+
+    public function setDaplosCodeAction(?string $daplosCodeAction): static
+    {
+        $this->daplosCodeAction = $daplosCodeAction;
+
+        return $this;
+    }
+
+    public function getDaplosDureeTraitement(): ?string
+    {
+        return $this->daplosDureeTraitement;
+    }
+
+    public function setDaplosDureeTraitement(?string $daplosDureeTraitement): static
+    {
+        $this->daplosDureeTraitement = $daplosDureeTraitement;
+
+        return $this;
+    }
+
+    /**
+     * Convertit la durée du traitement (format guide JJHHMM) en minutes.
+     */
+    public function getDaplosDureeTraitementEnMinutes(): ?int
+    {
+        if (null === $this->daplosDureeTraitement || 6 !== strlen($this->daplosDureeTraitement) || !ctype_digit($this->daplosDureeTraitement)) {
+            return null;
+        }
+
+        $jours = (int) substr($this->daplosDureeTraitement, 0, 2);
+        $heures = (int) substr($this->daplosDureeTraitement, 2, 2);
+        $minutes = (int) substr($this->daplosDureeTraitement, 4, 2);
+
+        return $jours * 1440 + $heures * 60 + $minutes;
+    }
+
+    public function getDaplosDatePreconisation(): ?\DateTimeImmutable
+    {
+        return $this->daplosDatePreconisation;
+    }
+
+    public function setDaplosDatePreconisation(?\DateTimeImmutable $daplosDatePreconisation): static
+    {
+        $this->daplosDatePreconisation = $daplosDatePreconisation;
+
+        return $this;
+    }
+
+    public function getDaplosCodeTypeTravail(): ?string
+    {
+        return $this->daplosCodeTypeTravail;
+    }
+
+    public function setDaplosCodeTypeTravail(?string $daplosCodeTypeTravail): static
+    {
+        $this->daplosCodeTypeTravail = $daplosCodeTypeTravail;
+
+        return $this;
+    }
+
+    public function getDaplosComplementTypeTravail(): ?string
+    {
+        return $this->daplosComplementTypeTravail;
+    }
+
+    public function setDaplosComplementTypeTravail(?string $daplosComplementTypeTravail): static
+    {
+        $this->daplosComplementTypeTravail = $daplosComplementTypeTravail;
+
+        return $this;
+    }
+
+    public function getDaplosComplementMotivation(): ?string
+    {
+        return $this->daplosComplementMotivation;
+    }
+
+    public function setDaplosComplementMotivation(?string $daplosComplementMotivation): static
+    {
+        $this->daplosComplementMotivation = $daplosComplementMotivation;
+
+        return $this;
+    }
+
+    public function getDaplosCodeTypeOperateur(): ?string
+    {
+        return $this->daplosCodeTypeOperateur;
+    }
+
+    public function setDaplosCodeTypeOperateur(?string $daplosCodeTypeOperateur): static
+    {
+        $this->daplosCodeTypeOperateur = $daplosCodeTypeOperateur;
+
+        return $this;
+    }
+
+    public function getDaplosNumeroLicenceOperateur(): ?string
+    {
+        return $this->daplosNumeroLicenceOperateur;
+    }
+
+    public function setDaplosNumeroLicenceOperateur(?string $daplosNumeroLicenceOperateur): static
+    {
+        $this->daplosNumeroLicenceOperateur = $daplosNumeroLicenceOperateur;
+
+        return $this;
+    }
+
+    public function getDaplosNomOperateur(): ?string
+    {
+        return $this->daplosNomOperateur;
+    }
+
+    public function setDaplosNomOperateur(?string $daplosNomOperateur): static
+    {
+        $this->daplosNomOperateur = $daplosNomOperateur;
+
+        return $this;
+    }
+
+    public function getDaplosCodeTraitementsSpeciaux(): ?string
+    {
+        return $this->daplosCodeTraitementsSpeciaux;
+    }
+
+    public function setDaplosCodeTraitementsSpeciaux(?string $daplosCodeTraitementsSpeciaux): static
+    {
+        $this->daplosCodeTraitementsSpeciaux = $daplosCodeTraitementsSpeciaux;
+
+        return $this;
+    }
+
+    public function getDaplosTemperatureExterieure(): ?int
+    {
+        return $this->daplosTemperatureExterieure;
+    }
+
+    public function setDaplosTemperatureExterieure(?int $daplosTemperatureExterieure): static
+    {
+        $this->daplosTemperatureExterieure = $daplosTemperatureExterieure;
+
+        return $this;
+    }
+
+    public function getDaplosPourcentageHygrometrie(): ?int
+    {
+        return $this->daplosPourcentageHygrometrie;
+    }
+
+    public function setDaplosPourcentageHygrometrie(?int $daplosPourcentageHygrometrie): static
+    {
+        $this->daplosPourcentageHygrometrie = $daplosPourcentageHygrometrie;
+
+        return $this;
+    }
+
+    public function getDaplosQuantiteBouillieViseeHa(): ?string
+    {
+        return $this->daplosQuantiteBouillieViseeHa;
+    }
+
+    public function setDaplosQuantiteBouillieViseeHa(float|string|null $daplosQuantiteBouillieViseeHa): static
+    {
+        $this->daplosQuantiteBouillieViseeHa = null !== $daplosQuantiteBouillieViseeHa ? (string) $daplosQuantiteBouillieViseeHa : null;
+
+        return $this;
+    }
+
+    public function getDaplosUniteBouillieViseeHa(): ?string
+    {
+        return $this->daplosUniteBouillieViseeHa;
+    }
+
+    public function setDaplosUniteBouillieViseeHa(?string $daplosUniteBouillieViseeHa): static
+    {
+        $this->daplosUniteBouillieViseeHa = $daplosUniteBouillieViseeHa;
+
+        return $this;
+    }
+
+    public function getDaplosQuantiteBouillieEffectiveHa(): ?string
+    {
+        return $this->daplosQuantiteBouillieEffectiveHa;
+    }
+
+    public function setDaplosQuantiteBouillieEffectiveHa(float|string|null $daplosQuantiteBouillieEffectiveHa): static
+    {
+        $this->daplosQuantiteBouillieEffectiveHa = null !== $daplosQuantiteBouillieEffectiveHa ? (string) $daplosQuantiteBouillieEffectiveHa : null;
+
+        return $this;
+    }
+
+    public function getDaplosUniteBouillieEffectiveHa(): ?string
+    {
+        return $this->daplosUniteBouillieEffectiveHa;
+    }
+
+    public function setDaplosUniteBouillieEffectiveHa(?string $daplosUniteBouillieEffectiveHa): static
+    {
+        $this->daplosUniteBouillieEffectiveHa = $daplosUniteBouillieEffectiveHa;
+
+        return $this;
+    }
+
+    public function getDaplosCodeStadeCultureBBCH(): ?string
+    {
+        return $this->daplosCodeStadeCultureBBCH;
+    }
+
+    public function setDaplosCodeStadeCultureBBCH(?string $daplosCodeStadeCultureBBCH): static
+    {
+        $this->daplosCodeStadeCultureBBCH = $daplosCodeStadeCultureBBCH;
+
+        return $this;
+    }
+
     /**
      * Hydrate l'entité depuis un DTO Evenement.
      */
@@ -268,6 +539,23 @@ trait DaplosEvenementTrait
         $this->daplosCodeConditionsMeteo = $dto->codeConditionsMeteo;
         $this->daplosCommentaire = $dto->commentaire;
         $this->daplosSurfaceTraitee = null !== $dto->surfaceTraitee ? (string) $dto->surfaceTraitee : null;
+        $this->daplosCodeAction = $dto->codeAction;
+        $this->daplosDureeTraitement = $dto->dureeTraitement;
+        $this->daplosDatePreconisation = $dto->datePreconisation;
+        $this->daplosCodeTypeTravail = $dto->codeTypeTravail;
+        $this->daplosComplementTypeTravail = $dto->complementTypeTravail;
+        $this->daplosComplementMotivation = $dto->complementMotivation;
+        $this->daplosCodeTypeOperateur = $dto->codeTypeOperateur;
+        $this->daplosNumeroLicenceOperateur = $dto->numeroLicenceOperateur;
+        $this->daplosNomOperateur = $dto->nomOperateur;
+        $this->daplosCodeTraitementsSpeciaux = $dto->codeTraitementsSpeciaux;
+        $this->daplosTemperatureExterieure = $dto->temperatureExterieure;
+        $this->daplosPourcentageHygrometrie = $dto->pourcentageHygrometrie;
+        $this->daplosQuantiteBouillieViseeHa = null !== $dto->quantiteBouillieViseeHa ? (string) $dto->quantiteBouillieViseeHa : null;
+        $this->daplosUniteBouillieViseeHa = $dto->uniteBouillieViseeHa;
+        $this->daplosQuantiteBouillieEffectiveHa = null !== $dto->quantiteBouillieEffectiveHa ? (string) $dto->quantiteBouillieEffectiveHa : null;
+        $this->daplosUniteBouillieEffectiveHa = $dto->uniteBouillieEffectiveHa;
+        $this->daplosCodeStadeCultureBBCH = $dto->codeStadeCultureBBCH;
 
         return $this;
     }

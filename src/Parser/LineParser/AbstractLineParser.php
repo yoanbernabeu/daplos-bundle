@@ -73,6 +73,25 @@ abstract class AbstractLineParser implements LineParserInterface
     }
 
     /**
+     * Extrait un champ texte depuis une position donnée jusqu'à la fin de la ligne.
+     *
+     * À réserver au DERNIER champ d'un enregistrement : certains émetteurs
+     * (ex. Smag) dépassent la longueur du guide sur le dernier champ
+     * (code BBCH du FLAG PV, « autre type d'agriculture » du FLAG DT).
+     */
+    protected function extractFieldToEnd(string $line, int $start): ?string
+    {
+        $value = substr($line, $start - 1);
+        $trimmed = trim($value);
+
+        if ('' === $trimmed) {
+            return null;
+        }
+
+        return $this->toUtf8($trimmed);
+    }
+
+    /**
      * Convertit une chaîne en UTF-8 si elle ne l'est pas déjà.
      */
     private function toUtf8(string $value): string
