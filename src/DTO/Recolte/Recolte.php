@@ -25,6 +25,10 @@ final class Recolte
         public readonly ?float $quantite = null,
         public readonly ?string $codeUnite = null,
         public readonly ?string $destinationProduit = null,
+        public readonly ?float $rendementCalcule = null,
+        public readonly ?string $codeUniteRendementCalcule = null,
+        public readonly ?float $rendementEstime = null,
+        public readonly ?string $codeUniteRendementEstime = null,
     ) {
     }
 

@@ -35,6 +35,9 @@ trait DaplosLotRecolteTrait
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosCodeUnite = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $daplosNumeroLotAgriculteur = null;
+
     public function getDaplosIdentifiantParcelle(): ?string
     {
         return $this->daplosIdentifiantParcelle;
@@ -107,6 +110,18 @@ trait DaplosLotRecolteTrait
         return $this;
     }
 
+    public function getDaplosNumeroLotAgriculteur(): ?string
+    {
+        return $this->daplosNumeroLotAgriculteur;
+    }
+
+    public function setDaplosNumeroLotAgriculteur(?string $daplosNumeroLotAgriculteur): static
+    {
+        $this->daplosNumeroLotAgriculteur = $daplosNumeroLotAgriculteur;
+
+        return $this;
+    }
+
     /**
      * Hydrate l'entité depuis un DTO LotRecolte.
      */
@@ -118,6 +133,7 @@ trait DaplosLotRecolteTrait
         $this->daplosNumeroLot = $dto->numeroLot;
         $this->daplosQuantite = null !== $dto->quantite ? (string) $dto->quantite : null;
         $this->daplosCodeUnite = $dto->codeUnite;
+        $this->daplosNumeroLotAgriculteur = $dto->numeroLotAgriculteur;
 
         return $this;
     }

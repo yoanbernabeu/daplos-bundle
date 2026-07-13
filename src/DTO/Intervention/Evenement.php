@@ -43,8 +43,42 @@ final class Evenement
         public readonly ?string $codeConditionsMeteo = null,
         public readonly ?string $commentaire = null,
         public readonly ?float $surfaceTraitee = null,
+        /** @deprecated champ hors guide v0.95, plus jamais rempli par le parser (la cible est portée par le FLAG VB) */
         public readonly ?string $codeJustificationCible = null,
+        public readonly ?string $codeAction = null,
+        public readonly ?string $dureeTraitement = null,
+        public readonly ?\DateTimeImmutable $datePreconisation = null,
+        public readonly ?string $codeTypeTravail = null,
+        public readonly ?string $complementTypeTravail = null,
+        public readonly ?string $complementMotivation = null,
+        public readonly ?string $codeTypeOperateur = null,
+        public readonly ?string $numeroLicenceOperateur = null,
+        public readonly ?string $nomOperateur = null,
+        public readonly ?string $codeTraitementsSpeciaux = null,
+        public readonly ?int $temperatureExterieure = null,
+        public readonly ?int $pourcentageHygrometrie = null,
+        public readonly ?float $quantiteBouillieViseeHa = null,
+        public readonly ?string $uniteBouillieViseeHa = null,
+        public readonly ?float $quantiteBouillieEffectiveHa = null,
+        public readonly ?string $uniteBouillieEffectiveHa = null,
+        public readonly ?string $codeStadeCultureBBCH = null,
     ) {
+    }
+
+    /**
+     * Convertit la durée du traitement (format guide JJHHMM) en minutes.
+     */
+    public function getDureeTraitementEnMinutes(): ?int
+    {
+        if (null === $this->dureeTraitement || 6 !== strlen($this->dureeTraitement) || !ctype_digit($this->dureeTraitement)) {
+            return null;
+        }
+
+        $jours = (int) substr($this->dureeTraitement, 0, 2);
+        $heures = (int) substr($this->dureeTraitement, 2, 2);
+        $minutes = (int) substr($this->dureeTraitement, 4, 2);
+
+        return $jours * 1440 + $heures * 60 + $minutes;
     }
 
     public function addIntrant(Intrant $intrant): void

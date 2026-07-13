@@ -26,6 +26,7 @@ trait DaplosParcelleCadastraleTrait
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosCodeCommune = null;
 
+    /** @deprecated champ hors guide v0.95, plus jamais rempli par le parser */
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private ?string $daplosPrefixe = null;
 
@@ -37,6 +38,12 @@ trait DaplosParcelleCadastraleTrait
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
     private ?string $daplosSurface = null;
+
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private ?string $daplosNumeroParcelleCadastrale = null;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    private ?string $daplosSubdivisionFiscale = null;
 
     public function getDaplosIdentifiantParcelle(): ?string
     {
@@ -122,6 +129,30 @@ trait DaplosParcelleCadastraleTrait
         return $this;
     }
 
+    public function getDaplosNumeroParcelleCadastrale(): ?string
+    {
+        return $this->daplosNumeroParcelleCadastrale;
+    }
+
+    public function setDaplosNumeroParcelleCadastrale(?string $daplosNumeroParcelleCadastrale): static
+    {
+        $this->daplosNumeroParcelleCadastrale = $daplosNumeroParcelleCadastrale;
+
+        return $this;
+    }
+
+    public function getDaplosSubdivisionFiscale(): ?string
+    {
+        return $this->daplosSubdivisionFiscale;
+    }
+
+    public function setDaplosSubdivisionFiscale(?string $daplosSubdivisionFiscale): static
+    {
+        $this->daplosSubdivisionFiscale = $daplosSubdivisionFiscale;
+
+        return $this;
+    }
+
     /**
      * Hydrate l'entité depuis un DTO ParcelleCadastrale.
      */
@@ -134,6 +165,8 @@ trait DaplosParcelleCadastraleTrait
         $this->daplosSection = $dto->section;
         $this->daplosNumero = $dto->numero;
         $this->daplosSurface = null !== $dto->surface ? (string) $dto->surface : null;
+        $this->daplosNumeroParcelleCadastrale = $dto->numeroParcelleCadastrale;
+        $this->daplosSubdivisionFiscale = $dto->subdivisionFiscale;
 
         return $this;
     }

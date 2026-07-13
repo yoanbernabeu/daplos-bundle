@@ -16,10 +16,13 @@ final class ParcelleCadastrale
         public readonly ?string $identifiantParcelle = null,
         public readonly ?int $annee = null,
         public readonly ?string $codeCommune = null,
+        /** @deprecated champ hors guide v0.95 (lisait les positions 20-22, à cheval sur le code commune et la section), plus jamais rempli par le parser */
         public readonly ?string $prefixe = null,
         public readonly ?string $section = null,
         public readonly ?string $numero = null,
         public readonly ?float $surface = null,
+        public readonly ?string $numeroParcelleCadastrale = null,
+        public readonly ?string $subdivisionFiscale = null,
     ) {
     }
 

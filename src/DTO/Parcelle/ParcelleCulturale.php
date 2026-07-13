@@ -35,8 +35,11 @@ final class ParcelleCulturale
     public function __construct(
         public readonly ?string $identifiant = null,
         public readonly ?int $annee = null,
+        /** @deprecated sémantique erronée (lisait les positions 15-22 = date de début de la parcelle), plus jamais rempli par le parser ; utiliser dateCreationFiche */
         public readonly ?\DateTimeImmutable $dateCreation = null,
+        /** @deprecated sémantique erronée (lisait les positions 23-30 = date de création de la fiche), plus jamais rempli par le parser ; utiliser dateDebutParcelle */
         public readonly ?\DateTimeImmutable $dateDebutCampagne = null,
+        /** @deprecated sémantique erronée (lisait les positions 31-38 = date de dernière saisie), plus jamais rempli par le parser ; utiliser dateFinParcelle */
         public readonly ?\DateTimeImmutable $dateFinCampagne = null,
         public readonly ?string $codeEspeceBotanique = null,
         public readonly ?string $codeVariete = null,
@@ -49,10 +52,38 @@ final class ParcelleCulturale
         public readonly ?float $surface = null,
         public readonly ?string $codeUniteSurface = null,
         public readonly ?string $nom = null,
+        /** @deprecated le n° îlot PAC est un an 10 (positions 141-150), plus jamais rempli par le parser ; utiliser numeroIlotPac */
         public readonly ?int $numeroIlot = null,
         public readonly ?string $codeCommune = null,
         public readonly ?string $codeModeProduction = null,
+        /** @deprecated champ hors guide v0.95 (lisait les positions 237-246, à cheval sur le type de sol v0.95), plus jamais rempli par le parser */
         public readonly ?string $numeroRPG = null,
+        public readonly ?\DateTimeImmutable $dateDebutParcelle = null,
+        public readonly ?\DateTimeImmutable $dateCreationFiche = null,
+        public readonly ?\DateTimeImmutable $dateDerniereSaisie = null,
+        public readonly ?\DateTimeImmutable $dateFinParcelle = null,
+        public readonly ?string $codeVariete2 = null,
+        public readonly ?string $codeVariete3 = null,
+        public readonly ?string $codeVariete4 = null,
+        public readonly ?string $codeVariete5 = null,
+        public readonly ?float $rendementObjectif = null,
+        public readonly ?string $codeUniteRendement = null,
+        public readonly ?string $numeroIlotPac = null,
+        public readonly ?string $numeroParcellePerenne = null,
+        public readonly ?int $profondeurSol = null,
+        public readonly ?int $pierrosite = null,
+        public readonly ?string $autreTypeSol = null,
+        public readonly ?string $codeAcidite = null,
+        public readonly ?string $codeProfondeurSousSol = null,
+        public readonly ?string $codeCultureIntermediaire = null,
+        public readonly ?bool $solHydromorphe = null,
+        public readonly ?bool $parcelleDrainee = null,
+        public readonly ?bool $parcelleRedecoupee = null,
+        public readonly ?string $cleParcelleInitiale = null,
+        public readonly ?string $codeGestionResidus = null,
+        public readonly ?float $quantiteEpandue = null,
+        public readonly ?string $codeTypeSolV095 = null,
+        public readonly ?float $doseAzote = null,
     ) {
     }
 

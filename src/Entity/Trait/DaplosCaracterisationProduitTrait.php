@@ -103,6 +103,20 @@ trait DaplosCaracterisationProduitTrait
         return $this;
     }
 
+    /**
+     * Accès numérique à la valeur de la caractéristique (format guide 9 n).
+     */
+    public function getDaplosValeurNumerique(): ?float
+    {
+        if (null === $this->daplosValeur) {
+            return null;
+        }
+
+        $normalized = str_replace(',', '.', $this->daplosValeur);
+
+        return is_numeric($normalized) ? (float) $normalized : null;
+    }
+
     public function getDaplosCodeUnite(): ?string
     {
         return $this->daplosCodeUnite;

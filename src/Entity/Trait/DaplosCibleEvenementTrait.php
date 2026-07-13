@@ -17,8 +17,9 @@ use YoanBernabeu\DaplosBundle\DTO\Intervention\CibleEvenement;
  *   - daplosIdentifiantParcelle : Identifiant de la parcelle
  *   - daplosAnnee : Année de campagne
  *   - daplosRefIntervention : Référence de l'intervention
- *   - daplosCodeOrganismeCible : Code de l'organisme ciblé
- *   - daplosCodeSousTypeOrganisme : Sous-type de l'organisme
+ *   - daplosCodeOrganismeCible : Cible de l'intervention v0.94 (codification obsolète)
+ *   - daplosCodeCibleV095 : Cible de l'intervention v0.95 (codification prioritaire)
+ *   - daplosCodeSousTypeOrganisme : Sous-type de l'organisme (déprécié)
  *
  * @author Yoan Bernabeu
  */
@@ -36,8 +37,14 @@ trait DaplosCibleEvenementTrait
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private ?string $daplosCodeOrganismeCible = null;
 
+    /**
+     * @deprecated champ hors guide v0.95, plus jamais rempli par le parser (voir $daplosCodeCibleV095)
+     */
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private ?string $daplosCodeSousTypeOrganisme = null;
+
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private ?string $daplosCodeCibleV095 = null;
 
     public function getDaplosIdentifiantParcelle(): ?string
     {
@@ -99,6 +106,18 @@ trait DaplosCibleEvenementTrait
         return $this;
     }
 
+    public function getDaplosCodeCibleV095(): ?string
+    {
+        return $this->daplosCodeCibleV095;
+    }
+
+    public function setDaplosCodeCibleV095(?string $daplosCodeCibleV095): static
+    {
+        $this->daplosCodeCibleV095 = $daplosCodeCibleV095;
+
+        return $this;
+    }
+
     /**
      * Hydrate l'entité depuis un DTO CibleEvenement.
      */
@@ -109,6 +128,7 @@ trait DaplosCibleEvenementTrait
         $this->daplosRefIntervention = $dto->refIntervention;
         $this->daplosCodeOrganismeCible = $dto->codeOrganismeCible;
         $this->daplosCodeSousTypeOrganisme = $dto->codeSousTypeOrganisme;
+        $this->daplosCodeCibleV095 = $dto->codeCibleV095;
 
         return $this;
     }

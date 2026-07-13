@@ -7,12 +7,16 @@ namespace YoanBernabeu\DaplosBundle\Parser\LineParser;
 use YoanBernabeu\DaplosBundle\DTO\Document\TypeAgriculture;
 
 /**
- * Parser pour le FLAG DT (Type d'Agriculture).
+ * Parser pour le FLAG DT (Type d'agriculture pratiquée).
  *
- * Format de la ligne :
- * Position 1-2  : FLAG "DT"
- * Position 3-5  : Code type agriculture (3 an)
- * Position 6+   : Libelle (variable)
+ * Positions selon le guide utilisateur DAPLOS fichier à plat v0.95
+ * (AgroEDI Europe, octobre 2025), page 12 :
+ *
+ * Position 3-5  : Type d'agriculture pratiquée en code (3 an) — nomenclature Valeur de la caractéristique technique
+ * Position 6-25 : N° de certificat (20 an)
+ * Position 26-45: Autre type d'agriculture (20 an) — certains émetteurs (Smag) dépassent
+ *                 la position 45, lecture jusqu'à la fin de ligne ; rempli dans `libelle`
+ *                 (nom historique conservé pour compatibilité)
  */
 final class DTLineParser extends AbstractLineParser
 {
@@ -25,7 +29,8 @@ final class DTLineParser extends AbstractLineParser
     {
         return new TypeAgriculture(
             codeTypeAgriculture: $this->extractField($line, 3, 3),
-            libelle: $this->extractField($line, 6, 100),
+            libelle: $this->extractFieldToEnd($line, 26),
+            numeroCertificat: $this->extractField($line, 6, 20),
         );
     }
 }
