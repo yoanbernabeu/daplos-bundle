@@ -64,7 +64,8 @@ final class LineBuffer
     }
 
     /**
-     * Place un champ decimal, cadre a droite (3 decimales maximum, sans zeros inutiles).
+     * Place un champ decimal, cadre a droite, sans perte de decimales
+     * ni zeros inutiles.
      *
      * @throws DaplosExportException Si la valeur depasse la longueur du champ
      */
@@ -74,9 +75,17 @@ final class LineBuffer
             return;
         }
 
-        $formatted = rtrim(rtrim(number_format($value, 3, '.', ''), '0'), '.');
-        if ('' === $formatted || '-' === $formatted) {
-            $formatted = '0';
+        // Le cast PHP produit la representation decimale la plus courte qui
+        // restitue exactement le float (serialize_precision=-1)
+        $formatted = (string) $value;
+        if (str_contains($formatted, 'E')) {
+            $formatted = rtrim(rtrim(sprintf('%.10F', $value), '0'), '.');
+        }
+
+        // Zero initial omis si necessaire pour tenir dans le champ,
+        // comme le font les emetteurs DAPLOS reels (ex. ".81999999")
+        if (strlen($formatted) > $length) {
+            $formatted = preg_replace('/^(-?)0\./', '$1.', $formatted) ?? $formatted;
         }
 
         if (strlen($formatted) > $length) {

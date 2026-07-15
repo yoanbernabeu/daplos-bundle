@@ -105,6 +105,24 @@ class LineBufferTest extends TestCase
         $this->assertSame('PS'.str_repeat(' ', 15).'       10', $buffer->toString());
     }
 
+    public function testSetDecimalPreservesAllDecimals(): void
+    {
+        // Coordonnees Lambert 2 etendu reelles : 4 decimales a conserver
+        $buffer = new LineBuffer('SC');
+        $buffer->setDecimal(18, 11, 704536.7215);
+
+        $this->assertSame('SC'.str_repeat(' ', 15).'704536.7215', $buffer->toString());
+    }
+
+    public function testSetDecimalDropsLeadingZeroWhenNeededToFit(): void
+    {
+        // Valeur reelle de fichier DAPLOS : ".81999999" (9 caracteres, zero initial omis)
+        $buffer = new LineBuffer('PS');
+        $buffer->setDecimal(18, 9, 0.81999999);
+
+        $this->assertSame('PS'.str_repeat(' ', 15).'.81999999', $buffer->toString());
+    }
+
     public function testSetDecimalThrowsWhenValueTooLong(): void
     {
         $buffer = new LineBuffer('PS');
