@@ -12,6 +12,7 @@ Bundle Symfony pour l'intégration des référentiels DAPLOS (données agricoles
 
 - **Référentiels API** : Synchronisation des 53 référentiels DAPLOS (10 000+ items) via l'API
 - **Parser de fichiers** : Lecture des exports `.dap` (parcelles, interventions, intrants, récoltes)
+- **Exporter de fichiers** : Génération de fichiers `.dap` v0.95 depuis un `DaplosDocument`
 - **Entité unique** : Architecture simplifiée avec `DaplosReferential` et enum type-safe
 - **Cache intelligent** : Support des tags pour invalidation rapide
 
@@ -101,11 +102,20 @@ foreach ($document->parcelles as $parcelle) {
 }
 ```
 
+```php
+use YoanBernabeu\DaplosBundle\Exporter\Contract\FileExporterInterface;
+
+// Exporter (symétrique du parser)
+$exporter->exportToFile($document, 'export.dap');
+$contenu = $exporter->exportToString($document);
+```
+
 ## Documentation
 
 - [Synchronisation des référentiels](docs/synchronisation.md)
 - [Génération d'entité](docs/generation-entite.md)
 - [Parser de fichiers .dap](docs/parser.md)
+- [Exporter de fichiers .dap](docs/exporter.md)
 - [Traits et DTOs](docs/traits-dto.md)
 - [Utilisation dans le code](docs/utilisation-code.md)
 - [FAQ](docs/faq.md)

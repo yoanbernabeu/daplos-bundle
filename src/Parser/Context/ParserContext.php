@@ -150,6 +150,15 @@ final class ParserContext
         }
     }
 
+    public function addCoordonneeCadastrale(Coordonnee $coordonnee): void
+    {
+        // Les coordonnees CC sont toujours liees a la parcelle cadastrale courante,
+        // meme si une surface (PS) a ete rencontree avant le FLAG PC
+        if (null !== $this->currentParcelleCadastrale) {
+            $this->currentParcelleCadastrale->addCoordonnee($coordonnee);
+        }
+    }
+
     public function addParcelleCadastrale(ParcelleCadastrale $parcelleCadastrale): void
     {
         if (null !== $this->currentParcelle) {

@@ -17,6 +17,33 @@ use YoanBernabeu\DaplosBundle\Command\ListReferentialsCommand;
 use YoanBernabeu\DaplosBundle\Command\ParseDaplosFileCommand;
 use YoanBernabeu\DaplosBundle\Command\ShowReferentialCommand;
 use YoanBernabeu\DaplosBundle\Command\SyncReferentialCommand;
+use YoanBernabeu\DaplosBundle\Exporter\Contract\FileExporterInterface;
+use YoanBernabeu\DaplosBundle\Exporter\DaplosFileExporter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\CCLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\DALineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\DELineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\DPLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\DTLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\EILineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\HALineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\IALineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\ICLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\ILLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\LCLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\PALineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\PCLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\PELineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\PHLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\PSLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\PVLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\RLLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\SCLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\VBLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\VCLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\VHLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\VILineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\LineWriter\VRLineWriter;
+use YoanBernabeu\DaplosBundle\Exporter\Registry\LineWriterRegistry;
 use YoanBernabeu\DaplosBundle\Parser\Contract\FileParserInterface;
 use YoanBernabeu\DaplosBundle\Parser\DaplosFileParser;
 use YoanBernabeu\DaplosBundle\Parser\LineParser\CCLineParser;
@@ -115,6 +142,15 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('exporter')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('encoding')
+                            ->defaultValue('ISO-8859-1')
+                            ->info('Encodage des fichiers DAPLOS exportés (ISO-8859-1 recommandé, les positions du guide sont en octets)')
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
     }
@@ -137,6 +173,7 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
             ->set('yoanbernabeu_daplos.cache.ttl', $config['cache']['ttl'])
             ->set('yoanbernabeu_daplos.parser.encoding', $config['parser']['encoding'])
             ->set('yoanbernabeu_daplos.parser.ignore_unknown_flags', $config['parser']['ignore_unknown_flags'])
+            ->set('yoanbernabeu_daplos.exporter.encoding', $config['exporter']['encoding'])
         ;
 
         // Services
@@ -266,6 +303,59 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
 
             // Alias nommé pour le parser
             ->alias('yoanbernabeu_daplos.file_parser', FileParserInterface::class)
+                ->public()
+
+            // ============================================
+            // Exporter DAPLOS
+            // ============================================
+
+            // Line Writers (tous taggés pour auto-registration)
+            ->set(EILineWriter::class)->tag('daplos.line_writer')
+            ->set(DELineWriter::class)->tag('daplos.line_writer')
+            ->set(DALineWriter::class)->tag('daplos.line_writer')
+            ->set(DTLineWriter::class)->tag('daplos.line_writer')
+            ->set(DPLineWriter::class)->tag('daplos.line_writer')
+            ->set(PSLineWriter::class)->tag('daplos.line_writer')
+            ->set(SCLineWriter::class)->tag('daplos.line_writer')
+            ->set(PCLineWriter::class)->tag('daplos.line_writer')
+            ->set(CCLineWriter::class)->tag('daplos.line_writer')
+            ->set(PELineWriter::class)->tag('daplos.line_writer')
+            ->set(PHLineWriter::class)->tag('daplos.line_writer')
+            ->set(HALineWriter::class)->tag('daplos.line_writer')
+            ->set(PALineWriter::class)->tag('daplos.line_writer')
+            ->set(PVLineWriter::class)->tag('daplos.line_writer')
+            ->set(VBLineWriter::class)->tag('daplos.line_writer')
+            ->set(VHLineWriter::class)->tag('daplos.line_writer')
+            ->set(VCLineWriter::class)->tag('daplos.line_writer')
+            ->set(VILineWriter::class)->tag('daplos.line_writer')
+            ->set(ICLineWriter::class)->tag('daplos.line_writer')
+            ->set(ILLineWriter::class)->tag('daplos.line_writer')
+            ->set(IALineWriter::class)->tag('daplos.line_writer')
+            ->set(VRLineWriter::class)->tag('daplos.line_writer')
+            ->set(RLLineWriter::class)->tag('daplos.line_writer')
+            ->set(LCLineWriter::class)->tag('daplos.line_writer')
+
+            // Registry des Line Writers
+            ->set(LineWriterRegistry::class)
+                ->args([
+                    tagged_iterator('daplos.line_writer'),
+                ])
+                ->public()
+
+            // Exporter principal
+            ->set(DaplosFileExporter::class)
+                ->args([
+                    service(LineWriterRegistry::class),
+                    '%yoanbernabeu_daplos.exporter.encoding%',
+                ])
+                ->public()
+
+            // Alias pour l'interface de l'exporter
+            ->alias(FileExporterInterface::class, DaplosFileExporter::class)
+                ->public()
+
+            // Alias nommé pour l'exporter
+            ->alias('yoanbernabeu_daplos.file_exporter', FileExporterInterface::class)
                 ->public()
 
             // ============================================
