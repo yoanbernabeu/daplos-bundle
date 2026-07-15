@@ -157,10 +157,12 @@ abstract class AbstractLineParser implements LineParserInterface
         $value = str_pad($cleaned, $length, '0', STR_PAD_LEFT);
 
         // Format YYYYMMDDHHMM (14 chars) ou YYYYMMDD (8 chars)
+        // Le prefixe « ! » remet a zero les composants absents du format
+        // (sinon l'heure courante de l'horloge se glisse dans la date parsee)
         $format = match (strlen($value)) {
-            14 => 'YmdHi',
-            12 => 'YmdHi',
-            8 => 'Ymd',
+            14 => '!YmdHi',
+            12 => '!YmdHi',
+            8 => '!Ymd',
             default => null,
         };
 

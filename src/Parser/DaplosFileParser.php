@@ -127,7 +127,7 @@ final class DaplosFileParser implements FileParserInterface
             'PS' => $context->addSurface($dto instanceof SurfaceParcelle ? $dto : throw new DaplosParseException('DTO inattendu pour PS', $lineNumber)),
             'SC' => $context->addCoordonnee($dto instanceof Coordonnee ? $dto : throw new DaplosParseException('DTO inattendu pour SC', $lineNumber)),
             'PC' => $context->addParcelleCadastrale($dto instanceof ParcelleCadastrale ? $dto : throw new DaplosParseException('DTO inattendu pour PC', $lineNumber)),
-            'CC' => $context->addCoordonnee($dto instanceof Coordonnee ? $dto : throw new DaplosParseException('DTO inattendu pour CC', $lineNumber)),
+            'CC' => $context->addCoordonneeCadastrale($dto instanceof Coordonnee ? $dto : throw new DaplosParseException('DTO inattendu pour CC', $lineNumber)),
             'PE' => $context->addEngagement($dto instanceof Engagement ? $dto : throw new DaplosParseException('DTO inattendu pour PE', $lineNumber)),
             'PH' => $context->addHistorique($dto instanceof Historique ? $dto : throw new DaplosParseException('DTO inattendu pour PH', $lineNumber)),
             'HA' => $context->addAmendement($dto instanceof Amendement ? $dto : throw new DaplosParseException('DTO inattendu pour HA', $lineNumber)),
