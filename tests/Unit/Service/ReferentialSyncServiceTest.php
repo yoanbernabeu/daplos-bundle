@@ -262,6 +262,43 @@ class ReferentialSyncServiceTest extends TestCase
         $this->assertEquals(3, $stats['total']); // Total inclut toutes les références
     }
 
+    /**
+     * L'API renvoie certains codes avec une espace insécable finale (U+00A0),
+     * que trim() ne retire pas : ZNB, ZNC (justification de l'intervention),
+     * 000001FORFSP (organisme vivant).
+     */
+    public function testSyncReferentialTrimsSpacesAndNonBreakingSpaces(): void
+    {
+        $type = DaplosReferentialType::JUSTIFICATION_DE_L_INTERVENTION;
+
+        $this->apiClient->expects($this->once())->method('getReferential')->willReturn([
+            'referential' => ['id' => $type->getId(), 'name' => $type->getLabel()],
+            'references' => [
+                ['id' => 1, 'title' => "Seuil de nuisibilité\u{00A0}", 'reference_code' => "ZNB\u{00A0}"],
+                ['id' => 2, 'title' => " \u{00A0}Observation ", 'reference_code' => "\u{00A0} ZNC \t"],
+            ],
+        ]);
+
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->method('findOneBy')->willReturn(null);
+        $this->entityManager->expects($this->any())->method('getRepository')->willReturn($repository);
+
+        $persisted = [];
+        $this->entityManager->expects($this->exactly(2))->method('persist')->willReturnCallback(
+            static function (object $entity) use (&$persisted): void {
+                $persisted[] = $entity;
+            }
+        );
+
+        $this->service->syncReferential(TestDaplosEntity::class, $type);
+
+        $this->assertCount(2, $persisted);
+        $this->assertSame('ZNB', $persisted[0]->getDaplosReferenceCode());
+        $this->assertSame('Seuil de nuisibilité', $persisted[0]->getDaplosTitle());
+        $this->assertSame('ZNC', $persisted[1]->getDaplosReferenceCode());
+        $this->assertSame('Observation', $persisted[1]->getDaplosTitle());
+    }
+
     public function testSyncAllReferentials(): void
     {
         // Arrange - Préparer les données pour chaque type de référentiel
