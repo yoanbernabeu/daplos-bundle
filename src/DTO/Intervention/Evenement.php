@@ -31,6 +31,7 @@ final class Evenement
         public readonly ?string $identifiantParcelle = null,
         public readonly ?int $annee = null,
         public readonly ?string $refIntervention = null,
+        /** Case 48-50 « Type d'évènement » (nomenclature Catégorie d'intervention), alias de $codeCategorieIntervention ; l'intervention agricole est portée par $codeTypeTravail */
         public readonly ?string $codeIntervention = null,
         public readonly ?string $codeCategorieIntervention = null,
         public readonly ?string $libelleIntervention = null,
