@@ -92,14 +92,14 @@ class Intervention
 | `daplosIdentifiantParcelle` | `string(32)` | Référence à la parcelle |
 | `daplosAnnee` | `int` | Année de campagne |
 | `daplosRefIntervention` | `string(64)` | UUID unique de l'intervention |
-| `daplosCodeIntervention` | `string(10)` | Code type intervention |
-| `daplosCodeCategorieIntervention` | `string(10)` | Catégorie d'intervention |
+| `daplosCodeIntervention` | `string(10)` | Type d'évènement (case 48-50), même valeur que la catégorie |
+| `daplosCodeCategorieIntervention` | `string(10)` | Catégorie d'intervention (case 48-50) |
 | `daplosLibelleIntervention` | `string(255)` | Libellé de l'intervention |
 | `daplosDateDebutIntervention` | `DateTimeImmutable` | Date de début |
 | `daplosDateFinIntervention` | `DateTimeImmutable` | Date de fin |
 | `daplosCodeStatutIntervention` | `string(10)` | Statut (planifié, réalisé) |
 | `daplosCodeJustificationIntervention` | `string(10)` | Justification |
-| `daplosCodeStadeVegetatif` | `string(10)` | Stade végétatif |
+| `daplosCodeStadeVegetatif` | `string(10)` | Stade de culture en code (case 127-129, codification obsolète) |
 | `daplosLibelleStadeVegetatif` | `string(100)` | Libellé du stade |
 | `daplosCodeConditionsMeteo` | `string(10)` | Conditions météo |
 | `daplosCommentaire` | `text` | Commentaire libre |
@@ -307,8 +307,10 @@ Représente une intervention culturale.
 
 ```php
 foreach ($parcelle->getEvenements() as $evt) {
-    $evt->codeIntervention;           // "ZG7", "ZF7", etc.
-    $evt->codeCategorieIntervention;  // Catégorie
+    $evt->codeCategorieIntervention;  // Catégorie d'intervention : "ZG7" (Intrant), "ZF7" (Récolte)...
+    $evt->codeIntervention;           // Alias de codeCategorieIntervention (même case 48-50)
+    $evt->codeTypeTravail;            // Intervention agricole : "SEM" (Fertilisation), "SET" (Semis classique)...
+    $evt->codeStadeCultureBBCH;       // Stade végétatif BBCH : "06BBCH3010"
     $evt->libelleIntervention;        // "Semis", "Récolte"...
     $evt->dateDebutIntervention;      // DateTimeImmutable
     $evt->dateFinIntervention;        // DateTimeImmutable

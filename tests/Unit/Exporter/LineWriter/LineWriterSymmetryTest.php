@@ -300,7 +300,7 @@ class LineWriterSymmetryTest extends TestCase
             dateFinIntervention: new \DateTimeImmutable('2024-10-15 17:45'),
             codeStatutIntervention: 'ZF8',
             codeJustificationIntervention: 'ZJ1',
-            codeStadeVegetatif: 'ZS1',
+            codeStadeVegetatif: 'SAC',
             libelleStadeVegetatif: 'Levée',
             codeConditionsMeteo: 'ZW2',
             commentaire: 'Conditions optimales',
@@ -321,7 +321,7 @@ class LineWriterSymmetryTest extends TestCase
             uniteBouillieViseeHa: 'LTR',
             quantiteBouillieEffectiveHa: 175.25,
             uniteBouillieEffectiveHa: 'LTR',
-            codeStadeCultureBBCH: 'BBCH09',
+            codeStadeCultureBBCH: '06BBCH0010',
         )];
 
         yield 'VB' => [new VBLineWriter(), new VBLineParser(), new CibleEvenement(
@@ -383,7 +383,7 @@ class LineWriterSymmetryTest extends TestCase
             codeQualifiantEffluent3: 'ZF3',
             codeQualifiantEffluent4: 'ZF4',
             codeQualifiantEffluent5: 'ZF5',
-            codeQualifiantSemence1: 'ZS1',
+            codeQualifiantSemence1: 'ZQA',
             codeQualifiantSemence2: 'ZS2',
             codeQualifiantSemence3: 'ZS3',
             quantiteEffectiveHa: 20.5,

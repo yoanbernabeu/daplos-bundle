@@ -72,7 +72,7 @@ class VILineParserTest extends TestCase
         $this->assertSame('ZQ4', $result->codeQualifiantEffluent4);
         $this->assertSame('ZQ5', $result->codeQualifiantEffluent5);
         // Positions 202-210 : qualifiants semence (1) à (3)
-        $this->assertSame('ZS1', $result->codeQualifiantSemence1);
+        $this->assertSame('ZQA', $result->codeQualifiantSemence1);
         $this->assertSame('ZS2', $result->codeQualifiantSemence2);
         $this->assertSame('ZS3', $result->codeQualifiantSemence3);
         // Positions 211-219 + 220-222 : quantité totale effective + unité
@@ -182,7 +182,7 @@ class VILineParserTest extends TestCase
             .'ZQ3'                                      // 193-195 qualifiant effluent 3
             .'ZQ4'                                      // 196-198 qualifiant effluent 4
             .'ZQ5'                                      // 199-201 qualifiant effluent 5
-            .'ZS1'                                      // 202-204 qualifiant semence 1
+            .'ZQA'                                      // 202-204 qualifiant semence 1
             .'ZS2'                                      // 205-207 qualifiant semence 2
             .'ZS3'                                      // 208-210 qualifiant semence 3
             .'0523.9578'                                // 211-219 quantité totale

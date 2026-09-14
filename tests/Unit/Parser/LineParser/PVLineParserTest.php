@@ -63,7 +63,7 @@ class PVLineParserTest extends TestCase
         // Positions 119-126 : date de préconisation
         $this->assertSame('20250310', $result->datePreconisation?->format('Ymd'));
         // Positions 127-129 : stade de la culture (codification obsolète)
-        $this->assertSame('Z61', $result->codeStadeVegetatif);
+        $this->assertSame('SAC', $result->codeStadeVegetatif);
         // Positions 130-164 : précision sur le stade de culture
         $this->assertSame('Debut montaison', $result->libelleStadeVegetatif);
         // Positions 165-167 : type de travail
@@ -99,7 +99,7 @@ class PVLineParserTest extends TestCase
         // Positions 345-414 + 415-484 : commentaires (concaténés)
         $this->assertSame('Commentaire ligne un Commentaire ligne deux', $result->commentaire);
         // Positions 485-494 : codes stades de cultures v095 (BBCH, prioritaire)
-        $this->assertSame('BBCH31', $result->codeStadeCultureBBCH);
+        $this->assertSame('06BBCH3010', $result->codeStadeCultureBBCH);
     }
 
     /**
@@ -216,7 +216,7 @@ class PVLineParserTest extends TestCase
             .'202503151030'                             // 101-112 date fin
             .'010430'                                   // 113-118 durée
             .'20250310'                                 // 119-126 date préconisation
-            .'Z61'                                      // 127-129 stade (obsolète)
+            .'SAC'                                      // 127-129 stade (obsolète)
             .str_pad('Debut montaison', 35)             // 130-164 précision stade
             .'PUL'                                      // 165-167 type de travail
             .str_pad('Passage cuve 2000L', 35)          // 168-202 complément type travail
@@ -237,7 +237,7 @@ class PVLineParserTest extends TestCase
             .'000012.34'                                // 336-344 surface
             .str_pad('Commentaire ligne un', 70)        // 345-414 commentaire 1
             .str_pad('Commentaire ligne deux', 70)      // 415-484 commentaire 2
-            .'BBCH31    ';                              // 485-494 codes stades v095
+            .'06BBCH3010';                              // 485-494 codes stades v095
 
         return $line;
     }
