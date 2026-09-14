@@ -50,7 +50,8 @@ $parcelle->addEvenement(new Evenement(
     identifiantParcelle: '0001A001',
     annee: 2025,
     refIntervention: 'ABCD1234567890ABCD1234567890ABCD',
-    codeIntervention: 'ZG7',
+    codeCategorieIntervention: 'ZG7', // case 48-50 : catégorie d'intervention
+    codeTypeTravail: 'SET',           // case 165-167 : intervention agricole
     libelleIntervention: 'Semis blé tendre',
 ));
 

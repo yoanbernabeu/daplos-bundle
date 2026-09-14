@@ -142,8 +142,8 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         }
 
         $daplosId = $reference['id'] ?? null;
-        $title = $reference['title'] ?? null;
-        $referenceCode = $reference['reference_code'] ?? null;
+        $title = $this->normalize($reference['title'] ?? null);
+        $referenceCode = $this->normalize($reference['reference_code'] ?? null);
 
         // Tronquer le title si nécessaire (max 255 caractères)
         if (null !== $title && mb_strlen($title) > 255) {
@@ -160,6 +160,19 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
             ->setDaplosTitle($title)
             ->setDaplosReferenceCode($referenceCode)
             ->setReferentialType($type);
+    }
+
+    /**
+     * Retire les espaces en début et fin, espaces insécables (U+00A0) compris :
+     * l'API en renvoie sur certains codes, et trim() ne les retire pas.
+     */
+    private function normalize(?string $value): ?string
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return preg_replace('/^[\s\x{00A0}]+|[\s\x{00A0}]+$/u', '', $value) ?? $value;
     }
 
     /**

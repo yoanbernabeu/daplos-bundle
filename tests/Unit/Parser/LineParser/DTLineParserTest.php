@@ -48,7 +48,7 @@ class DTLineParserTest extends TestCase
     }
 
     /**
-     * Ligne issue d'un fichier réel (Smag) : « autre type d'agriculture »
+     * Ligne issue d'un fichier réel : « autre type d'agriculture »
      * déborde de la position 45 du guide, lecture jusqu'à la fin de ligne.
      */
     public function testParseRealWorldLineWithOverflow(): void

@@ -6,6 +6,7 @@ namespace YoanBernabeu\DaplosBundle\Validator;
 
 use Doctrine\ORM\EntityManagerInterface;
 use YoanBernabeu\DaplosBundle\DTO\DaplosDocument;
+use YoanBernabeu\DaplosBundle\DTO\Intervention\CibleEvenement;
 use YoanBernabeu\DaplosBundle\DTO\Intervention\Evenement;
 use YoanBernabeu\DaplosBundle\DTO\Intrant\Intrant;
 use YoanBernabeu\DaplosBundle\DTO\Parcelle\Historique;
@@ -179,16 +180,7 @@ final class StrictReferentialValidator implements ReferentialValidatorInterface
     {
         $context = sprintf('%s, Intervention %s', $parcelleContext, $evenement->refIntervention ?? 'inconnue');
 
-        // Code intervention
-        $this->validateCode(
-            $evenement->codeIntervention,
-            DaplosReferentialType::INTERVENTION_AGRICOLE,
-            'codeIntervention',
-            $context,
-            $result,
-        );
-
-        // Code catégorie intervention
+        // Code catégorie intervention (case 48-50, également exposée par codeIntervention)
         $this->validateCode(
             $evenement->codeCategorieIntervention,
             DaplosReferentialType::CATEGORIE_D_INTERVENTION,
@@ -215,11 +207,20 @@ final class StrictReferentialValidator implements ReferentialValidatorInterface
             $result,
         );
 
-        // Code stade végétatif
+        // Code type de travail (case 165-167)
         $this->validateCode(
-            $evenement->codeStadeVegetatif,
+            $evenement->codeTypeTravail,
+            DaplosReferentialType::INTERVENTION_AGRICOLE,
+            'codeTypeTravail',
+            $context,
+            $result,
+        );
+
+        // Code stade de culture BBCH (case 485-494) ; codeStadeVegetatif (case 127-129) est une codification obsolète
+        $this->validateCode(
+            $evenement->codeStadeCultureBBCH,
             DaplosReferentialType::STADE_VEGETATIF,
-            'codeStadeVegetatif',
+            'codeStadeCultureBBCH',
             $context,
             $result,
         );
@@ -233,6 +234,11 @@ final class StrictReferentialValidator implements ReferentialValidatorInterface
             $result,
         );
 
+        // Valider les cibles
+        foreach ($evenement->getCibles() as $cible) {
+            $this->validateCible($cible, $result, $context);
+        }
+
         // Valider les intrants
         foreach ($evenement->getIntrants() as $intrant) {
             $this->validateIntrant($intrant, $result, $context);
@@ -242,6 +248,18 @@ final class StrictReferentialValidator implements ReferentialValidatorInterface
         foreach ($evenement->getRecoltes() as $recolte) {
             $this->validateRecolte($recolte, $result, $context);
         }
+    }
+
+    private function validateCible(CibleEvenement $cible, ValidationResult $result, string $evenementContext): void
+    {
+        // Code cible v0.95 (case 50-61) ; codeOrganismeCible (case 47-49) est une codification obsolète
+        $this->validateCode(
+            $cible->codeCibleV095,
+            DaplosReferentialType::ORGANISME_VIVANT_CIBLE_OU_AUXILIAIRE,
+            'codeCibleV095',
+            sprintf('%s, Cible', $evenementContext),
+            $result,
+        );
     }
 
     private function validateIntrant(Intrant $intrant, ValidationResult $result, string $evenementContext): void

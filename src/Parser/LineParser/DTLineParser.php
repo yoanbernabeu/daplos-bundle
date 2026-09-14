@@ -14,7 +14,7 @@ use YoanBernabeu\DaplosBundle\DTO\Document\TypeAgriculture;
  *
  * Position 3-5  : Type d'agriculture pratiquée en code (3 an) — nomenclature Valeur de la caractéristique technique
  * Position 6-25 : N° de certificat (20 an)
- * Position 26-45: Autre type d'agriculture (20 an) — certains émetteurs (Smag) dépassent
+ * Position 26-45: Autre type d'agriculture (20 an) — certains émetteurs dépassent
  *                 la position 45, lecture jusqu'à la fin de ligne ; rempli dans `libelle`
  *                 (nom historique conservé pour compatibilité)
  */

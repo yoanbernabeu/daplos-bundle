@@ -27,7 +27,8 @@ final class PVLineWriter extends AbstractLineWriter
         $buffer->setInt(11, 4, $evenement->annee);
         $buffer->setField(15, 32, $evenement->refIntervention);
         $buffer->setField(47, 1, $evenement->codeAction);
-        $buffer->setField(48, 3, $evenement->codeIntervention ?? $evenement->codeCategorieIntervention);
+        // Type d'évènement : nomenclature Catégorie d'intervention (l'intervention agricole va en 165-167)
+        $buffer->setField(48, 3, $evenement->codeCategorieIntervention ?? $evenement->codeIntervention);
         $buffer->setField(51, 3, $evenement->codeStatutIntervention);
         $buffer->setField(54, 35, $evenement->libelleIntervention);
         $buffer->setDate(89, 12, $evenement->dateDebutIntervention);

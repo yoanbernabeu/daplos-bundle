@@ -21,7 +21,7 @@ class DaplosEvenementTraitTest extends TestCase
             dateFinIntervention: new \DateTimeImmutable('2025-03-15 10:30'),
             codeStatutIntervention: 'ZK1',
             codeJustificationIntervention: 'ZB1',
-            codeStadeVegetatif: 'Z61',
+            codeStadeVegetatif: 'SAC',
             libelleStadeVegetatif: 'Debut montaison',
             codeConditionsMeteo: 'ZC1',
             commentaire: 'Commentaire',

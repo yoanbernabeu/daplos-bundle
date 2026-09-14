@@ -47,7 +47,7 @@ class LCLineParserTest extends TestCase
         // Positions 15-46 : référence de l'événement (GUID)
         $this->assertSame('A1B2C3D4E5F60718293A4B5C6D7E8F90', $result->refIntervention);
         // Positions 47-49 : type caractéristique (en code)
-        $this->assertSame('ZHU', $result->codeCaracteristique);
+        $this->assertSame('ZJ4', $result->codeCaracteristique);
         // Positions 50-58 : valeur de la caractéristique (9 n)
         $this->assertSame('00014.500', $result->valeur);
         $this->assertSame(14.5, $result->getValeurNumerique());
@@ -60,7 +60,7 @@ class LCLineParserTest extends TestCase
      */
     public function testParseLineWithOptionalFieldsEmpty(): void
     {
-        $line = 'LC000266  202573FF44DFEB25A3CCB28E157FAD771041ZHU'
+        $line = 'LC000266  202573FF44DFEB25A3CCB28E157FAD771041ZJ4'
             .str_repeat(' ', 9)
             .str_repeat(' ', 3);
 
@@ -69,7 +69,7 @@ class LCLineParserTest extends TestCase
         $result = $this->parser->parse($line, 1);
 
         $this->assertSame('000266', $result->identifiantParcelle);
-        $this->assertSame('ZHU', $result->codeCaracteristique);
+        $this->assertSame('ZJ4', $result->codeCaracteristique);
         $this->assertNull($result->valeur);
         $this->assertNull($result->getValeurNumerique());
         $this->assertNull($result->codeUnite);
@@ -77,11 +77,11 @@ class LCLineParserTest extends TestCase
 
     public function testParseTruncatedLineIsTolerated(): void
     {
-        $line = 'LC000178  2025A1B2C3D4E5F60718293A4B5C6D7E8F90ZHU';
+        $line = 'LC000178  2025A1B2C3D4E5F60718293A4B5C6D7E8F90ZJ4';
 
         $result = $this->parser->parse($line, 1);
 
-        $this->assertSame('ZHU', $result->codeCaracteristique);
+        $this->assertSame('ZJ4', $result->codeCaracteristique);
         $this->assertNull($result->valeur);
         $this->assertNull($result->codeUnite);
     }
@@ -100,7 +100,7 @@ class LCLineParserTest extends TestCase
             .'78  '                                 // 7-10  réf parcelle culturale
             .'2025'                                 // 11-14 année
             .'A1B2C3D4E5F60718293A4B5C6D7E8F90'     // 15-46 GUID
-            .'ZHU'                                  // 47-49 type caractéristique
+            .'ZJ4'                                  // 47-49 type caractéristique
             .'00014.500'                            // 50-58 valeur de la caractéristique
             .'PCT';                                 // 59-61 unité de mesure
     }

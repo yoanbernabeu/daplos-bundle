@@ -30,7 +30,7 @@ class DaplosIntrantTraitTest extends TestCase
             codeQualifiantEffluent3: 'ZQ3',
             codeQualifiantEffluent4: 'ZQ4',
             codeQualifiantEffluent5: 'ZQ5',
-            codeQualifiantSemence1: 'ZS1',
+            codeQualifiantSemence1: 'ZQA',
             codeQualifiantSemence2: 'ZS2',
             codeQualifiantSemence3: 'ZS3',
             quantiteEffectiveHa: 0.075,
@@ -67,7 +67,7 @@ class DaplosIntrantTraitTest extends TestCase
         $this->assertSame('ZQ3', $entity->getDaplosCodeQualifiantEffluent3());
         $this->assertSame('ZQ4', $entity->getDaplosCodeQualifiantEffluent4());
         $this->assertSame('ZQ5', $entity->getDaplosCodeQualifiantEffluent5());
-        $this->assertSame('ZS1', $entity->getDaplosCodeQualifiantSemence1());
+        $this->assertSame('ZQA', $entity->getDaplosCodeQualifiantSemence1());
         $this->assertSame('ZS2', $entity->getDaplosCodeQualifiantSemence2());
         $this->assertSame('ZS3', $entity->getDaplosCodeQualifiantSemence3());
         $this->assertSame('0.075', $entity->getDaplosQuantiteEffectiveHa());

@@ -106,7 +106,8 @@ class MonService
 
             // Interventions
             foreach ($parcelle->getEvenements() as $evenement) {
-                echo $evenement->codeIntervention;
+                echo $evenement->codeCategorieIntervention; // "ZG7"
+                echo $evenement->codeTypeTravail;           // "SET"
                 echo $evenement->libelleIntervention;
                 echo $evenement->dateDebutIntervention?->format('d/m/Y');
 
@@ -162,8 +163,10 @@ $parcelle->getEvenements();         // Interventions (PV)
 ### Evenement (Intervention)
 
 ```php
-$evenement->codeIntervention;
-$evenement->codeCategorieIntervention;
+$evenement->codeCategorieIntervention; // Catégorie d'intervention (case 48-50)
+$evenement->codeIntervention;          // Alias de codeCategorieIntervention
+$evenement->codeTypeTravail;           // Intervention agricole (case 165-167)
+$evenement->codeStadeCultureBBCH;      // Stade végétatif BBCH (case 485-494)
 $evenement->libelleIntervention;
 $evenement->dateDebutIntervention;
 $evenement->dateFinIntervention;
