@@ -179,10 +179,10 @@ class PVLineParserTest extends TestCase
     }
 
     /**
-     * Certains émetteurs (Smag) écrivent un code BBCH de 11 caractères :
+     * Certains émetteurs écrivent un code BBCH de 11 caractères :
      * le dernier champ (485-494) doit être lu jusqu'à la fin de ligne.
      */
-    public function testParseBbchOverflowSmag(): void
+    public function testParseBbchOverflow(): void
     {
         $line = substr($this->buildFullLine(), 0, 484).'06BBCH0000b';
 

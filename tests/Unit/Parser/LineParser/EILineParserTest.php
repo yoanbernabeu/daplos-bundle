@@ -34,9 +34,9 @@ class EILineParserTest extends TestCase
     public function testParseFullLine(): void
     {
         $line = 'EI'
-            .'38176508000027'  // 3-16  identification émetteur (an14)
+            .'11122233300014'  // 3-16  identification émetteur (an14)
             .'005'             // 17-19 type codification émetteur (an3)
-            .'43040691800028'  // 20-33 identification destinataire (an14)
+            .'44455566600017'  // 20-33 identification destinataire (an14)
             .'5  '             // 34-36 type codification destinataire (an3)
             .'0012';           // 37-40 nombre de documents dans l'envoi (n4)
 
@@ -45,9 +45,9 @@ class EILineParserTest extends TestCase
         $result = $this->parser->parse($line, 1);
 
         $this->assertInstanceOf(InterchangeHeader::class, $result);
-        $this->assertSame('38176508000027', $result->identificationEmetteur);
+        $this->assertSame('11122233300014', $result->identificationEmetteur);
         $this->assertSame('005', $result->typeCodificationEmetteur);
-        $this->assertSame('43040691800028', $result->identificationDestinataire);
+        $this->assertSame('44455566600017', $result->identificationDestinataire);
         $this->assertSame('5', $result->typeCodificationDestinataire);
         $this->assertSame(12, $result->nombreDocuments);
 
@@ -57,19 +57,19 @@ class EILineParserTest extends TestCase
     }
 
     /**
-     * Ligne issue d'un fichier réel (Export Geofolia).
+     * Ligne issue d'un fichier réel.
      */
     public function testParseRealWorldLine(): void
     {
-        $line = 'EI38176508000027005381765080000270050001';
+        $line = 'EI11122233300014005111222333000140050001';
 
         $this->assertSame(40, strlen($line));
 
         $result = $this->parser->parse($line, 1);
 
-        $this->assertSame('38176508000027', $result->identificationEmetteur);
+        $this->assertSame('11122233300014', $result->identificationEmetteur);
         $this->assertSame('005', $result->typeCodificationEmetteur);
-        $this->assertSame('38176508000027', $result->identificationDestinataire);
+        $this->assertSame('11122233300014', $result->identificationDestinataire);
         $this->assertSame('005', $result->typeCodificationDestinataire);
         $this->assertSame(1, $result->nombreDocuments);
         $this->assertNull($result->dateHeurePreparation);
@@ -78,11 +78,11 @@ class EILineParserTest extends TestCase
 
     public function testParseTruncatedLineIsTolerated(): void
     {
-        $line = 'EI43040691800028';
+        $line = 'EI44455566600017';
 
         $result = $this->parser->parse($line, 1);
 
-        $this->assertSame('43040691800028', $result->identificationEmetteur);
+        $this->assertSame('44455566600017', $result->identificationEmetteur);
         $this->assertNull($result->typeCodificationEmetteur);
         $this->assertNull($result->identificationDestinataire);
         $this->assertNull($result->typeCodificationDestinataire);

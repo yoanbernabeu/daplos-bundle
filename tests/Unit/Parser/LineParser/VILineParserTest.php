@@ -106,7 +106,7 @@ class VILineParserTest extends TestCase
     }
 
     /**
-     * Ligne réelle Smag/Geofolia : la densité (439-447) est souvent absente
+     * Ligne issue de fichiers réels : la densité (439-447) est souvent absente
      * (lignes de 438 caractères) — le parser doit tolérer la troncature.
      */
     public function testParseRealWorldLineWithoutDensite(): void
