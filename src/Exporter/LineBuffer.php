@@ -45,7 +45,8 @@ final class LineBuffer
     }
 
     /**
-     * Place un champ entier, cadre a droite.
+     * Place un champ entier, cadre a droite et complete par des 0 a gauche
+     * (guide DAPLOS v0.95, formats des messages).
      *
      * @throws DaplosExportException Si la valeur depasse la longueur du champ
      */
@@ -60,12 +61,13 @@ final class LineBuffer
             throw new DaplosExportException(sprintf('La valeur "%s" depasse la longueur du champ (%d) a la position %d', $formatted, $length, $start));
         }
 
-        $this->place($start, str_pad($formatted, $length, ' ', STR_PAD_LEFT));
+        $this->place($start, $this->padNumber($formatted, $length));
     }
 
     /**
-     * Place un champ decimal, cadre a droite, sans perte de decimales
-     * ni zeros inutiles.
+     * Place un champ decimal, cadre a droite et complete par des 0 a gauche
+     * (guide DAPLOS v0.95 : 2,2 s'ecrit 0000002.2), sans perte de decimales
+     * ni zeros inutiles en partie decimale.
      *
      * @throws DaplosExportException Si la valeur depasse la longueur du champ
      */
@@ -92,7 +94,7 @@ final class LineBuffer
             throw new DaplosExportException(sprintf('La valeur "%s" depasse la longueur du champ (%d) a la position %d', $formatted, $length, $start));
         }
 
-        $this->place($start, str_pad($formatted, $length, ' ', STR_PAD_LEFT));
+        $this->place($start, $this->padNumber($formatted, $length));
     }
 
     /**
@@ -142,6 +144,19 @@ final class LineBuffer
         }
 
         $this->line = substr_replace($this->line, $value, $offset, strlen($value));
+    }
+
+    /**
+     * Complete un nombre par des 0 a gauche jusqu'a la longueur du champ ;
+     * le signe moins reste en tete (-5 sur 4 caracteres : -005).
+     */
+    private function padNumber(string $formatted, int $length): string
+    {
+        if (str_starts_with($formatted, '-')) {
+            return '-'.str_pad(substr($formatted, 1), $length - 1, '0', STR_PAD_LEFT);
+        }
+
+        return str_pad($formatted, $length, '0', STR_PAD_LEFT);
     }
 
     /**

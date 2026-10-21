@@ -72,12 +72,21 @@ class LineBufferTest extends TestCase
         $this->assertSame('Blé dur', mb_convert_encoding(substr($line, 2, 7), 'UTF-8', 'ISO-8859-1'));
     }
 
-    public function testSetIntAlignsRight(): void
+    public function testSetIntAlignsRightAndPadsWithZeros(): void
     {
+        // Guide DAPLOS v0.95 : valeurs numeriques cadrees a droite, completees par des 0 a gauche
         $buffer = new LineBuffer('EI');
         $buffer->setInt(3, 4, 42);
 
-        $this->assertSame('EI  42', $buffer->toString());
+        $this->assertSame('EI0042', $buffer->toString());
+    }
+
+    public function testSetIntKeepsSignBeforeZeros(): void
+    {
+        $buffer = new LineBuffer('EI');
+        $buffer->setInt(3, 4, -5);
+
+        $this->assertSame('EI-005', $buffer->toString());
     }
 
     public function testSetIntThrowsWhenValueTooLong(): void
@@ -94,7 +103,8 @@ class LineBufferTest extends TestCase
         $buffer = new LineBuffer('PS');
         $buffer->setDecimal(18, 9, 12.5);
 
-        $this->assertSame('PS'.str_repeat(' ', 15).'     12.5', $buffer->toString());
+        // Guide DAPLOS v0.95 (formats) : 2,2 s'ecrit 0000002.2
+        $this->assertSame('PS'.str_repeat(' ', 15).'0000012.5', $buffer->toString());
     }
 
     public function testSetDecimalFormatsIntegerValueWithoutDecimalPoint(): void
@@ -102,7 +112,8 @@ class LineBufferTest extends TestCase
         $buffer = new LineBuffer('PS');
         $buffer->setDecimal(18, 9, 10.0);
 
-        $this->assertSame('PS'.str_repeat(' ', 15).'       10', $buffer->toString());
+        // Guide DAPLOS v0.95 (formats) : 200 s'ecrit 000000200
+        $this->assertSame('PS'.str_repeat(' ', 15).'000000010', $buffer->toString());
     }
 
     public function testSetDecimalPreservesAllDecimals(): void
@@ -121,6 +132,14 @@ class LineBufferTest extends TestCase
         $buffer->setDecimal(18, 9, 0.81999999);
 
         $this->assertSame('PS'.str_repeat(' ', 15).'.81999999', $buffer->toString());
+    }
+
+    public function testSetDecimalKeepsSignBeforeZeros(): void
+    {
+        $buffer = new LineBuffer('PS');
+        $buffer->setDecimal(3, 6, -2.5);
+
+        $this->assertSame('PS-002.5', $buffer->toString());
     }
 
     public function testSetDecimalThrowsWhenValueTooLong(): void

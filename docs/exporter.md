@@ -95,6 +95,10 @@ yoanbernabeu_daplos:
 
 Un encodage `UTF-8` est possible, mais les caractères accentués décalent alors les positions en octets : à réserver aux échanges avec des lecteurs qui tolèrent ce décalage (le parser du bundle le tolère).
 
+## Format des nombres
+
+Comme le demande le guide DAPLOS v0.95 (formats des messages), les valeurs numériques sont cadrées à droite et complétées par des `0` à gauche : `2.2` sur 9 caractères s'écrit `0000002.2`, `200` s'écrit `000000200`. Le signe moins reste en tête (`-005`). Le parser relit aussi les fichiers plus anciens complétés par des espaces.
+
 ## Limites connues
 
 - Le commentaire d'intervention (`Evenement::commentaire`) est réparti sur les deux zones de 70 caractères du FLAG `PV` (coupure sur un espace). Au-delà de 141 caractères, il est tronqué.
