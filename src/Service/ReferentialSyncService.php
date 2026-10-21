@@ -142,7 +142,7 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
         }
 
         $daplosId = $reference['id'] ?? null;
-        $title = $this->normalize($reference['title'] ?? null);
+        $title = $this->normalize($this->decodeHtmlEntities($reference['title'] ?? null));
         $referenceCode = $this->normalize($reference['reference_code'] ?? null);
 
         // Tronquer le title si nécessaire (max 255 caractères)
@@ -160,6 +160,20 @@ class ReferentialSyncService implements ReferentialSyncServiceInterface
             ->setDaplosTitle($title)
             ->setDaplosReferenceCode($referenceCode)
             ->setReferentialType($type);
+    }
+
+    /**
+     * Décode les entités HTML des libellés (l'API renvoie par exemple
+     * « d&#8217;intervention ») ; avant normalize(), qui retire alors aussi
+     * les &nbsp; de début et de fin.
+     */
+    private function decodeHtmlEntities(?string $value): ?string
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return html_entity_decode($value, \ENT_QUOTES | \ENT_HTML5, 'UTF-8');
     }
 
     /**

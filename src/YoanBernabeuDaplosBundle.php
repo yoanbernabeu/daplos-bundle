@@ -149,6 +149,10 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
                             ->defaultValue('ISO-8859-1')
                             ->info('Encodage des fichiers DAPLOS exportés (ISO-8859-1 recommandé, les positions du guide sont en octets)')
                         ->end()
+                        ->booleanNode('fail_on_truncation')
+                            ->defaultFalse()
+                            ->info('Lever une DaplosExportException si une valeur texte dépasse la longueur de son champ (sinon, la valeur est tronquée et signalée par getTruncations())')
+                        ->end()
                     ->end()
                 ->end()
             ->end()
@@ -174,6 +178,7 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
             ->set('yoanbernabeu_daplos.parser.encoding', $config['parser']['encoding'])
             ->set('yoanbernabeu_daplos.parser.ignore_unknown_flags', $config['parser']['ignore_unknown_flags'])
             ->set('yoanbernabeu_daplos.exporter.encoding', $config['exporter']['encoding'])
+            ->set('yoanbernabeu_daplos.exporter.fail_on_truncation', $config['exporter']['fail_on_truncation'])
         ;
 
         // Services
@@ -347,6 +352,7 @@ class YoanBernabeuDaplosBundle extends AbstractBundle
                 ->args([
                     service(LineWriterRegistry::class),
                     '%yoanbernabeu_daplos.exporter.encoding%',
+                    '%yoanbernabeu_daplos.exporter.fail_on_truncation%',
                 ])
                 ->public()
 

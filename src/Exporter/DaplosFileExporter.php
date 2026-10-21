@@ -10,6 +10,7 @@ use YoanBernabeu\DaplosBundle\DTO\Intrant\Intrant;
 use YoanBernabeu\DaplosBundle\DTO\Parcelle\ParcelleCulturale;
 use YoanBernabeu\DaplosBundle\DTO\Recolte\Recolte;
 use YoanBernabeu\DaplosBundle\Exporter\Contract\FileExporterInterface;
+use YoanBernabeu\DaplosBundle\Exporter\Contract\TruncationAwareInterface;
 use YoanBernabeu\DaplosBundle\Exporter\Exception\DaplosExportException;
 use YoanBernabeu\DaplosBundle\Exporter\Registry\LineWriterRegistry;
 
@@ -18,40 +19,59 @@ use YoanBernabeu\DaplosBundle\Exporter\Registry\LineWriterRegistry;
  *
  * Orchestre les Line Writers et produit le fichier a plat complet,
  * symetrique du DaplosFileParser : parse(export($document)) redonne
- * un document equivalent.
+ * un document equivalent tant qu'aucune valeur n'est tronquee.
+ *
+ * Les valeurs texte plus longues que leur champ sont coupees et signalees :
+ * getTruncations() les liste apres chaque export ; en mode strict
+ * ($failOnTruncation), l'export leve une DaplosExportException.
  */
-final class DaplosFileExporter implements FileExporterInterface
+final class DaplosFileExporter implements FileExporterInterface, TruncationAwareInterface
 {
     private const LINE_ENDING = "\r\n";
+
+    /** Nombre maximal de troncatures detaillees dans le message d'exception */
+    private const MAX_TRUNCATIONS_IN_MESSAGE = 10;
+
+    /** @var list<ExportTruncation> */
+    private array $truncations = [];
 
     public function __construct(
         private readonly LineWriterRegistry $registry,
         private readonly string $encoding = 'ISO-8859-1',
+        private readonly bool $failOnTruncation = false,
     ) {
     }
 
+    /**
+     * @throws DaplosExportException En mode strict, si une valeur texte a ete tronquee
+     */
     public function exportToString(DaplosDocument $document): string
     {
         $lines = [];
+        $this->truncations = [];
 
         if (null !== $document->interchange) {
-            $lines[] = $this->registry->get('EI')->write($document->interchange);
+            $this->writeLine('EI', $document->interchange, $lines);
         }
 
         if (null !== $document->header) {
-            $lines[] = $this->registry->get('DE')->write($document->header);
+            $this->writeLine('DE', $document->header, $lines);
         }
 
         foreach ($document->intervenants as $intervenant) {
-            $lines[] = $this->registry->get('DA')->write($intervenant);
+            $this->writeLine('DA', $intervenant, $lines);
         }
 
         foreach ($document->typesAgriculture as $typeAgriculture) {
-            $lines[] = $this->registry->get('DT')->write($typeAgriculture);
+            $this->writeLine('DT', $typeAgriculture, $lines);
         }
 
         foreach ($document->parcelles as $parcelle) {
             $this->writeParcelle($parcelle, $lines);
+        }
+
+        if ($this->failOnTruncation && [] !== $this->truncations) {
+            throw new DaplosExportException($this->truncationMessage());
         }
 
         if ([] === $lines) {
@@ -67,6 +87,19 @@ final class DaplosFileExporter implements FileExporterInterface
         return $content;
     }
 
+    /**
+     * Valeurs texte tronquees lors du dernier export, dans l'ordre du fichier.
+     *
+     * @return list<ExportTruncation>
+     */
+    public function getTruncations(): array
+    {
+        return $this->truncations;
+    }
+
+    /**
+     * @throws DaplosExportException En mode strict, si une valeur texte a ete tronquee
+     */
     public function exportToFile(DaplosDocument $document, string $filePath): void
     {
         $content = $this->exportToString($document);
@@ -78,6 +111,39 @@ final class DaplosFileExporter implements FileExporterInterface
     }
 
     /**
+     * Ecrit une ligne et collecte ses troncatures avec leur numero de ligne.
+     *
+     * @param array<string> $lines
+     */
+    private function writeLine(string $flag, object $dto, array &$lines): void
+    {
+        $writer = $this->registry->get($flag);
+        $lines[] = $writer->write($dto);
+
+        if ($writer instanceof TruncationAwareInterface) {
+            foreach ($writer->getTruncations() as $truncation) {
+                $this->truncations[] = $truncation->withLineNumber(\count($lines));
+            }
+        }
+    }
+
+    private function truncationMessage(): string
+    {
+        $details = array_map(
+            static fn (ExportTruncation $truncation): string => $truncation->getMessage(),
+            \array_slice($this->truncations, 0, self::MAX_TRUNCATIONS_IN_MESSAGE),
+        );
+        $remaining = \count($this->truncations) - \count($details);
+
+        return sprintf(
+            '%d valeur(s) texte trop longue(s) pour leur champ DAPLOS : %s%s',
+            \count($this->truncations),
+            implode(' ; ', $details),
+            $remaining > 0 ? sprintf(' ; et %d autre(s)', $remaining) : '',
+        );
+    }
+
+    /**
      * Ecrit une parcelle culturale et toutes ses lignes filles,
      * dans l'ordre des FLAGS du guide v0.95.
      *
@@ -85,35 +151,35 @@ final class DaplosFileExporter implements FileExporterInterface
      */
     private function writeParcelle(ParcelleCulturale $parcelle, array &$lines): void
     {
-        $lines[] = $this->registry->get('DP')->write($parcelle);
+        $this->writeLine('DP', $parcelle, $lines);
 
         foreach ($parcelle->getSurfaces() as $surface) {
-            $lines[] = $this->registry->get('PS')->write($surface);
+            $this->writeLine('PS', $surface, $lines);
             foreach ($surface->getCoordonnees() as $coordonnee) {
-                $lines[] = $this->registry->get('SC')->write($coordonnee);
+                $this->writeLine('SC', $coordonnee, $lines);
             }
         }
 
         foreach ($parcelle->getParcellesCadastrales() as $parcelleCadastrale) {
-            $lines[] = $this->registry->get('PC')->write($parcelleCadastrale);
+            $this->writeLine('PC', $parcelleCadastrale, $lines);
             foreach ($parcelleCadastrale->getCoordonnees() as $coordonnee) {
-                $lines[] = $this->registry->get('CC')->write($coordonnee);
+                $this->writeLine('CC', $coordonnee, $lines);
             }
         }
 
         foreach ($parcelle->getEngagements() as $engagement) {
-            $lines[] = $this->registry->get('PE')->write($engagement);
+            $this->writeLine('PE', $engagement, $lines);
         }
 
         foreach ($parcelle->getHistoriques() as $historique) {
-            $lines[] = $this->registry->get('PH')->write($historique);
+            $this->writeLine('PH', $historique, $lines);
             foreach ($historique->getAmendements() as $amendement) {
-                $lines[] = $this->registry->get('HA')->write($amendement);
+                $this->writeLine('HA', $amendement, $lines);
             }
         }
 
         foreach ($parcelle->getAnalyses() as $analyse) {
-            $lines[] = $this->registry->get('PA')->write($analyse);
+            $this->writeLine('PA', $analyse, $lines);
         }
 
         foreach ($parcelle->getEvenements() as $evenement) {
@@ -128,19 +194,19 @@ final class DaplosFileExporter implements FileExporterInterface
      */
     private function writeEvenement(Evenement $evenement, array &$lines): void
     {
-        $lines[] = $this->registry->get('PV')->write($evenement);
+        $this->writeLine('PV', $evenement, $lines);
 
         foreach ($evenement->getCibles() as $cible) {
-            $lines[] = $this->registry->get('VB')->write($cible);
+            $this->writeLine('VB', $cible, $lines);
         }
 
         $historiqueDecision = $evenement->getHistoriqueDecision();
         if (null !== $historiqueDecision) {
-            $lines[] = $this->registry->get('VH')->write($historiqueDecision);
+            $this->writeLine('VH', $historiqueDecision, $lines);
         }
 
         foreach ($evenement->getCoordonnees() as $coordonnee) {
-            $lines[] = $this->registry->get('VC')->write($coordonnee);
+            $this->writeLine('VC', $coordonnee, $lines);
         }
 
         foreach ($evenement->getIntrants() as $intrant) {
@@ -159,18 +225,18 @@ final class DaplosFileExporter implements FileExporterInterface
      */
     private function writeIntrant(Intrant $intrant, array &$lines): void
     {
-        $lines[] = $this->registry->get('VI')->write($intrant);
+        $this->writeLine('VI', $intrant, $lines);
 
         foreach ($intrant->getCompositions() as $composition) {
-            $lines[] = $this->registry->get('IC')->write($composition);
+            $this->writeLine('IC', $composition, $lines);
         }
 
         foreach ($intrant->getLots() as $lot) {
-            $lines[] = $this->registry->get('IL')->write($lot);
+            $this->writeLine('IL', $lot, $lines);
         }
 
         foreach ($intrant->getAnalysesEffluent() as $analyseEffluent) {
-            $lines[] = $this->registry->get('IA')->write($analyseEffluent);
+            $this->writeLine('IA', $analyseEffluent, $lines);
         }
     }
 
@@ -181,14 +247,14 @@ final class DaplosFileExporter implements FileExporterInterface
      */
     private function writeRecolte(Recolte $recolte, array &$lines): void
     {
-        $lines[] = $this->registry->get('VR')->write($recolte);
+        $this->writeLine('VR', $recolte, $lines);
 
         foreach ($recolte->getLots() as $lot) {
-            $lines[] = $this->registry->get('RL')->write($lot);
+            $this->writeLine('RL', $lot, $lines);
         }
 
         foreach ($recolte->getCaracterisations() as $caracterisation) {
-            $lines[] = $this->registry->get('LC')->write($caracterisation);
+            $this->writeLine('LC', $caracterisation, $lines);
         }
     }
 }

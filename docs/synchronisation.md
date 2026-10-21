@@ -33,6 +33,7 @@ php bin/console daplos:sync --all --dry-run
 - **Mise à jour** des entrées existantes (pas de doublons grâce à l'index unique)
 - **Validation** des données avec troncature automatique des valeurs trop longues
 - **Normalisation** des codes et libellés : espaces en début et fin retirés, espaces insécables (U+00A0) compris
+- **Décodage des entités HTML** des libellés renvoyés par l'API (`d&#8217;intervention` devient `d’intervention`) ; les codes ne sont pas modifiés. Relancer `daplos:sync` corrige les libellés déjà synchronisés
 - **Transactions** avec rollback automatique en cas d'erreur
 - **Batch processing** : flush tous les 100 items pour optimiser la mémoire
 - **Statistiques détaillées** (créés/mis à jour/erreurs)

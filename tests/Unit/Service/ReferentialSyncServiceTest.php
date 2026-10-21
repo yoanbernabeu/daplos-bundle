@@ -299,6 +299,40 @@ class ReferentialSyncServiceTest extends TestCase
         $this->assertSame('Observation', $persisted[1]->getDaplosTitle());
     }
 
+    /**
+     * L'API renvoie certains libellés avec des entités HTML (apostrophe
+     * typographique &#8217;, guillemets &#8220;, tiret &#8211;, points de
+     * suspension &#8230;) : ils sont décodés à la synchronisation. Les codes,
+     * comparés tels quels aux fichiers, ne sont pas décodés.
+     */
+    public function testSyncReferentialDecodesHtmlEntitiesInTitles(): void
+    {
+        $type = DaplosReferentialType::JUSTIFICATION_DE_L_INTERVENTION;
+
+        $this->apiClient->expects($this->once())->method('getReferential')->willReturn([
+            'referential' => ['id' => $type->getId(), 'name' => $type->getLabel()],
+            'references' => [
+                ['id' => 1, 'title' => 'Seuil d&#8217;intervention &#8211; &#8220;test&#8221;&#8230; &amp; co&nbsp;', 'reference_code' => 'ZNB'],
+            ],
+        ]);
+
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->method('findOneBy')->willReturn(null);
+        $this->entityManager->expects($this->any())->method('getRepository')->willReturn($repository);
+
+        $persisted = [];
+        $this->entityManager->expects($this->once())->method('persist')->willReturnCallback(
+            static function (object $entity) use (&$persisted): void {
+                $persisted[] = $entity;
+            }
+        );
+
+        $this->service->syncReferential(TestDaplosEntity::class, $type);
+
+        $this->assertSame("Seuil d\u{2019}intervention \u{2013} \u{201C}test\u{201D}\u{2026} & co", $persisted[0]->getDaplosTitle());
+        $this->assertSame('ZNB', $persisted[0]->getDaplosReferenceCode());
+    }
+
     public function testSyncAllReferentials(): void
     {
         // Arrange - Préparer les données pour chaque type de référentiel
