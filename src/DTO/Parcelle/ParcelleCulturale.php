@@ -46,15 +46,18 @@ final class ParcelleCulturale
         public readonly ?string $codeQualifiantCulture = null,
         public readonly ?string $codeDestinationCulture = null,
         public readonly ?string $codePeriodeSemis = null,
+        /** Hors FLAG DP du guide v0.95 : jamais rempli par le parser, ni exporté, ni contrôlé par le validateur */
         public readonly ?string $codeJustificationCulture = null,
         public readonly ?string $codeTypeSol = null,
         public readonly ?string $codeTypeSousSol = null,
         public readonly ?float $surface = null,
+        /** Hors FLAG DP du guide v0.95 (l'unité de surface est l'hectare, FLAG PS) : jamais rempli par le parser, ni exporté, ni contrôlé par le validateur */
         public readonly ?string $codeUniteSurface = null,
         public readonly ?string $nom = null,
         /** @deprecated le n° îlot PAC est un an 10 (positions 141-150), plus jamais rempli par le parser ; utiliser numeroIlotPac */
         public readonly ?int $numeroIlot = null,
         public readonly ?string $codeCommune = null,
+        /** Hors FLAG DP du guide v0.95 (le type d'agriculture pratiquée est porté par le FLAG DT) : jamais rempli par le parser, ni exporté, ni contrôlé par le validateur */
         public readonly ?string $codeModeProduction = null,
         /** @deprecated champ hors guide v0.95 (lisait les positions 237-246, à cheval sur le type de sol v0.95), plus jamais rempli par le parser */
         public readonly ?string $numeroRPG = null,
