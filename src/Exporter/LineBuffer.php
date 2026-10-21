@@ -18,7 +18,10 @@ final class LineBuffer
 {
     private string $line;
 
-    public function __construct(string $flag)
+    /** @var list<ExportTruncation> */
+    private array $truncations = [];
+
+    public function __construct(private readonly string $flag)
     {
         $this->line = $flag;
     }
@@ -27,7 +30,8 @@ final class LineBuffer
      * Place un champ texte a une position donnee.
      *
      * La valeur est convertie en ISO-8859-1, tronquee a la longueur du champ
-     * et completee a droite par des espaces.
+     * et completee a droite par des espaces. Toute troncature est signalee
+     * (voir getTruncations()).
      *
      * @param int $start  Position de debut (1-based comme dans la spec DAPLOS)
      * @param int $length Longueur du champ en octets
@@ -39,9 +43,28 @@ final class LineBuffer
         }
 
         $encoded = $this->toSingleByte($value);
-        $encoded = substr($encoded, 0, $length);
+        if (strlen($encoded) > $length) {
+            $encoded = substr($encoded, 0, $length);
+            $this->truncations[] = new ExportTruncation(
+                $this->flag,
+                $start,
+                $length,
+                $value,
+                mb_check_encoding($value, 'UTF-8') ? mb_convert_encoding($encoded, 'UTF-8', 'ISO-8859-1') : $encoded,
+            );
+        }
 
         $this->place($start, str_pad($encoded, $length));
+    }
+
+    /**
+     * Valeurs texte coupees par setField() depuis la creation du tampon.
+     *
+     * @return list<ExportTruncation>
+     */
+    public function getTruncations(): array
+    {
+        return $this->truncations;
     }
 
     /**

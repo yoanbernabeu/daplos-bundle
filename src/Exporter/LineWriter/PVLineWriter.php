@@ -72,7 +72,8 @@ final class PVLineWriter extends AbstractLineWriter
      *
      * La coupure se fait sur le dernier espace avant la limite : le parser
      * reconcatene les deux zones avec un espace, ce qui restitue le
-     * commentaire d'origine. Au-dela de 141 caracteres, le texte est tronque.
+     * commentaire d'origine. La seconde zone recoit tout le reste : au-dela
+     * de 70 caracteres, LineBuffer le tronque et signale la troncature.
      *
      * @return array{?string, ?string}
      */
@@ -84,9 +85,9 @@ final class PVLineWriter extends AbstractLineWriter
 
         $lastSpace = mb_strrpos(mb_substr($commentaire, 0, 71), ' ');
         if (false === $lastSpace || 0 === $lastSpace) {
-            return [mb_substr($commentaire, 0, 70), mb_substr($commentaire, 70, 70)];
+            return [mb_substr($commentaire, 0, 70), mb_substr($commentaire, 70)];
         }
 
-        return [mb_substr($commentaire, 0, $lastSpace), mb_substr($commentaire, $lastSpace + 1, 70)];
+        return [mb_substr($commentaire, 0, $lastSpace), mb_substr($commentaire, $lastSpace + 1)];
     }
 }

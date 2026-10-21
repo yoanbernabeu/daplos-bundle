@@ -51,6 +51,40 @@ class LineBufferTest extends TestCase
         $this->assertSame('DTABC', $buffer->toString());
     }
 
+    public function testSetFieldReportsTruncation(): void
+    {
+        $buffer = new LineBuffer('DT');
+        $buffer->setField(26, 5, 'Agriculture été');
+
+        $this->assertSame('DT'.str_repeat(' ', 23).'Agric', $buffer->toString());
+        $truncations = $buffer->getTruncations();
+        $this->assertCount(1, $truncations);
+        $this->assertSame('DT', $truncations[0]->flag);
+        $this->assertSame(26, $truncations[0]->position);
+        $this->assertSame(5, $truncations[0]->length);
+        $this->assertSame('Agriculture été', $truncations[0]->value);
+        $this->assertSame('Agric', $truncations[0]->writtenValue);
+        $this->assertNull($truncations[0]->lineNumber);
+    }
+
+    public function testSetFieldReportsWrittenValueInUtf8(): void
+    {
+        $buffer = new LineBuffer('DT');
+        $buffer->setField(3, 3, 'éèàù');
+
+        $this->assertSame('éèà', $buffer->getTruncations()[0]->writtenValue);
+    }
+
+    public function testSetFieldDoesNotReportValueThatFits(): void
+    {
+        $buffer = new LineBuffer('DT');
+        $buffer->setField(3, 3, 'ABC');
+        $buffer->setField(6, 3, 'é');
+        $buffer->setField(9, 3, null);
+
+        $this->assertSame([], $buffer->getTruncations());
+    }
+
     public function testSetFieldNullLeavesSpaces(): void
     {
         $buffer = new LineBuffer('DE');

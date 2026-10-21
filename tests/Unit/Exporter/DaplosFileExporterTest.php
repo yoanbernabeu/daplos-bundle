@@ -88,6 +88,109 @@ class DaplosFileExporterTest extends TestCase
         $this->parser = new DaplosFileParser(self::createParserRegistry());
     }
 
+    public function testExportReportsNoTruncationWhenEverythingFits(): void
+    {
+        $this->exporter->exportToString(new DaplosDocument(
+            typesAgriculture: [new TypeAgriculture(codeTypeAgriculture: 'ZAB', libelle: 'Bio')],
+        ));
+
+        $this->assertSame([], $this->exporter->getTruncations());
+    }
+
+    public function testExportReportsTruncatedTextFieldsWithLineNumber(): void
+    {
+        $evenement = new Evenement(
+            identifiantParcelle: '0001',
+            annee: 2025,
+            refIntervention: 'ABCD1234567890ABCD1234567890ABCD',
+            codeStadeCultureBBCH: '06BBCH0000a',
+        );
+        $parcelle = new ParcelleCulturale(identifiant: '0001', annee: 2025);
+        $parcelle->addEvenement($evenement);
+
+        $output = $this->exporter->exportToString(new DaplosDocument(
+            typesAgriculture: [new TypeAgriculture(libelle: 'Agriculture de conservation des sols')],
+            parcelles: [$parcelle],
+        ));
+
+        $truncations = $this->exporter->getTruncations();
+        $this->assertCount(2, $truncations);
+
+        $this->assertSame('DT', $truncations[0]->flag);
+        $this->assertSame(26, $truncations[0]->position);
+        $this->assertSame(20, $truncations[0]->length);
+        $this->assertSame('Agriculture de conservation des sols', $truncations[0]->value);
+        $this->assertSame('Agriculture de conse', $truncations[0]->writtenValue);
+        $this->assertSame(1, $truncations[0]->lineNumber);
+
+        $this->assertSame('PV', $truncations[1]->flag);
+        $this->assertSame(485, $truncations[1]->position);
+        $this->assertSame(10, $truncations[1]->length);
+        $this->assertSame('06BBCH0000a', $truncations[1]->value);
+        $this->assertSame(3, $truncations[1]->lineNumber);
+
+        // Non bloquant par défaut : le fichier est produit, valeurs coupées
+        $this->assertStringContainsString('06BBCH0000'."\r\n", $output);
+    }
+
+    public function testExportReportsCommentaireBeyondTwoZones(): void
+    {
+        $evenement = new Evenement(refIntervention: 'ABCD', commentaire: str_repeat('mot ', 40));
+        $parcelle = new ParcelleCulturale(identifiant: '0001');
+        $parcelle->addEvenement($evenement);
+
+        $this->exporter->exportToString(new DaplosDocument(parcelles: [$parcelle]));
+
+        $truncations = $this->exporter->getTruncations();
+        $this->assertCount(1, $truncations);
+        $this->assertSame('PV', $truncations[0]->flag);
+        $this->assertSame(415, $truncations[0]->position);
+        $this->assertSame(70, $truncations[0]->length);
+    }
+
+    public function testTruncationsAreResetAtEachExport(): void
+    {
+        $this->exporter->exportToString(new DaplosDocument(
+            typesAgriculture: [new TypeAgriculture(libelle: 'Agriculture de conservation des sols')],
+        ));
+        $this->exporter->exportToString(new DaplosDocument(
+            typesAgriculture: [new TypeAgriculture(libelle: 'Bio')],
+        ));
+
+        $this->assertSame([], $this->exporter->getTruncations());
+    }
+
+    public function testStrictExporterThrowsOnTruncation(): void
+    {
+        $exporter = new DaplosFileExporter(self::createWriterRegistry(), 'ISO-8859-1', true);
+
+        try {
+            $exporter->exportToString(new DaplosDocument(
+                typesAgriculture: [new TypeAgriculture(libelle: 'Agriculture de conservation des sols')],
+            ));
+            $this->fail('Une DaplosExportException était attendue');
+        } catch (DaplosExportException $e) {
+            $this->assertStringContainsString('DT 26-45', $e->getMessage());
+            $this->assertStringContainsString('ligne 1', $e->getMessage());
+            $this->assertCount(1, $exporter->getTruncations());
+        }
+    }
+
+    public function testStrictExporterDoesNotWriteFileOnTruncation(): void
+    {
+        $exporter = new DaplosFileExporter(self::createWriterRegistry(), 'ISO-8859-1', true);
+        $filePath = sys_get_temp_dir().'/daplos_export_strict_'.uniqid().'.dap';
+
+        try {
+            $exporter->exportToFile(new DaplosDocument(
+                typesAgriculture: [new TypeAgriculture(libelle: 'Agriculture de conservation des sols')],
+            ), $filePath);
+            $this->fail('Une DaplosExportException était attendue');
+        } catch (DaplosExportException) {
+            $this->assertFileDoesNotExist($filePath);
+        }
+    }
+
     public function testExportEmptyDocumentReturnsEmptyString(): void
     {
         $this->assertSame('', $this->exporter->exportToString(new DaplosDocument()));

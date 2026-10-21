@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace YoanBernabeu\DaplosBundle\Exporter\LineWriter;
 
 use YoanBernabeu\DaplosBundle\Exporter\Contract\LineWriterInterface;
+use YoanBernabeu\DaplosBundle\Exporter\Contract\TruncationAwareInterface;
 use YoanBernabeu\DaplosBundle\Exporter\Exception\DaplosExportException;
+use YoanBernabeu\DaplosBundle\Exporter\ExportTruncation;
 use YoanBernabeu\DaplosBundle\Exporter\LineBuffer;
 
 /**
@@ -14,17 +16,32 @@ use YoanBernabeu\DaplosBundle\Exporter\LineBuffer;
  * Fournit le squelette d'ecriture a positions fixes via LineBuffer.
  * Utilise le pattern Template Method, symetrique d'AbstractLineParser.
  */
-abstract class AbstractLineWriter implements LineWriterInterface
+abstract class AbstractLineWriter implements LineWriterInterface, TruncationAwareInterface
 {
+    /** @var list<ExportTruncation> */
+    private array $truncations = [];
+
     /**
      * Template Method : squelette de l'algorithme d'ecriture.
      */
     final public function write(object $dto): string
     {
+        $this->truncations = [];
         $buffer = new LineBuffer($this->getFlag());
         $this->fillBuffer($buffer, $dto);
+        $this->truncations = $buffer->getTruncations();
 
         return $buffer->toString();
+    }
+
+    /**
+     * Valeurs texte coupees lors du dernier appel a write().
+     *
+     * @return list<ExportTruncation>
+     */
+    public function getTruncations(): array
+    {
+        return $this->truncations;
     }
 
     /**
